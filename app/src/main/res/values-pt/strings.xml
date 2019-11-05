@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Álcool ou Gasolina</string>
+
+    <string name="ethanol">Álcool</string>
+    <string name="gasoline">Gasolina</string>
+    <string name="label_ethanol">Álcool: %1$s</string>
+    <string name="label_gasoline">Gasolina: %1$s</string>
+    <string name="value">Valor</string>
+    <string name="separator">X</string>
+    <string name="calculate">Calcular</string>
+    <string name="clear">Limpar preços</string>
+    <string name="logo_description">Logo do aplicativo</string>
+    <string name="success_description">Ícone de sucesso</string>
+    <string name="msg_require_ethanol">Digite o valor do Álcool!</string>
+    <string name="msg_require_gasoline">Digite o valor da Gasolina!</string>
+    <string name="msg_use_ethanol">Abasteça com Álcool!</string>
+    <string name="msg_use_gasoline">Abasteça com Gasolina!</string>
+    <string name="msg_result">Proporção: %1$s</string>
+    <string name="erase">Limpar</string>
+    <string name="error_on_update">Não atualizado</string>
+    <string name="error_on_update_message">Você não completou o processo de atualização do app.</string>
+    <string name="exit_app">Sair do APP</string>
+    <string name="try_again">Tentar novamente</string>
+    <string name="remove_ads">Remover anúncios</string>
+    <string name="feedback">Feedback</string>
+    <string name="notifications">Notificações</string>
+    <string name="notification_details">Detalhes da notificação</string>
+    <string name="about_app">Sobre o app</string>
+    <string name="channel_updates">Atualizações do app</string>
+    <string name="error_icon">Ícone de erro</string>
+    <string name="loading_settings">Carregando configurações…</string>
+    <string name="notifications_empty">Nenhuma notificação recebida.</string>
+    <string name="history_empty">Nenhuma comparação realizada.</string>
+    <string name="error_connection">Ops, ocorreu um erro na comunicação com o servidor. Verifique sua conexão e tente novamente.</string>
+    <string name="notification_image">Imagem da notificação</string>
+    <string name="ops">Ops!</string>
+    <string name="label_link">Link: %1$s</string>
+    <string name="label_received">Recebida em %1$s</string>
+    <string name="share_app">Compartilhar app</string>
+    <string name="share_subject">Baixe o aplicativo %1$s</string>
+    <string name="share_text">Saiba com qual combustível está compensando abastecer:\n\n%1$s</string>
+    <string name="history">Histórico</string>
+    <string name="clear_history">Limpar histórico</string>
+    <string name="confirmation">Confirmação</string>
+    <string name="confirm_clear_history">Tem certeza que deseja apagar o histórico?</string>
+    <string name="cancel">Cancelar</string>
+    <string name="update_title">Atualização disponível</string>
+    <string name="update_positive">Atualizar agora</string>
+    <string name="update_negative">Mais tarde</string>
+    <string name="update_needed">Lançamos uma nova atualização crítica, você PRECISA atualizar para continuar usando.</string>
+    <string name="update_logout">Sair do app</string>
+    <string name="update_available">Lançamos uma nova versão do aplicativo, atualize para receber as novidades e correções.</string>
+</resources>

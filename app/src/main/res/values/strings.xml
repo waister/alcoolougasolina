@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ethanol or Gasoline</string>
+
+    <string name="ethanol">Ethanol</string>
+    <string name="gasoline">Gasoline</string>
+    <string name="label_ethanol">Ethanol: %1$s</string>
+    <string name="label_gasoline">Gasoline: %1$s</string>
+    <string name="value">Value</string>
+    <string name="separator">X</string>
+    <string name="calculate">Calculate</string>
+    <string name="clear">Clear prices</string>
+    <string name="logo_description">Logo of APP</string>
+    <string name="success_description">Success icon</string>
+    <string name="msg_require_ethanol">Enter the amount of Ethanol!</string>
+    <string name="msg_require_gasoline">Enter the amount of Gasoline!</string>
+    <string name="msg_use_ethanol">Fill with Ethanol!</string>
+    <string name="msg_use_gasoline">Fill with Gasoline!</string>
+    <string name="msg_result">Proportion: %1$s</string>
+    <string name="hint_value" translatable="false">0.00</string>
+    <string name="erase">Clear</string>
+    <string name="error_on_update">Not updated</string>
+    <string name="error_on_update_message">You have not completed the app update process.</string>
+    <string name="exit_app">Exit APP</string>
+    <string name="try_again">Try again</string>
+    <string name="remove_ads">Remove ads</string>
+    <string name="feedback">Feedback</string>
+    <string name="notifications">Notifications</string>
+    <string name="notification_details">Notifications details</string>
+    <string name="about_app">About the app</string>
+    <string name="channel_updates">App updates</string>
+    <string name="error_icon">Error icon</string>
+    <string name="loading_settings">Loading settings…</string>
+    <string name="notifications_empty">No notifications received.</string>
+    <string name="history_empty">No comparison made.</string>
+    <string name="error_connection">Oops, there was an error communicating with the server. Check your connection and try again.</string>
+    <string name="notification_image">Notification image</string>
+    <string name="ops">Oops!</string>
+    <string name="label_link">Link: %1$s</string>
+    <string name="label_received">Received on %1$s</string>
+    <string name="share_app">Share app</string>
+    <string name="share_subject">Get the app %1$s</string>
+    <string name="share_text">Know which fuel you are paying to fill:\n\n%1$s</string>
+    <string name="history">History</string>
+    <string name="clear_history">Clear history</string>
+    <string name="confirmation">Confirmation</string>
+    <string name="confirm_clear_history">Are you sure you want to delete history?</string>
+    <string name="cancel">Cancel</string>
+    <string name="update_title">Update Available</string>
+    <string name="update_positive">Update now</string>
+    <string name="update_negative">Later</string>
+    <string name="update_needed">We have released a new critical update, you MUST update to continue using.</string>
+    <string name="update_logout">Exit app</string>
+    <string name="update_available">We have released a new version of the application, update to receive news and corrections.</string>
+</resources>
