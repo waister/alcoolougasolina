@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        MobileAds.initialize(this) {}
+        MobileAds.initialize(this, Hawk.get(PREF_ADMOB_ID, ""))
 
         initViews()
     }
