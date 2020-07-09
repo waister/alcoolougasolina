@@ -93,7 +93,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         Log.i(TAG, "Push itemId: $itemId")
 
         if (title.isEmpty() || type == API_WAKEUP) {
-            Hawk.delete(PREF_ADMOB_ID)
             return
         }
 

@@ -7,16 +7,12 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.webkit.URLUtil
-import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatEditText
 import br.com.gazoza.alcoolougasolina.BuildConfig
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.result.Result
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
 import com.orhanobut.hawk.Hawk
 import java.text.DateFormat
 import java.text.ParseException
@@ -68,26 +64,6 @@ fun printFuelLog(request: Request, response: Response, result: Result<String, Fu
         println("\n------------ FUEL_RESULT_START - $path\n")
         println(result)
         println("\n------------ FUEL_RESULT_END - $path\n")
-    }
-}
-
-fun saveAppData(result: Result<String, FuelError>) {
-    val (data, error) = result
-
-    if (error == null) {
-        val apiObj = data.getValidJSONObject()
-
-        if (apiObj.getBooleanVal(API_SUCCESS)) {
-            Hawk.put(PREF_SHARE_LINK, apiObj.getStringVal(API_SHARE_LINK))
-            Hawk.put(PREF_APP_NAME, apiObj.getStringVal(API_APP_NAME))
-            Hawk.put(PREF_NAME_TO_REMOVE, apiObj.getStringVal(API_NAME_TO_REMOVE))
-            Hawk.put(PREF_ADMOB_ID, apiObj.getStringVal(API_ADMOB_ID))
-            Hawk.put(PREF_ADMOB_AD_MAIN_ID, apiObj.getStringVal(API_ADMOB_AD_MAIN_ID))
-            Hawk.put(PREF_ADMOB_INTERSTITIAL_ID, apiObj.getStringVal(API_ADMOB_INTERSTITIAL_ID))
-            Hawk.put(PREF_ADMOB_REMOVE_ADS_ID, apiObj.getStringVal(API_ADMOB_REMOVE_ADS_ID))
-            Hawk.put(PREF_BILL_PLAN_YEAR, apiObj.getStringVal(API_BILL_PLAN_YEAR))
-            Hawk.put(PREF_PLAN_VIDEO_DURATION, apiObj.getLongVal(API_PLAN_VIDEO_DURATION))
-        }
     }
 }
 
@@ -199,35 +175,4 @@ fun Long.formatDatetime(): String {
     return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(this)
 }
 
-fun haveVideoPlan(): Boolean {
-    val planVideoMillis = Hawk.get(PREF_PLAN_VIDEO_MILLIS, 0L)
-    if (planVideoMillis != 0L) {
-        val panVideoDuration = Hawk.get(PREF_PLAN_VIDEO_DURATION, FIVE_DAYS)
-        val expiration = Hawk.get(PREF_PLAN_VIDEO_MILLIS, 0L) + panVideoDuration
-        return expiration > System.currentTimeMillis()
-    }
-    return false
-}
-
-fun haveBillingPlan(): Boolean = Hawk.get(PREF_HAVE_PLAN, !BuildConfig.DEBUG)
-
-fun havePlan(): Boolean = haveBillingPlan() || haveVideoPlan()
-
-fun Activity?.loadAdBanner(root: LinearLayout?, adUnitId: String, adSize: AdSize?) {
-    if (this == null || root == null || havePlan()) return
-
-    val testAdUnitId = "ca-app-pub-3940256099942544/6300978111"
-
-    val adView = AdView(this)
-    adView.adSize = adSize ?: AdSize.SMART_BANNER
-    adView.adUnitId = if (BuildConfig.DEBUG) testAdUnitId else adUnitId
-
-    root.addView(
-        adView, LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-    )
-
-    adView.loadAd(AdRequest.Builder().build())
-}
+fun havePlan(): Boolean = Hawk.get(PREF_HAVE_PLAN, !BuildConfig.DEBUG)

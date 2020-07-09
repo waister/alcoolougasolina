@@ -128,23 +128,29 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private fun resolveUserConsent() {
-        val consentManager = ConsentManager.getInstance(this)
+        val appodealAppKey = Hawk.get(PREF_APPODEAL_APP_KEY, APPODEAL_APP_KEY)
 
-        consentManager.requestConsentInfoUpdate(APPODEAL_APP_KEY, object :
-            ConsentInfoUpdateListener {
-            override fun onConsentInfoUpdated(consent: Consent) {
-                val consentShouldShow = consentManager.shouldShowConsentDialog()
-                if (consentShouldShow == Consent.ShouldShow.TRUE) {
-                    showConsentForm()
-                } else {
+        if (appodealAppKey.isEmpty()) {
+            initApp()
+        } else {
+            val consentManager = ConsentManager.getInstance(this)
+
+            consentManager.requestConsentInfoUpdate(appodealAppKey, object :
+                ConsentInfoUpdateListener {
+                override fun onConsentInfoUpdated(consent: Consent) {
+                    val consentShouldShow = consentManager.shouldShowConsentDialog()
+                    if (consentShouldShow == Consent.ShouldShow.TRUE) {
+                        showConsentForm()
+                    } else {
+                        initApp()
+                    }
+                }
+
+                override fun onFailedToUpdateConsentInfo(e: ConsentManagerException) {
                     initApp()
                 }
-            }
-
-            override fun onFailedToUpdateConsentInfo(e: ConsentManagerException) {
-                initApp()
-            }
-        })
+            })
+        }
     }
 
     private fun showConsentForm() {

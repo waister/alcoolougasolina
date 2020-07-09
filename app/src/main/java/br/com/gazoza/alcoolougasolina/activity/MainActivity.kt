@@ -32,7 +32,8 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        Appodeal.initialize(this, APPODEAL_APP_KEY, Appodeal.INTERSTITIAL or Appodeal.BANNER, true)
+        val appodealAppKey = Hawk.get(PREF_APPODEAL_APP_KEY, APPODEAL_APP_KEY)
+        Appodeal.initialize(this, appodealAppKey, Appodeal.INTERSTITIAL or Appodeal.BANNER, true)
 
         if (BuildConfig.DEBUG) {
             Appodeal.setTesting(true)
@@ -228,6 +229,10 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
                     val apiObj = data.getValidJSONObject()
 
                     if (apiObj.getBooleanVal(API_SUCCESS)) {
+                        Hawk.put(PREF_SHARE_LINK, apiObj.getStringVal(API_SHARE_LINK))
+                        Hawk.put(PREF_APP_NAME, apiObj.getStringVal(API_APP_NAME))
+                        Hawk.put(PREF_APPODEAL_APP_KEY, apiObj.getStringVal(API_APPODEAL_APP_KEY))
+
                         val versionLast = apiObj.getIntVal(API_VERSION_LAST)
                         val versionMin = apiObj.getIntVal(API_VERSION_MIN)
 
