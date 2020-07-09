@@ -1,10 +1,10 @@
 package br.com.gazoza.alcoolougasolina.activity
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
+import androidx.appcompat.app.AppCompatActivity
 import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.util.*
 import com.github.kittinunf.fuel.httpGet

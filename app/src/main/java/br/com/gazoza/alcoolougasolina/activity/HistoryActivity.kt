@@ -1,7 +1,6 @@
 package br.com.gazoza.alcoolougasolina.activity
 
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -10,11 +9,14 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.adapter.HistoryAdapter
-import br.com.gazoza.alcoolougasolina.domain.Comparation
+import br.com.gazoza.alcoolougasolina.domain.Comparison
+import br.com.gazoza.alcoolougasolina.util.loadAdBanner
+import com.google.android.gms.ads.AdSize
 import io.realm.Realm
 import io.realm.Sort
 import kotlinx.android.synthetic.main.activity_history.*
 import org.jetbrains.anko.alert
+import org.jetbrains.anko.displayMetrics
 
 class HistoryActivity : AppCompatActivity() {
 
@@ -28,6 +30,9 @@ class HistoryActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         renderNotifications()
+
+        val adMobId = "ca-app-pub-6521704558504566/6221190272"
+        loadAdBanner(ll_banner, adMobId, AdSize.SMART_BANNER)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -37,11 +42,11 @@ class HistoryActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_clear) {
-            alert (R.string.confirm_clear_history, R.string.confirmation) {
+            alert(R.string.confirm_clear_history, R.string.confirmation) {
                 also { ctx.setTheme(R.style.CustomAlertDialog) }
                 positiveButton(R.string.clear_history) {
                     realm.executeTransaction {
-                        realm.where(Comparation::class.java)
+                        realm.where(Comparison::class.java)
                                 .findAll()
                                 .deleteAllFromRealm()
                     }
@@ -57,7 +62,7 @@ class HistoryActivity : AppCompatActivity() {
     }
 
     private fun renderNotifications() {
-        val history = realm.where(Comparation::class.java)
+        val history = realm.where(Comparison::class.java)
                 .sort("millis", Sort.DESCENDING)
                 .findAll()
 
@@ -72,8 +77,6 @@ class HistoryActivity : AppCompatActivity() {
 
         rv_history.setHasFixedSize(true)
 
-        val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
         val columns = if (displayMetrics.widthPixels > 1900) 2 else 1
 
         val layoutManager = GridLayoutManager(this, columns)

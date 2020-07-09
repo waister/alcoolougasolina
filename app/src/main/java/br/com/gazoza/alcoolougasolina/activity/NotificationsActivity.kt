@@ -3,7 +3,6 @@ package br.com.gazoza.alcoolougasolina.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +14,7 @@ import br.com.gazoza.alcoolougasolina.util.*
 import com.github.kittinunf.fuel.httpGet
 import kotlinx.android.synthetic.main.activity_notifications.*
 import kotlinx.android.synthetic.main.inc_progress_light.*
+import org.jetbrains.anko.displayMetrics
 import org.json.JSONArray
 
 class NotificationsActivity : AppCompatActivity() {
@@ -93,8 +93,6 @@ class NotificationsActivity : AppCompatActivity() {
 
         rv_notifications.setHasFixedSize(true)
 
-        val displayMetrics = DisplayMetrics()
-        windowManager.defaultDisplay.getMetrics(displayMetrics)
         val columns = if (displayMetrics.widthPixels > 1900) 2 else 1
 
         val layoutManager = GridLayoutManager(this, columns)

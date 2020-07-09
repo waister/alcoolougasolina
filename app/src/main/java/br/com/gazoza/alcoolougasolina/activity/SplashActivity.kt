@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import br.com.gazoza.alcoolougasolina.BuildConfig
 import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.application.CustomApplication
 import br.com.gazoza.alcoolougasolina.util.*
@@ -42,7 +41,13 @@ class SplashActivity : AppCompatActivity() {
             CustomApplication().updateFuelParams()
         }
 
-        identifyApp()
+        if ((application as CustomApplication).getIsCheckUpdatesNeeded()) {
+            (application as CustomApplication).setCheckUpdatesIsNeeded(false)
+
+            checkAppVersion()
+        } else {
+            identifyApp()
+        }
     }
 
     private fun identifyApp() {
@@ -55,10 +60,10 @@ class SplashActivity : AppCompatActivity() {
 
                 saveAppData(result)
 
-                checkAppVersion()
+                initApp()
             }
         } else {
-            checkAppVersion()
+            initApp()
         }
     }
 

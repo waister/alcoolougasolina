@@ -11,6 +11,8 @@ import io.realm.RealmConfiguration
 
 class CustomApplication : Application() {
 
+    private var isCheckUpdatesNeeded: Boolean = true
+
     override fun onCreate() {
         super.onCreate()
 
@@ -36,6 +38,14 @@ class CustomApplication : Application() {
                 API_DEBUG to (if (BuildConfig.DEBUG) "1" else "0"),
                 API_V to 5
         )
+    }
+
+    fun setCheckUpdatesIsNeeded(isNeeded: Boolean) {
+        isCheckUpdatesNeeded = isNeeded
+    }
+
+    fun getIsCheckUpdatesNeeded(): Boolean {
+        return isCheckUpdatesNeeded
     }
 
 }

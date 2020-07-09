@@ -9,9 +9,10 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import br.com.gazoza.alcoolougasolina.BuildConfig
 import br.com.gazoza.alcoolougasolina.R
-import br.com.gazoza.alcoolougasolina.domain.Comparation
+import br.com.gazoza.alcoolougasolina.domain.Comparison
 import br.com.gazoza.alcoolougasolina.util.*
 import com.github.kittinunf.fuel.httpGet
+import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.MobileAds
 import com.orhanobut.hawk.Hawk
 import io.realm.Realm
@@ -28,7 +29,7 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        MobileAds.initialize(this, Hawk.get(PREF_ADMOB_ID, ""))
+        MobileAds.initialize(this) {}
 
         initViews()
     }
@@ -42,8 +43,8 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
         et_ethanol.setText(lastEthanol)
         et_gasoline.setText(lastGasoline)
 
-        et_ethanol.maskMoney()
-        et_gasoline.maskMoney()
+        et_ethanol.addTextChangedListener(MaskMoney(et_ethanol))
+        et_gasoline.addTextChangedListener(MaskMoney(et_gasoline))
 
         if (lastEthanol.isNotEmpty() && lastGasoline.isNotEmpty()) {
             submitAction(false)
@@ -69,7 +70,8 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
             false
         }
 
-        loadAdBanner(Hawk.get(PREF_ADMOB_AD_MAIN_ID, ""))
+        val adMobId = "ca-app-pub-6521704558504566/7944661753"
+        loadAdBanner(ll_banner, adMobId, AdSize.SMART_BANNER)
 
         checkVersion()
     }
@@ -148,14 +150,14 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
                 tv_proportion.text = getString(R.string.msg_result, percentage)
 
                 realm.executeTransaction {
-                    var last = realm.where(Comparation::class.java)
+                    var last = realm.where(Comparison::class.java)
                             .sort("millis", Sort.DESCENDING)
                             .findFirst()
 
                     if (last == null || last.priceEthanol != textEthanol || last.priceGasoline != textGasoline) {
-                        last = Comparation()
+                        last = Comparison()
 
-                        val max = realm.where(Comparation::class.java).max("id")
+                        val max = realm.where(Comparison::class.java).max("id")
                         last.id = if (max != null) max.toLong() + 1 else 1
                     }
 

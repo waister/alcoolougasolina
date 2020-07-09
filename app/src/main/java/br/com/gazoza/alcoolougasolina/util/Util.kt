@@ -9,9 +9,7 @@ import android.view.inputmethod.InputMethodManager
 import android.webkit.URLUtil
 import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatEditText
-import androidx.core.content.ContextCompat
 import br.com.gazoza.alcoolougasolina.BuildConfig
-import br.com.gazoza.alcoolougasolina.R
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
@@ -20,7 +18,6 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.orhanobut.hawk.Hawk
-import org.jetbrains.anko.find
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -245,43 +242,19 @@ fun haveBillingPlan(): Boolean = Hawk.get(PREF_HAVE_PLAN, !BuildConfig.DEBUG)
 
 fun havePlan(): Boolean = haveBillingPlan() || haveVideoPlan()
 
-fun getAdRequest(): AdRequest? {
-    if (!havePlan()) {
-        val adBuilder = AdRequest.Builder()
-        adBuilder.addTestDevice("738582C779CD9CA43CC0361682874D45")
-        adBuilder.addTestDevice("D7EE51F00F200384AAE0DA7F16451F9F")
-        return adBuilder.build()
-    }
-    return null
-}
+fun Activity?.loadAdBanner(root: LinearLayout?, adUnitId: String, adSize: AdSize?) {
+    if (this == null || root == null || havePlan()) return
 
-fun Activity.loadAdBanner(adUnitId: String?): Boolean {
-    val rootView: LinearLayout? = find(R.id.ll_banner)
+    val testAdUnitId = "ca-app-pub-3940256099942544/6300978111"
 
-    if (rootView != null && adUnitId != null && adUnitId.isNotEmpty()) {
-        rootView.removeAllViews()
+    val adView = AdView(this)
+    adView.adSize = adSize ?: AdSize.SMART_BANNER
+    adView.adUnitId = if (BuildConfig.DEBUG) testAdUnitId else adUnitId
 
-        if (!havePlan()) {
-            val adView = AdView(this)
-            adView.adSize = AdSize.SMART_BANNER
-            adView.adUnitId = adUnitId
+    root.addView(adView, LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+    ))
 
-            val params = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.WRAP_CONTENT
-            )
-
-            rootView.addView(adView, params)
-
-            adView.loadAd(getAdRequest())
-
-            return true
-        }
-    }
-
-    return false
-}
-
-fun AppCompatEditText.maskMoney() {
-    this.addTextChangedListener(MaskMoney(this))
+    adView.loadAd(AdRequest.Builder().build())
 }

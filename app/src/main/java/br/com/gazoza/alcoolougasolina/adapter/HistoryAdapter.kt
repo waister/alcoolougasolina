@@ -8,7 +8,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import br.com.gazoza.alcoolougasolina.R
-import br.com.gazoza.alcoolougasolina.domain.Comparation
+import br.com.gazoza.alcoolougasolina.domain.Comparison
 import br.com.gazoza.alcoolougasolina.util.formatDatetime
 import io.realm.RealmResults
 import org.jetbrains.anko.find
@@ -16,10 +16,10 @@ import org.jetbrains.anko.find
 class HistoryAdapter(private val context: Context) :
         RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
 
-    private var comparations: RealmResults<Comparation>? = null
+    private var comparisons: RealmResults<Comparison>? = null
 
-    fun setData(data: RealmResults<Comparation>?) {
-        comparations = data
+    fun setData(data: RealmResults<Comparison>?) {
+        comparisons = data
         notifyDataSetChanged()
     }
 
@@ -32,14 +32,14 @@ class HistoryAdapter(private val context: Context) :
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.setData(comparations!![position])
+        holder.setData(comparisons!![position])
     }
 
     override fun getItemCount(): Int {
-        if (comparations == null) {
+        if (comparisons == null) {
             return 0
         }
-        return comparations!!.size
+        return comparisons!!.size
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -49,12 +49,12 @@ class HistoryAdapter(private val context: Context) :
         private var tvGasoline = itemView.find<TextView>(R.id.tv_gasoline)
         private var tvResult = itemView.find<TextView>(R.id.tv_result)
 
-        fun setData(comparation: Comparation?) {
-            if (comparation != null) {
+        fun setData(comparison: Comparison?) {
+            if (comparison != null) {
                 val icon: Int
                 val text: Int
 
-                if (comparation.proportion < 0.7) {
+                if (comparison.proportion < 0.7) {
                     icon = R.drawable.ic_ethanol_36dp
                     text = R.string.msg_use_ethanol
                 } else {
@@ -64,11 +64,11 @@ class HistoryAdapter(private val context: Context) :
 
                 ivIcon.setImageResource(icon)
 
-                tvDate.text = comparation.millis.formatDatetime()
-                tvEthanol.text = context.getString(R.string.label_ethanol, comparation.priceEthanol)
-                tvGasoline.text = context.getString(R.string.label_gasoline, comparation.priceGasoline)
+                tvDate.text = comparison.millis.formatDatetime()
+                tvEthanol.text = context.getString(R.string.label_ethanol, comparison.priceEthanol)
+                tvGasoline.text = context.getString(R.string.label_gasoline, comparison.priceGasoline)
 
-                val result = "${context.getString(text)} (${comparation.percentage}%)"
+                val result = "${context.getString(text)} (${comparison.percentage}%)"
 
                 tvResult.text = result
             }

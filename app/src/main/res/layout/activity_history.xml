@@ -10,11 +10,20 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_history"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_above="@+id/ll_banner" />
 
     <TextView
         android:id="@+id/tv_history_empty"
         style="@style/EmptyAlert"
         android:layout_height="match_parent"
+        android:layout_above="@+id/ll_banner"
         android:text="@string/history_empty" />
+
+    <LinearLayout
+        android:id="@+id/ll_banner"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical" />
 </RelativeLayout>
