@@ -18,5 +18,7 @@
         android:layout_height="match_parent"
         android:text="@string/notifications_empty" />
 
-    <include layout="@layout/inc_progress_light" />
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        style="@style/MyProgressBar" />
 </RelativeLayout>

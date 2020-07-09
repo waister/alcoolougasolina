@@ -53,5 +53,7 @@
             tools:text="Received at 23/05/2019" />
     </LinearLayout>
 
-    <include layout="@layout/inc_progress_light" />
+    <ProgressBar
+        android:id="@+id/pb_loading"
+        style="@style/MyProgressBar" />
 </RelativeLayout>

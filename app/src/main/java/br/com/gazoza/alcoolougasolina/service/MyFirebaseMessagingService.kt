@@ -134,7 +134,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         builder.setAutoCancel(true)
         builder.setContentIntent(pendingIntent)
         builder.setDefaults(NotificationCompat.DEFAULT_ALL)
-        builder.setSmallIcon(R.drawable.ic_notification)
+        builder.setSmallIcon(R.mipmap.ic_notification)
         builder.setContentTitle(title)
         builder.setContentText(body)
         builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
@@ -172,7 +172,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 API_ABOUT_APP -> R.string.about_app
                 else -> R.string.channel_updates
             }
-            val channel = NotificationChannel(channelId, getString(name), NotificationManager.IMPORTANCE_HIGH)
+            val channel =
+                NotificationChannel(channelId, getString(name), NotificationManager.IMPORTANCE_HIGH)
             manager.createNotificationChannel(channel)
             builder.setChannelId(channelId)
         }
@@ -184,7 +185,12 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val pattern = longArrayOf(0, 100, 0, 100)
         val vibrator = applicationContext.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            vibrator.vibrate(VibrationEffect.createWaveform(pattern, VibrationEffect.DEFAULT_AMPLITUDE))
+            vibrator.vibrate(
+                VibrationEffect.createWaveform(
+                    pattern,
+                    VibrationEffect.DEFAULT_AMPLITUDE
+                )
+            )
         } else {
             @Suppress("DEPRECATION")
             vibrator.vibrate(pattern, -1)

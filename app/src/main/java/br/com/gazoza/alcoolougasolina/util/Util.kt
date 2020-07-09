@@ -18,6 +18,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.orhanobut.hawk.Hawk
+import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.*
@@ -102,10 +103,15 @@ fun String?.stringToInt(): Int {
 fun String?.isValidUrl(): Boolean = this != null && this.isNotEmpty() && URLUtil.isValidUrl(this)
 
 fun storeAppLink(): String =
-        "https://play.google.com/store/apps/details?id=${BuildConfig.APPLICATION_ID}"
+    "https://play.google.com/store/apps/details?id=${BuildConfig.APPLICATION_ID}"
 
 
-fun Context?.getThumbUrl(image: String?, width: Int = 220, height: Int = 0, quality: Int = 85): String {
+fun Context?.getThumbUrl(
+    image: String?,
+    width: Int = 220,
+    height: Int = 0,
+    quality: Int = 85
+): String {
     if (this != null && image != null && !image.contains("http") && image.contains("/uploads/")) {
         return APP_HOST + "thumb?src=$image&w=$width&h=$height&q=$quality"
     }
@@ -147,13 +153,13 @@ fun Bitmap?.getCircleCroppedBitmap(): Bitmap? {
             paint.color = color
             if (bitmap.width < bitmap.height) {
                 canvas.drawCircle(
-                        (bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat(),
-                        (bitmap.width / 2).toFloat(), paint
+                    (bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat(),
+                    (bitmap.width / 2).toFloat(), paint
                 )
             } else {
                 canvas.drawCircle(
-                        (bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat(),
-                        (bitmap.height / 2).toFloat(), paint
+                    (bitmap.width / 2).toFloat(), (bitmap.height / 2).toFloat(),
+                    (bitmap.height / 2).toFloat(), paint
                 )
             }
             paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
@@ -173,43 +179,15 @@ fun String?.getStringValid(): String {
     return ""
 }
 
-fun String?.formatDate(): String {
-    try {
-        if (this != null && this.isNotEmpty()) {
-            val formatIn = SimpleDateFormat(
-                    FORMAT_DATETIME_API,
-                    BRAZIL
-            )
-            val parsed = formatIn.parse(this)
-
-            val formatOut = SimpleDateFormat(
-                    FORMAT_DATE_BRAZIL,
-                    BRAZIL
-            )
-            if (parsed != null)
-                return formatOut.format(parsed)
-        }
-    } catch (e: ParseException) {
-        e.printStackTrace()
-    }
-    return ""
-}
-
 fun String?.formatDatetime(): String {
     try {
         if (this != null && this.isNotEmpty()) {
-            val formatIn = SimpleDateFormat(
-                    FORMAT_DATETIME_API,
-                    BRAZIL
-            )
-            val parsed = formatIn.parse(this)
+            val locale = Locale.getDefault()
+            val parsed = SimpleDateFormat(FORMAT_DATETIME_API, locale).parse(this)
 
-            val formatOut = SimpleDateFormat(
-                    FORMAT_DATETIME_BRAZIL,
-                    BRAZIL
-            )
             if (parsed != null)
-                return formatOut.format(parsed)
+                return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM)
+                    .format(parsed.time)
         }
     } catch (e: ParseException) {
         e.printStackTrace()
@@ -218,14 +196,7 @@ fun String?.formatDatetime(): String {
 }
 
 fun Long.formatDatetime(): String {
-    val formatter = SimpleDateFormat(
-            FORMAT_DATETIME_BRAZIL,
-            BRAZIL
-    )
-
-    val calendar = Calendar.getInstance()
-    calendar.timeInMillis = this
-    return formatter.format(calendar.time)
+    return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(this)
 }
 
 fun haveVideoPlan(): Boolean {
@@ -251,10 +222,12 @@ fun Activity?.loadAdBanner(root: LinearLayout?, adUnitId: String, adSize: AdSize
     adView.adSize = adSize ?: AdSize.SMART_BANNER
     adView.adUnitId = if (BuildConfig.DEBUG) testAdUnitId else adUnitId
 
-    root.addView(adView, LinearLayout.LayoutParams(
+    root.addView(
+        adView, LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
-    ))
+        )
+    )
 
     adView.loadAd(AdRequest.Builder().build())
 }

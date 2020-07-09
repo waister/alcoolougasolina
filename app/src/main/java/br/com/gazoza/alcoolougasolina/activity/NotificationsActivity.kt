@@ -13,7 +13,6 @@ import br.com.gazoza.alcoolougasolina.adapter.NotificationsAdapter
 import br.com.gazoza.alcoolougasolina.util.*
 import com.github.kittinunf.fuel.httpGet
 import kotlinx.android.synthetic.main.activity_notifications.*
-import kotlinx.android.synthetic.main.inc_progress_light.*
 import org.jetbrains.anko.displayMetrics
 import org.json.JSONArray
 
@@ -45,17 +44,17 @@ class NotificationsActivity : AppCompatActivity() {
     }
 
     private fun loadNotifications() {
-        rl_progress_light.visibility = View.VISIBLE
+        pb_loading.visibility = View.VISIBLE
         tv_notifications_empty.visibility = View.GONE
 
         API_ROUTE_NOTIFICATIONS.httpGet().responseString { request, response, result ->
             printFuelLog(request, response, result)
 
-            if (ly_main == null) return@responseString
+            if (pb_loading == null) return@responseString
+
+            pb_loading.visibility = View.GONE
 
             var errorMessage = getString(R.string.error_connection)
-
-            rl_progress_light.visibility = View.GONE
 
             val (data, error) = result
 

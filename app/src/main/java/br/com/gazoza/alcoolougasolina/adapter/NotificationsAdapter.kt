@@ -60,7 +60,7 @@ class NotificationsAdapter(
 
             tvTitle.text = title
             tvMessage.text = body
-            tvDate.text = date.formatDate()
+            tvDate.text = date.formatDatetime()
 
             itemView.setOnClickListener {
                 activity.startActivity(activity.intentFor<NotificationDetailsActivity>(

@@ -10,5 +10,5 @@ open class Comparison : RealmObject() {
     var priceGasoline: String = ""
     var proportion: Double = 0.0
     var percentage: String = ""
-    var millis: Long = 0
+    var timestamp: Long = 0
 }

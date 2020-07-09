@@ -1,14 +1,10 @@
 package br.com.gazoza.alcoolougasolina.util
 
-import java.util.*
+const val APPODEAL_APP_KEY = "b7441838b286add7eb9dab6c32e5f83920315f687b4b90f1"
 
 const val PARAM_ITEM_ID = "ParamItemId"
 const val PARAM_TYPE = "ParamType"
 
-val BRAZIL = Locale("pt", "BR")
-
-const val FORMAT_DATE_BRAZIL = "dd/MM/yyyy"
-const val FORMAT_DATETIME_BRAZIL = "dd/MM/yyyy 'às' HH:mm"
 const val FORMAT_DATETIME_API = "yyyy-MM-dd HH:mm:ss"
 
 const val NOTIFICATION_DEFAULT_ID = 1000

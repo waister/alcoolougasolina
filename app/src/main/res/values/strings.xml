@@ -30,7 +30,6 @@
     <string name="about_app">About the app</string>
     <string name="channel_updates">App updates</string>
     <string name="error_icon">Error icon</string>
-    <string name="loading_settings">Loading settings…</string>
     <string name="notifications_empty">No notifications received.</string>
     <string name="history_empty">No comparison made.</string>
     <string name="error_connection">Oops, there was an error communicating with the server. Check your connection and try again.</string>
@@ -39,6 +38,7 @@
     <string name="label_link">Link: %1$s</string>
     <string name="label_received">Received on %1$s</string>
     <string name="share_app">Share app</string>
+    <string name="rate_app">Rate app</string>
     <string name="share_subject">Get the app %1$s</string>
     <string name="share_text">Know which fuel you are paying to fill:\n\n%1$s</string>
     <string name="history">History</string>
@@ -52,4 +52,5 @@
     <string name="update_needed">We have released a new critical update, you MUST update to continue using.</string>
     <string name="update_logout">Exit app</string>
     <string name="update_available">We have released a new version of the application, update to receive news and corrections.</string>
+    <string name="version">Version: %1$s</string>
 </resources>

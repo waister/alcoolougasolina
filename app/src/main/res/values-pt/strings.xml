@@ -29,7 +29,6 @@
     <string name="about_app">Sobre o app</string>
     <string name="channel_updates">Atualizações do app</string>
     <string name="error_icon">Ícone de erro</string>
-    <string name="loading_settings">Carregando configurações…</string>
     <string name="notifications_empty">Nenhuma notificação recebida.</string>
     <string name="history_empty">Nenhuma comparação realizada.</string>
     <string name="error_connection">Ops, ocorreu um erro na comunicação com o servidor. Verifique sua conexão e tente novamente.</string>
@@ -38,6 +37,7 @@
     <string name="label_link">Link: %1$s</string>
     <string name="label_received">Recebida em %1$s</string>
     <string name="share_app">Compartilhar app</string>
+    <string name="rate_app">Avaliar app</string>
     <string name="share_subject">Baixe o aplicativo %1$s</string>
     <string name="share_text">Saiba com qual combustível está compensando abastecer:\n\n%1$s</string>
     <string name="history">Histórico</string>
@@ -51,4 +51,5 @@
     <string name="update_needed">Lançamos uma nova atualização crítica, você PRECISA atualizar para continuar usando.</string>
     <string name="update_logout">Sair do app</string>
     <string name="update_available">Lançamos uma nova versão do aplicativo, atualize para receber as novidades e correções.</string>
+    <string name="version">Versão: %1$s</string>
 </resources>

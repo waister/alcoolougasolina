@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_date"
         android:contentDescription="@string/success_description"
-        android:src="@drawable/ic_ethanol_36dp" />
+        android:src="@mipmap/ic_ethanol_36dp" />
 
     <TextView
         android:id="@+id/tv_date"

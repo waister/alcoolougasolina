@@ -55,16 +55,16 @@ class HistoryAdapter(private val context: Context) :
                 val text: Int
 
                 if (comparison.proportion < 0.7) {
-                    icon = R.drawable.ic_ethanol_36dp
+                    icon = R.mipmap.ic_ethanol_36dp
                     text = R.string.msg_use_ethanol
                 } else {
-                    icon = R.drawable.ic_gasoline_36dp
+                    icon = R.mipmap.ic_gasoline_36dp
                     text = R.string.msg_use_gasoline
                 }
 
                 ivIcon.setImageResource(icon)
 
-                tvDate.text = comparison.millis.formatDatetime()
+                tvDate.text = comparison.timestamp.formatDatetime()
                 tvEthanol.text = context.getString(R.string.label_ethanol, comparison.priceEthanol)
                 tvGasoline.text = context.getString(R.string.label_gasoline, comparison.priceGasoline)
 

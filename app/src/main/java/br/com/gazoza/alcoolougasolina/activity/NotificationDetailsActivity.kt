@@ -11,7 +11,6 @@ import com.github.kittinunf.fuel.httpGet
 import com.orhanobut.hawk.Hawk
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_notification_details.*
-import kotlinx.android.synthetic.main.inc_progress_light.*
 import org.jetbrains.anko.alert
 import org.jetbrains.anko.okButton
 import org.json.JSONObject
@@ -42,18 +41,18 @@ class NotificationDetailsActivity : AppCompatActivity() {
     }
 
     private fun loadNotification() {
-        rl_progress_light.visibility = View.VISIBLE
+        pb_loading.visibility = View.VISIBLE
 
         val routeApi = API_ROUTE_NOTIFICATION + notificationId
 
         routeApi.httpGet().responseString { request, _, result ->
             Log.i("NotificationDetails", "Request: $request")
 
-            if (ly_main == null) return@responseString
+            if (pb_loading == null) return@responseString
+
+            pb_loading.visibility = View.GONE
 
             var errorMessage = getString(R.string.error_connection)
-
-            rl_progress_light.visibility = View.GONE
 
             val (data, error) = result
 

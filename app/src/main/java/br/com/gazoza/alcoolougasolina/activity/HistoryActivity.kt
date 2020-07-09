@@ -10,8 +10,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.adapter.HistoryAdapter
 import br.com.gazoza.alcoolougasolina.domain.Comparison
-import br.com.gazoza.alcoolougasolina.util.loadAdBanner
-import com.google.android.gms.ads.AdSize
+import br.com.gazoza.alcoolougasolina.util.havePlan
+import com.appodeal.ads.Appodeal
 import io.realm.Realm
 import io.realm.Sort
 import kotlinx.android.synthetic.main.activity_history.*
@@ -31,8 +31,10 @@ class HistoryActivity : AppCompatActivity() {
 
         renderNotifications()
 
-        val adMobId = "ca-app-pub-6521704558504566/6221190272"
-        loadAdBanner(ll_banner, adMobId, AdSize.SMART_BANNER)
+        if (!havePlan()) {
+            Appodeal.setBannerViewId(R.id.appodealBannerView)
+            Appodeal.show(this, Appodeal.BANNER_VIEW)
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -63,7 +65,7 @@ class HistoryActivity : AppCompatActivity() {
 
     private fun renderNotifications() {
         val history = realm.where(Comparison::class.java)
-                .sort("millis", Sort.DESCENDING)
+            .sort("timestamp", Sort.DESCENDING)
                 .findAll()
 
         if (history == null || history.count() == 0) {

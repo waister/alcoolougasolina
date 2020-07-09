@@ -3,6 +3,8 @@ package br.com.gazoza.alcoolougasolina.activity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.view.WindowManager
 import android.widget.Button
@@ -11,9 +13,10 @@ import br.com.gazoza.alcoolougasolina.BuildConfig
 import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.domain.Comparison
 import br.com.gazoza.alcoolougasolina.util.*
+import com.appodeal.ads.Appodeal
+import com.appodeal.ads.utils.Log
 import com.github.kittinunf.fuel.httpGet
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.MobileAds
+import com.google.firebase.iid.FirebaseInstanceId
 import com.orhanobut.hawk.Hawk
 import io.realm.Realm
 import io.realm.Sort
@@ -29,7 +32,12 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        MobileAds.initialize(this) {}
+        Appodeal.initialize(this, APPODEAL_APP_KEY, Appodeal.INTERSTITIAL or Appodeal.BANNER, true)
+
+        if (BuildConfig.DEBUG) {
+            Appodeal.setTesting(true)
+            Appodeal.setLogLevel(Log.LogLevel.debug)
+        }
 
         initViews()
     }
@@ -62,18 +70,23 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
 
         bt_calculate.setOnClickListener(this)
         bt_clear.setOnClickListener(this)
-        fab_history.setOnClickListener(this)
-        fab_share.setOnClickListener(this)
 
         et_gasoline.setOnEditorActionListener { _, _, _ ->
             submitAction()
             false
         }
 
-        val adMobId = "ca-app-pub-6521704558504566/7944661753"
-        loadAdBanner(ll_banner, adMobId, AdSize.SMART_BANNER)
+        tv_version.text = getString(R.string.version, BuildConfig.VERSION_NAME)
 
         checkVersion()
+        checkTokenFcm()
+
+        if (!havePlan()) {
+            Appodeal.setBannerViewId(R.id.appodealBannerView)
+            Appodeal.show(this, Appodeal.BANNER_VIEW)
+
+            Appodeal.cache(this, Appodeal.INTERSTITIAL)
+        }
     }
 
     override fun onClick(view: View?) {
@@ -89,15 +102,6 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
                 Hawk.delete(LAST_GASOLINE)
 
                 verifyButtonsState(showMessage = false, requestFocus = true)
-            }
-            R.id.fab_history -> {
-                startActivity(intentFor<HistoryActivity>())
-            }
-            R.id.fab_share -> {
-                val app = Hawk.get(PREF_APP_NAME, "")
-                val link = Hawk.get(PREF_SHARE_LINK, storeAppLink())
-
-                share(getString(R.string.share_text, link), getString(R.string.share_subject, app))
             }
         }
     }
@@ -136,10 +140,10 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
                 val text: Int
 
                 if (proportion < 0.7) {
-                    icon = R.drawable.ic_ethanol_36dp
+                    icon = R.mipmap.ic_ethanol_36dp
                     text = R.string.msg_use_ethanol
                 } else {
-                    icon = R.drawable.ic_gasoline_36dp
+                    icon = R.mipmap.ic_gasoline_36dp
                     text = R.string.msg_use_gasoline
                 }
 
@@ -151,8 +155,8 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
 
                 realm.executeTransaction {
                     var last = realm.where(Comparison::class.java)
-                            .sort("millis", Sort.DESCENDING)
-                            .findFirst()
+                        .sort("timestamp", Sort.DESCENDING)
+                        .findFirst()
 
                     if (last == null || last.priceEthanol != textEthanol || last.priceGasoline != textGasoline) {
                         last = Comparison()
@@ -165,7 +169,7 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
                     last.priceGasoline = textGasoline
                     last.proportion = proportion
                     last.percentage = percentage
-                    last.millis = System.currentTimeMillis()
+                    last.timestamp = System.currentTimeMillis()
 
                     realm.copyToRealmOrUpdate(last)
                 }
@@ -228,7 +232,10 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
                         val versionMin = apiObj.getIntVal(API_VERSION_MIN)
 
                         if (BuildConfig.VERSION_CODE < versionMin) {
-                            alert(getString(R.string.update_needed), getString(R.string.update_title)) {
+                            alert(
+                                getString(R.string.update_needed),
+                                getString(R.string.update_title)
+                            ) {
                                 positiveButton(R.string.update_positive) {
                                     browse(storeAppLink())
                                 }
@@ -236,7 +243,10 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
                                 onCancelled { finish() }
                             }.show()
                         } else if (BuildConfig.VERSION_CODE < versionLast) {
-                            alert(getString(R.string.update_available), getString(R.string.update_title)) {
+                            alert(
+                                getString(R.string.update_available),
+                                getString(R.string.update_title)
+                            ) {
                                 positiveButton(R.string.update_positive) {
                                     browse(storeAppLink())
                                 }
@@ -250,9 +260,61 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
         }
     }
 
+    private fun checkTokenFcm() {
+        if (Hawk.get(PREF_FCM_TOKEN, "").isNotEmpty()) return
+
+        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener {
+            if (it.isSuccessful) {
+                val token = it.result?.token
+
+                if (token != null) {
+                    Hawk.put(PREF_FCM_TOKEN, token)
+
+                    checkVersion()
+                }
+            }
+        }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.action_history -> {
+                startActivity(intentFor<HistoryActivity>())
+            }
+            R.id.action_share -> {
+                val app = Hawk.get(PREF_APP_NAME, "")
+                val link = Hawk.get(PREF_SHARE_LINK, storeAppLink())
+
+                share(getString(R.string.share_text, link), getString(R.string.share_subject, app))
+            }
+            R.id.action_rate -> {
+                browse(storeAppLink())
+            }
+            R.id.action_notifications -> {
+                startActivity(intentFor<NotificationsActivity>())
+            }
+            else -> {
+                onBackPressed()
+            }
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         realm.close()
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        if (!havePlan() && Appodeal.isLoaded(Appodeal.INTERSTITIAL))
+            Appodeal.show(this, Appodeal.INTERSTITIAL)
     }
 
 }
