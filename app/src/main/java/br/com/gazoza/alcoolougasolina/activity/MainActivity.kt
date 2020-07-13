@@ -82,12 +82,10 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
         checkVersion()
         checkTokenFcm()
 
-        if (!havePlan()) {
-            Appodeal.setBannerViewId(R.id.appodealBannerView)
-            Appodeal.show(this, Appodeal.BANNER_VIEW)
+        Appodeal.setBannerViewId(R.id.appodealBannerView)
+        Appodeal.show(this, Appodeal.BANNER_VIEW)
 
-            Appodeal.cache(this, Appodeal.INTERSTITIAL)
-        }
+        Appodeal.cache(this, Appodeal.INTERSTITIAL)
     }
 
     override fun onClick(view: View?) {
@@ -318,7 +316,7 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
     override fun onBackPressed() {
         super.onBackPressed()
 
-        if (!havePlan() && Appodeal.isLoaded(Appodeal.INTERSTITIAL))
+        if (Appodeal.isLoaded(Appodeal.INTERSTITIAL))
             Appodeal.show(this, Appodeal.INTERSTITIAL)
     }
 

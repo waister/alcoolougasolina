@@ -13,7 +13,6 @@ import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.result.Result
-import com.orhanobut.hawk.Hawk
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -174,5 +173,3 @@ fun String?.formatDatetime(): String {
 fun Long.formatDatetime(): String {
     return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(this)
 }
-
-fun havePlan(): Boolean = Hawk.get(PREF_HAVE_PLAN, !BuildConfig.DEBUG)

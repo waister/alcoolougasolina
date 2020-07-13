@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.adapter.HistoryAdapter
 import br.com.gazoza.alcoolougasolina.domain.Comparison
-import br.com.gazoza.alcoolougasolina.util.havePlan
 import com.appodeal.ads.Appodeal
 import io.realm.Realm
 import io.realm.Sort
@@ -31,10 +30,8 @@ class HistoryActivity : AppCompatActivity() {
 
         renderNotifications()
 
-        if (!havePlan()) {
-            Appodeal.setBannerViewId(R.id.appodealBannerView)
-            Appodeal.show(this, Appodeal.BANNER_VIEW)
-        }
+        Appodeal.setBannerViewId(R.id.appodealBannerView)
+        Appodeal.show(this, Appodeal.BANNER_VIEW)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -49,8 +46,8 @@ class HistoryActivity : AppCompatActivity() {
                 positiveButton(R.string.clear_history) {
                     realm.executeTransaction {
                         realm.where(Comparison::class.java)
-                                .findAll()
-                                .deleteAllFromRealm()
+                            .findAll()
+                            .deleteAllFromRealm()
                     }
 
                     renderNotifications()
@@ -66,7 +63,7 @@ class HistoryActivity : AppCompatActivity() {
     private fun renderNotifications() {
         val history = realm.where(Comparison::class.java)
             .sort("timestamp", Sort.DESCENDING)
-                .findAll()
+            .findAll()
 
         if (history == null || history.count() == 0) {
             tv_history_empty.visibility = View.VISIBLE
