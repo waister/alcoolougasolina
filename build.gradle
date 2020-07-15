@@ -6,7 +6,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:4.0.0'
+        classpath 'com.android.tools.build:gradle:4.0.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "io.realm:realm-gradle-plugin:6.0.2"
         classpath 'com.google.gms:google-services:4.3.3'
@@ -20,7 +20,6 @@ allprojects {
         google()
         maven { url 'https://jitpack.io' }
         maven { url 'https://maven.google.com/' }
-        maven { url 'https://artifactory.appodeal.com/appodeal' }
     }
 }
 

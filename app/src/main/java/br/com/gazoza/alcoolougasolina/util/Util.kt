@@ -7,12 +7,17 @@ import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.webkit.URLUtil
+import android.widget.LinearLayout
 import androidx.appcompat.widget.AppCompatEditText
 import br.com.gazoza.alcoolougasolina.BuildConfig
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.result.Result
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.InterstitialAd
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -172,4 +177,41 @@ fun String?.formatDatetime(): String {
 
 fun Long.formatDatetime(): String {
     return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(this)
+}
+
+fun Activity?.createInterstitialAd(): InterstitialAd? {
+    var interstitialAd: InterstitialAd? = null
+
+    if (this != null) {
+        val adUnitId = if (BuildConfig.DEBUG)
+            "ca-app-pub-3940256099942544/1033173712"
+        else
+            "ca-app-pub-6521704558504566/4051651496"
+
+        if (adUnitId.isNotEmpty()) {
+            interstitialAd = InterstitialAd(this)
+            interstitialAd.adUnitId = adUnitId
+        }
+    }
+
+    return interstitialAd
+}
+
+fun Activity?.loadAdBanner(root: LinearLayout?, adUnitId: String, adSize: AdSize?) {
+    if (this == null || root == null) return
+
+    val testAdUnitId = "ca-app-pub-3940256099942544/6300978111"
+
+    val adView = AdView(this)
+    adView.adSize = adSize ?: AdSize.SMART_BANNER
+    adView.adUnitId = if (BuildConfig.DEBUG) testAdUnitId else adUnitId
+
+    root.addView(
+        adView, LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+    )
+
+    adView.loadAd(AdRequest.Builder().build())
 }

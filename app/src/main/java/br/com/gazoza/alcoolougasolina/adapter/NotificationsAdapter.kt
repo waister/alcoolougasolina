@@ -15,7 +15,7 @@ import org.json.JSONArray
 import org.json.JSONObject
 
 class NotificationsAdapter(
-        private val activity: Activity
+    private val activity: Activity
 ) : RecyclerView.Adapter<NotificationsAdapter.MyViewHolder>() {
 
     private var itemsArr: JSONArray? = null
@@ -28,7 +28,8 @@ class NotificationsAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_notification, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.item_notification, parent, false)
         return MyViewHolder(view)
     }
 
@@ -48,7 +49,8 @@ class NotificationsAdapter(
         return 0
     }
 
-    inner class MyViewHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    inner class MyViewHolder internal constructor(itemView: View) :
+        RecyclerView.ViewHolder(itemView) {
         private var tvTitle: TextView = itemView.find(R.id.tv_title)
         private var tvMessage: TextView = itemView.find(R.id.tv_message)
         private var tvDate: TextView = itemView.find(R.id.tv_date)
@@ -63,9 +65,11 @@ class NotificationsAdapter(
             tvDate.text = date.formatDatetime()
 
             itemView.setOnClickListener {
-                activity.startActivity(activity.intentFor<NotificationDetailsActivity>(
+                activity.startActivity(
+                    activity.intentFor<NotificationDetailsActivity>(
                         PARAM_ITEM_ID to itemObj.getStringVal(API_ID)
-                ))
+                    )
+                )
             }
         }
 

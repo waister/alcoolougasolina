@@ -13,9 +13,11 @@ import br.com.gazoza.alcoolougasolina.BuildConfig
 import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.domain.Comparison
 import br.com.gazoza.alcoolougasolina.util.*
-import com.appodeal.ads.Appodeal
-import com.appodeal.ads.utils.Log
 import com.github.kittinunf.fuel.httpGet
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.MobileAds
 import com.google.firebase.iid.FirebaseInstanceId
 import com.orhanobut.hawk.Hawk
 import io.realm.Realm
@@ -27,18 +29,13 @@ import java.text.DecimalFormat
 class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
 
     private val realm = Realm.getDefaultInstance()
+    private var interstitialAd: InterstitialAd? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val appodealAppKey = Hawk.get(PREF_APPODEAL_APP_KEY, APPODEAL_APP_KEY)
-        Appodeal.initialize(this, appodealAppKey, Appodeal.INTERSTITIAL or Appodeal.BANNER, true)
-
-        if (BuildConfig.DEBUG) {
-            Appodeal.setTesting(true)
-            Appodeal.setLogLevel(Log.LogLevel.debug)
-        }
+        MobileAds.initialize(this) {}
 
         initViews()
     }
@@ -82,10 +79,10 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
         checkVersion()
         checkTokenFcm()
 
-        Appodeal.setBannerViewId(R.id.appodealBannerView)
-        Appodeal.show(this, Appodeal.BANNER_VIEW)
+        loadAdBanner(ll_banner, "ca-app-pub-6521704558504566/7944661753", AdSize.SMART_BANNER)
 
-        Appodeal.cache(this, Appodeal.INTERSTITIAL)
+        interstitialAd = createInterstitialAd()
+        interstitialAd?.loadAd(AdRequest.Builder().build())
     }
 
     override fun onClick(view: View?) {
@@ -229,7 +226,6 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
                     if (apiObj.getBooleanVal(API_SUCCESS)) {
                         Hawk.put(PREF_SHARE_LINK, apiObj.getStringVal(API_SHARE_LINK))
                         Hawk.put(PREF_APP_NAME, apiObj.getStringVal(API_APP_NAME))
-                        Hawk.put(PREF_APPODEAL_APP_KEY, apiObj.getStringVal(API_APPODEAL_APP_KEY))
 
                         val versionLast = apiObj.getIntVal(API_VERSION_LAST)
                         val versionMin = apiObj.getIntVal(API_VERSION_MIN)
@@ -316,8 +312,7 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
     override fun onBackPressed() {
         super.onBackPressed()
 
-        if (Appodeal.isLoaded(Appodeal.INTERSTITIAL))
-            Appodeal.show(this, Appodeal.INTERSTITIAL)
+        interstitialAd?.show()
     }
 
 }

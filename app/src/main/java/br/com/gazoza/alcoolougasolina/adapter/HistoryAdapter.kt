@@ -14,7 +14,7 @@ import io.realm.RealmResults
 import org.jetbrains.anko.find
 
 class HistoryAdapter(private val context: Context) :
-        RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
+    RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
 
     private var comparisons: RealmResults<Comparison>? = null
 
@@ -25,8 +25,8 @@ class HistoryAdapter(private val context: Context) :
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val view = LayoutInflater
-                .from(context)
-                .inflate(R.layout.item_comparation, parent, false)
+            .from(context)
+            .inflate(R.layout.item_comparation, parent, false)
 
         return ViewHolder(view)
     }
@@ -66,7 +66,8 @@ class HistoryAdapter(private val context: Context) :
 
                 tvDate.text = comparison.timestamp.formatDatetime()
                 tvEthanol.text = context.getString(R.string.label_ethanol, comparison.priceEthanol)
-                tvGasoline.text = context.getString(R.string.label_gasoline, comparison.priceGasoline)
+                tvGasoline.text =
+                    context.getString(R.string.label_gasoline, comparison.priceGasoline)
 
                 val result = "${context.getString(text)} (${comparison.percentage}%)"
 

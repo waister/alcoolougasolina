@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.GridLayoutManager
 import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.adapter.HistoryAdapter
 import br.com.gazoza.alcoolougasolina.domain.Comparison
-import com.appodeal.ads.Appodeal
+import br.com.gazoza.alcoolougasolina.util.loadAdBanner
+import com.google.android.gms.ads.AdSize
 import io.realm.Realm
 import io.realm.Sort
 import kotlinx.android.synthetic.main.activity_history.*
@@ -30,8 +31,7 @@ class HistoryActivity : AppCompatActivity() {
 
         renderNotifications()
 
-        Appodeal.setBannerViewId(R.id.appodealBannerView)
-        Appodeal.show(this, Appodeal.BANNER_VIEW)
+        loadAdBanner(ll_banner, "ca-app-pub-6521704558504566/6221190272", AdSize.SMART_BANNER)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

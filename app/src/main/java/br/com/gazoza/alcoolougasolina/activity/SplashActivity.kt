@@ -10,13 +10,15 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.application.CustomApplication
-import br.com.gazoza.alcoolougasolina.util.*
-import com.explorestack.consent.*
-import com.explorestack.consent.exception.ConsentManagerException
+import br.com.gazoza.alcoolougasolina.util.API_NOTIFICATIONS
+import br.com.gazoza.alcoolougasolina.util.PARAM_ITEM_ID
+import br.com.gazoza.alcoolougasolina.util.PARAM_TYPE
+import br.com.gazoza.alcoolougasolina.util.PREF_DEVICE_ID
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
-import com.google.android.play.core.install.model.AppUpdateType
-import com.google.android.play.core.install.model.UpdateAvailability
+import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
+import com.google.android.play.core.install.model.UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS
+import com.google.android.play.core.install.model.UpdateAvailability.UPDATE_AVAILABLE
 import com.orhanobut.hawk.Hawk
 import kotlinx.android.synthetic.main.activity_splash.*
 import org.jetbrains.anko.intentFor
@@ -29,7 +31,6 @@ class SplashActivity : AppCompatActivity() {
     }
 
     private var appUpdateManager: AppUpdateManager? = null
-    private var consentForm: ConsentForm? = null
 
     @SuppressLint("HardwareIds")
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,10 +38,9 @@ class SplashActivity : AppCompatActivity() {
         setContentView(R.layout.activity_splash)
 
         if (Hawk.get(PREF_DEVICE_ID, "").isEmpty()) {
-            Hawk.put(
-                PREF_DEVICE_ID,
-                Settings.Secure.getString(contentResolver, Settings.Secure.ANDROID_ID)
-            )
+            val id = Settings.Secure.ANDROID_ID
+            Hawk.put(PREF_DEVICE_ID, Settings.Secure.getString(contentResolver, id))
+
             CustomApplication().updateFuelParams()
         }
 
@@ -49,7 +49,7 @@ class SplashActivity : AppCompatActivity() {
 
             checkAppVersion()
         } else {
-            resolveUserConsent()
+            initApp()
         }
     }
 
@@ -58,15 +58,11 @@ class SplashActivity : AppCompatActivity() {
 
         appUpdateManager
             ?.appUpdateInfo
-            ?.addOnSuccessListener { appUpdateInfo ->
-                if (appUpdateInfo.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+            ?.addOnSuccessListener {
+                if (it.updateAvailability() == DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS)
                     appUpdateManager?.startUpdateFlowForResult(
-                        appUpdateInfo,
-                        AppUpdateType.IMMEDIATE,
-                        this,
-                        MY_REQUEST_CODE
+                        it, IMMEDIATE, this, MY_REQUEST_CODE
                     )
-                }
             }
     }
 
@@ -79,26 +75,18 @@ class SplashActivity : AppCompatActivity() {
 
         appUpdateInfoTask
             ?.addOnFailureListener {
-                resolveUserConsent()
+                initApp()
             }
-            ?.addOnSuccessListener { appUpdateInfo ->
-                val updateAvailable =
-                    appUpdateInfo.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE
-                val isImmediate = appUpdateInfo.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)
+            ?.addOnSuccessListener {
+                val updateAvailable = it.updateAvailability() == UPDATE_AVAILABLE
+                val isImmediate = it.isUpdateTypeAllowed(IMMEDIATE)
 
-                if (updateAvailable && isImmediate) {
-
+                if (updateAvailable && isImmediate)
                     appUpdateManager?.startUpdateFlowForResult(
-                        appUpdateInfo,
-                        AppUpdateType.IMMEDIATE,
-                        this,
-                        MY_REQUEST_CODE
+                        it, IMMEDIATE, this, MY_REQUEST_CODE
                     )
-                } else {
-
-                    resolveUserConsent()
-
-                }
+                else
+                    initApp()
             }
     }
 
@@ -107,7 +95,7 @@ class SplashActivity : AppCompatActivity() {
 
         if (requestCode == MY_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                resolveUserConsent()
+                initApp()
             } else {
                 ll_loading.visibility = View.GONE
 
@@ -127,79 +115,20 @@ class SplashActivity : AppCompatActivity() {
         }
     }
 
-    private fun resolveUserConsent() {
-        val appodealAppKey = Hawk.get(PREF_APPODEAL_APP_KEY, APPODEAL_APP_KEY)
-
-        if (appodealAppKey.isEmpty()) {
-            initApp()
-        } else {
-            val consentManager = ConsentManager.getInstance(this)
-
-            consentManager.requestConsentInfoUpdate(appodealAppKey, object :
-                ConsentInfoUpdateListener {
-                override fun onConsentInfoUpdated(consent: Consent) {
-                    val consentShouldShow = consentManager.shouldShowConsentDialog()
-                    if (consentShouldShow == Consent.ShouldShow.TRUE) {
-                        showConsentForm()
-                    } else {
-                        initApp()
-                    }
-                }
-
-                override fun onFailedToUpdateConsentInfo(e: ConsentManagerException) {
-                    initApp()
-                }
-            })
-        }
-    }
-
-    private fun showConsentForm() {
-        if (consentForm == null) {
-            consentForm = ConsentForm.Builder(this).withListener(object : ConsentFormListener {
-                override fun onConsentFormLoaded() {
-                    consentForm!!.showAsActivity()
-                }
-
-                override fun onConsentFormError(error: ConsentManagerException) {
-                    initApp()
-                }
-
-                override fun onConsentFormOpened() {}
-
-                override fun onConsentFormClosed(consent: Consent) {
-                    if (consent.status == Consent.Status.PERSONALIZED)
-                        initApp()
-                    else
-                        finish()
-                }
-            }).build()
-        }
-
-        if (consentForm != null) {
-            if (consentForm!!.isLoaded) {
-                consentForm!!.showAsActivity()
-            } else {
-                consentForm!!.load()
-            }
-        }
-    }
-
     private fun initApp() {
         val type = intent.getStringExtra(PARAM_TYPE)
         val itemId = intent.getStringExtra(PARAM_ITEM_ID)
+
         Log.i(TAG, "Received type from notification: $type")
         Log.i(TAG, "Received itemId from notification: $itemId")
 
         startActivity(intentFor<MainActivity>(PARAM_TYPE to type))
 
-        when (type) {
-            API_NOTIFICATIONS -> {
-                if (itemId == null || itemId.isEmpty())
-                    startActivity(intentFor<NotificationsActivity>())
-                else
-                    startActivity(intentFor<NotificationDetailsActivity>(PARAM_ITEM_ID to itemId))
-            }
-        }
+        if (type == API_NOTIFICATIONS)
+            if (itemId == null || itemId.isEmpty())
+                startActivity(intentFor<NotificationsActivity>())
+            else
+                startActivity(intentFor<NotificationDetailsActivity>(PARAM_ITEM_ID to itemId))
 
         finish()
     }

@@ -29,15 +29,10 @@ class NotificationDetailsActivity : AppCompatActivity() {
 
         val notificationObj = Hawk.get<JSONObject>(PREF_NOTIFICATION_JSON + notificationId)
 
-        if (notificationObj != null) {
-
+        if (notificationObj != null)
             renderNotification(notificationObj)
-
-        } else {
-
+        else
             loadNotification()
-
-        }
     }
 
     private fun loadNotification() {
@@ -97,10 +92,10 @@ class NotificationDetailsActivity : AppCompatActivity() {
 
         if (image.isValidUrl()) {
             Picasso.get()
-                    .load(getThumbUrl(image))
-                    .placeholder(R.drawable.ic_image_loading)
-                    .error(R.drawable.ic_image_error)
-                    .into(iv_image)
+                .load(getThumbUrl(image))
+                .placeholder(R.drawable.ic_image_loading)
+                .error(R.drawable.ic_image_error)
+                .into(iv_image)
         } else {
             iv_image.visibility = View.GONE
         }

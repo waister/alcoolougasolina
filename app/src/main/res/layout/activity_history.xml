@@ -11,19 +11,20 @@
         android:id="@+id/rv_history"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/appodealBannerView" />
+        android:layout_above="@+id/ll_banner" />
 
     <TextView
         android:id="@+id/tv_history_empty"
         style="@style/EmptyAlert"
         android:layout_height="match_parent"
-        android:layout_above="@+id/appodealBannerView"
+        android:layout_above="@+id/ll_banner"
         android:text="@string/history_empty" />
 
-    <com.appodeal.ads.BannerView
-        android:id="@+id/appodealBannerView"
+    <LinearLayout
+        android:id="@+id/ll_banner"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:visibility="gone" />
+        android:orientation="vertical" />
+
 </RelativeLayout>

@@ -28,12 +28,12 @@ class MaskMoney(private val editText: EditText) : TextWatcher {
 
             editText.setText(value)
             editText.setSelection(value.length)
-        } catch (ignored: NumberFormatException) {
+        } catch (e: NumberFormatException) {
+            e.printStackTrace()
         }
-
     }
 
-    override fun beforeTextChanged(charSequence: CharSequence, start: Int, count: Int, after: Int) {}
+    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
 
     override fun afterTextChanged(editable: Editable) {}
 }

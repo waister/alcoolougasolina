@@ -35,7 +35,6 @@ const val API_FEEDBACK = "feedback"
 const val API_ABOUT_APP = "about_app"
 const val API_WAKEUP = "wakeup"
 const val API_APP_NAME = "app_name"
-const val API_APPODEAL_APP_KEY = "appodeal_app_key"
 
 fun JSONObject?.getStringVal(tag: String, default: String = ""): String {
     if (this != null && has(tag)) {
