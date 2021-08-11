@@ -10,8 +10,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.adapter.HistoryAdapter
 import br.com.gazoza.alcoolougasolina.domain.Comparison
+import br.com.gazoza.alcoolougasolina.util.appLog
 import br.com.gazoza.alcoolougasolina.util.loadAdBanner
-import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.RequestConfiguration
 import io.realm.Realm
 import io.realm.Sort
 import kotlinx.android.synthetic.main.activity_history.*
@@ -29,9 +32,20 @@ class HistoryActivity : AppCompatActivity() {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
+        initAdMob()
         renderNotifications()
+    }
 
-        loadAdBanner(ll_banner, "ca-app-pub-6521704558504566/6221190272", AdSize.SMART_BANNER)
+    private fun initAdMob() {
+        MobileAds.initialize(this) {
+            appLog("HistoryActivity", "Mobile ads initialized")
+
+            val deviceId = listOf(AdRequest.DEVICE_ID_EMULATOR)
+            val configuration = RequestConfiguration.Builder().setTestDeviceIds(deviceId).build()
+            MobileAds.setRequestConfiguration(configuration)
+
+            loadAdBanner(ll_banner, "ca-app-pub-6521704558504566/6221190272")
+        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {

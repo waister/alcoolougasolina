@@ -17,7 +17,6 @@ import com.github.kittinunf.result.Result
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.InterstitialAd
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -52,22 +51,22 @@ fun Activity?.hideKeyboard() {
 
 
 fun printFuelLog(request: Request, response: Response, result: Result<String, FuelError>) {
-    Log.w("FUEL_API_CALL", "API was called to route: ${request.path}")
+    Log.w("FUEL_API_CALL", "API was called to route: ${request.url}")
 
     if (BuildConfig.DEBUG) {
-        val path = request.path
+        val url = request.url
 
-        println("\n------------ FUEL_REQUEST_START - $path\n")
+        println("\n------------ FUEL_REQUEST_START - $url\n")
         println(request)
-        println("\n------------ FUEL_REQUEST_END - $path\n")
+        println("\n------------ FUEL_REQUEST_END - $url\n")
 
-        println("\n------------ FUEL_RESPONSE_START - $path\n")
+        println("\n------------ FUEL_RESPONSE_START - $url\n")
         println(response)
-        println("\n------------ FUEL_RESPONSE_END - $path\n")
+        println("\n------------ FUEL_RESPONSE_END - $url\n")
 
-        println("\n------------ FUEL_RESULT_START - $path\n")
+        println("\n------------ FUEL_RESULT_START - $url\n")
         println(result)
-        println("\n------------ FUEL_RESULT_END - $path\n")
+        println("\n------------ FUEL_RESULT_END - $url\n")
     }
 }
 
@@ -179,39 +178,36 @@ fun Long.formatDatetime(): String {
     return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(this)
 }
 
-fun Activity?.createInterstitialAd(): InterstitialAd? {
-    var interstitialAd: InterstitialAd? = null
+fun Activity?.loadAdBanner(adViewContainer: LinearLayout?, adUnitId: String, adSize: AdSize? = null) {
+    if (this == null || adViewContainer == null) return
 
-    if (this != null) {
-        val adUnitId = if (BuildConfig.DEBUG)
-            "ca-app-pub-3940256099942544/1033173712"
-        else
-            "ca-app-pub-6521704558504566/4051651496"
-
-        if (adUnitId.isNotEmpty()) {
-            interstitialAd = InterstitialAd(this)
-            interstitialAd.adUnitId = adUnitId
-        }
-    }
-
-    return interstitialAd
-}
-
-fun Activity?.loadAdBanner(root: LinearLayout?, adUnitId: String, adSize: AdSize?) {
-    if (this == null || root == null) return
+    val adView = AdView(this)
+    adViewContainer.addView(adView)
 
     val testAdUnitId = "ca-app-pub-3940256099942544/6300978111"
 
-    val adView = AdView(this)
-    adView.adSize = adSize ?: AdSize.SMART_BANNER
     adView.adUnitId = if (BuildConfig.DEBUG) testAdUnitId else adUnitId
 
-    root.addView(
-        adView, LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
-    )
+    adView.adSize = adSize ?: getAdSize(adViewContainer)
 
     adView.loadAd(AdRequest.Builder().build())
+}
+
+fun Activity.getAdSize(adViewContainer: LinearLayout): AdSize {
+    var adWidthPixels = adViewContainer.width.toFloat()
+    if (adWidthPixels == 0f)
+        adWidthPixels = displayWidth().toFloat()
+
+    val density = resources.displayMetrics.density
+    val adWidth = (adWidthPixels / density).toInt()
+    return AdSize.getCurrentOrientationAnchoredAdaptiveBannerAdSize(this, adWidth)
+}
+
+fun Activity?.displayWidth(): Int {
+    return if (this != null) resources.displayMetrics.widthPixels else 0
+}
+
+fun appLog(tag: String, msg: String) {
+    if (BuildConfig.DEBUG)
+        Log.i(tag, "➡➡➡ MAGGAPPS_LOG: $msg")
 }

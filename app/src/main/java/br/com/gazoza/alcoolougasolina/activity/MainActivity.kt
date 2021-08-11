@@ -15,10 +15,12 @@ import br.com.gazoza.alcoolougasolina.domain.Comparison
 import br.com.gazoza.alcoolougasolina.util.*
 import com.github.kittinunf.fuel.httpGet
 import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.MobileAds
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.android.gms.ads.RequestConfiguration
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.firebase.messaging.FirebaseMessaging
 import com.orhanobut.hawk.Hawk
 import io.realm.Realm
 import io.realm.Sort
@@ -35,9 +37,22 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        MobileAds.initialize(this) {}
-
+        initAdMob()
         initViews()
+    }
+
+    private fun initAdMob() {
+        MobileAds.initialize(this) {
+            appLog("MainActivity", "Mobile ads initialized")
+
+            val deviceId = listOf(AdRequest.DEVICE_ID_EMULATOR)
+            val configuration = RequestConfiguration.Builder().setTestDeviceIds(deviceId).build()
+            MobileAds.setRequestConfiguration(configuration)
+
+            loadAdBanner(ll_banner, "ca-app-pub-6521704558504566/7944661753")
+
+            createInterstitialAd()
+        }
     }
 
     private fun initViews() {
@@ -76,13 +91,27 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
 
         tv_version.text = getString(R.string.version, BuildConfig.VERSION_NAME)
 
-        checkVersion()
         checkTokenFcm()
+    }
 
-        loadAdBanner(ll_banner, "ca-app-pub-6521704558504566/7944661753", AdSize.SMART_BANNER)
+    private fun createInterstitialAd() {
+        val id = if (BuildConfig.DEBUG)
+            "ca-app-pub-3940256099942544/1033173712"
+        else
+            "ca-app-pub-6521704558504566/4051651496"
+        val request = AdRequest.Builder().build()
 
-        interstitialAd = createInterstitialAd()
-        interstitialAd?.loadAd(AdRequest.Builder().build())
+        InterstitialAd.load(this, id, request, object : InterstitialAdLoadCallback() {
+            override fun onAdFailedToLoad(adError: LoadAdError) {
+                println("--------- InterstitialAd error: " + adError.message)
+                interstitialAd = null
+            }
+
+            override fun onAdLoaded(loadedAd: InterstitialAd) {
+                println("--------- InterstitialAd loaded")
+                interstitialAd = loadedAd
+            }
+        })
     }
 
     override fun onClick(view: View?) {
@@ -260,16 +289,18 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
     }
 
     private fun checkTokenFcm() {
-        if (Hawk.get(PREF_FCM_TOKEN, "").isNotEmpty()) return
+        if (Hawk.get(PREF_FCM_TOKEN, "").isNotEmpty()) {
+            checkVersion()
+        } else {
+            FirebaseMessaging.getInstance().token.addOnCompleteListener {
+                if (it.isComplete) {
+                    val token = it.result?.toString()
 
-        FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener {
-            if (it.isSuccessful) {
-                val token = it.result?.token
+                    if (token != null) {
+                        Hawk.put(PREF_FCM_TOKEN, token)
 
-                if (token != null) {
-                    Hawk.put(PREF_FCM_TOKEN, token)
-
-                    checkVersion()
+                        checkVersion()
+                    }
                 }
             }
         }
@@ -312,7 +343,7 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
     override fun onBackPressed() {
         super.onBackPressed()
 
-        interstitialAd?.show()
+        interstitialAd?.show(this)
     }
 
 }
