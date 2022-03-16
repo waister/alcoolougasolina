@@ -4,6 +4,7 @@ import android.app.Application
 import br.com.gazoza.alcoolougasolina.BuildConfig
 import br.com.gazoza.alcoolougasolina.util.*
 import com.github.kittinunf.fuel.core.FuelManager
+import com.google.android.gms.ads.MobileAds
 import com.google.firebase.messaging.FirebaseMessaging
 import com.orhanobut.hawk.Hawk
 import io.realm.Realm
@@ -20,10 +21,16 @@ class CustomApplication : Application() {
 
         Hawk.init(this).build()
 
+        MobileAds.initialize(this) {}
+
+        AppOpenManager(this)
+
         Realm.init(this)
-        Realm.setDefaultConfiguration(RealmConfiguration.Builder()
+        Realm.setDefaultConfiguration(
+            RealmConfiguration.Builder()
                 .deleteRealmIfMigrationNeeded()
-                .build())
+                .build()
+        )
 
         FuelManager.instance.basePath = "${APP_HOST}api/${BuildConfig.API_APP_NAME}"
 
@@ -32,11 +39,11 @@ class CustomApplication : Application() {
 
     fun updateFuelParams() {
         FuelManager.instance.baseParams = listOf(
-                API_IDENTIFIER to Hawk.get(PREF_DEVICE_ID, ""),
-                API_VERSION to BuildConfig.VERSION_CODE,
-                API_PLATFORM to API_ANDROID,
-                API_DEBUG to (if (BuildConfig.DEBUG) "1" else "0"),
-                API_V to 5
+            API_IDENTIFIER to Hawk.get(PREF_DEVICE_ID, ""),
+            API_VERSION to BuildConfig.VERSION_CODE,
+            API_PLATFORM to API_ANDROID,
+            API_DEBUG to (if (BuildConfig.DEBUG) "1" else "0"),
+            API_V to 5
         )
     }
 
