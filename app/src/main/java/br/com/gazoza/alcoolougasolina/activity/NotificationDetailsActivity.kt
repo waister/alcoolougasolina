@@ -1,7 +1,6 @@
 package br.com.gazoza.alcoolougasolina.activity
 
 import android.os.Bundle
-import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -41,7 +40,7 @@ class NotificationDetailsActivity : AppCompatActivity() {
         val routeApi = API_ROUTE_NOTIFICATION + notificationId
 
         routeApi.httpGet().responseString { request, _, result ->
-            Log.i("NotificationDetails", "Request: $request")
+            appLog("NotificationDetails", "Request: $request")
 
             if (pb_loading == null) return@responseString
 

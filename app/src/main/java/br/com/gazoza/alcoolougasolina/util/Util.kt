@@ -184,9 +184,7 @@ fun Activity?.loadAdBanner(adViewContainer: LinearLayout?, adUnitId: String, adS
     val adView = AdView(this)
     adViewContainer.addView(adView)
 
-    val testAdUnitId = "ca-app-pub-3940256099942544/6300978111"
-
-    adView.adUnitId = if (BuildConfig.DEBUG) testAdUnitId else adUnitId
+    adView.adUnitId = adUnitId
 
     adView.adSize = adSize ?: getAdSize(adViewContainer)
 
@@ -209,5 +207,5 @@ fun Activity?.displayWidth(): Int {
 
 fun appLog(tag: String, msg: String) {
     if (BuildConfig.DEBUG)
-        Log.i(tag, "➡➡➡ MAGGAPPS_LOG: $msg")
+        Log.i("MAGGAPPS_LOG", "➡➡➡ $tag: $msg")
 }

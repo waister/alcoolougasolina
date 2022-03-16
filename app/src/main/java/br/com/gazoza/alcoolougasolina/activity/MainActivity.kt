@@ -95,10 +95,7 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
     }
 
     private fun createInterstitialAd() {
-        val id = if (BuildConfig.DEBUG)
-            "ca-app-pub-3940256099942544/1033173712"
-        else
-            "ca-app-pub-6521704558504566/4051651496"
+        val id = "ca-app-pub-6521704558504566/4051651496"
         val request = AdRequest.Builder().build()
 
         InterstitialAd.load(this, id, request, object : InterstitialAdLoadCallback() {

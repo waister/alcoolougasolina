@@ -4,16 +4,12 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.provider.Settings
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.application.CustomApplication
-import br.com.gazoza.alcoolougasolina.util.API_NOTIFICATIONS
-import br.com.gazoza.alcoolougasolina.util.PARAM_ITEM_ID
-import br.com.gazoza.alcoolougasolina.util.PARAM_TYPE
-import br.com.gazoza.alcoolougasolina.util.PREF_DEVICE_ID
+import br.com.gazoza.alcoolougasolina.util.*
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.install.model.AppUpdateType.IMMEDIATE
@@ -23,6 +19,7 @@ import com.orhanobut.hawk.Hawk
 import kotlinx.android.synthetic.main.activity_splash.*
 import org.jetbrains.anko.intentFor
 
+@SuppressLint("CustomSplashScreen")
 class SplashActivity : AppCompatActivity() {
 
     companion object {
@@ -119,8 +116,8 @@ class SplashActivity : AppCompatActivity() {
         val type = intent.getStringExtra(PARAM_TYPE)
         val itemId = intent.getStringExtra(PARAM_ITEM_ID)
 
-        Log.i(TAG, "Received type from notification: $type")
-        Log.i(TAG, "Received itemId from notification: $itemId")
+        appLog(TAG, "Received type from notification: $type")
+        appLog(TAG, "Received itemId from notification: $itemId")
 
         startActivity(intentFor<MainActivity>(PARAM_TYPE to type))
 

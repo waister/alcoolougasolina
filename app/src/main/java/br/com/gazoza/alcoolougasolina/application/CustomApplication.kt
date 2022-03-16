@@ -43,7 +43,7 @@ class CustomApplication : Application() {
             API_VERSION to BuildConfig.VERSION_CODE,
             API_PLATFORM to API_ANDROID,
             API_DEBUG to (if (BuildConfig.DEBUG) "1" else "0"),
-            API_V to 5
+            API_V to 8
         )
     }
 
