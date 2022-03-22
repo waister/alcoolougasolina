@@ -33,6 +33,10 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
     private val realm = Realm.getDefaultInstance()
     private var interstitialAd: InterstitialAd? = null
 
+    companion object {
+        private const val TAG = "MainActivity"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -100,12 +104,10 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
 
         InterstitialAd.load(this, id, request, object : InterstitialAdLoadCallback() {
             override fun onAdFailedToLoad(adError: LoadAdError) {
-                println("--------- InterstitialAd error: " + adError.message)
                 interstitialAd = null
             }
 
             override fun onAdLoaded(loadedAd: InterstitialAd) {
-                println("--------- InterstitialAd loaded")
                 interstitialAd = loadedAd
             }
         })
@@ -137,6 +139,9 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
     }
 
     private fun submitAction(showMessage: Boolean = true) {
+        if (showMessage)
+            interstitialAd?.show(this)
+
         var message = 0
         val priceEthanol = et_ethanol.getPrice()
         val priceGasoline = et_gasoline.getPrice()
@@ -286,12 +291,18 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
     }
 
     private fun checkTokenFcm() {
-        if (Hawk.get(PREF_FCM_TOKEN, "").isNotEmpty()) {
+        val currentToken = Hawk.get(PREF_FCM_TOKEN, "")
+
+        appLog(TAG, "Current token: $currentToken")
+
+        if (currentToken.isNotEmpty()) {
             checkVersion()
         } else {
             FirebaseMessaging.getInstance().token.addOnCompleteListener {
                 if (it.isComplete) {
                     val token = it.result?.toString()
+
+                    appLog(TAG, "New token: $token")
 
                     if (token != null) {
                         Hawk.put(PREF_FCM_TOKEN, token)
@@ -335,12 +346,6 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
     override fun onDestroy() {
         super.onDestroy()
         realm.close()
-    }
-
-    override fun onBackPressed() {
-        super.onBackPressed()
-
-        interstitialAd?.show(this)
     }
 
 }
