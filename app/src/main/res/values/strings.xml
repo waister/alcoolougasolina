@@ -21,7 +21,7 @@
     <string name="erase">Clear</string>
     <string name="error_on_update">Not updated</string>
     <string name="error_on_update_message">You have not completed the app update process.</string>
-    <string name="exit_app">Exit APP</string>
+    <string name="update_later">Update later</string>
     <string name="try_again">Try again</string>
     <string name="remove_ads">Remove ads</string>
     <string name="feedback">Feedback</string>

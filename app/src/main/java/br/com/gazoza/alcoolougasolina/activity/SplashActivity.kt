@@ -103,7 +103,7 @@ class SplashActivity : AppCompatActivity() {
                 dialog.setPositiveButton(R.string.try_again) { _, _ ->
                     checkAppVersion()
                 }
-                dialog.setNegativeButton(R.string.exit_app) { _, _ ->
+                dialog.setNegativeButton(R.string.update_later) { _, _ ->
                     finish()
                 }
                 dialog.create()
