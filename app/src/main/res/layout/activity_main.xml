@@ -35,7 +35,7 @@
                 android:layout_marginBottom="30dp"
                 android:contentDescription="@string/logo_description"
                 android:scaleType="center"
-                android:src="@mipmap/logo_128dp" />
+                android:src="@drawable/logo_128dp" />
 
             <LinearLayout
                 android:id="@+id/ly_form"
@@ -108,14 +108,14 @@
                 android:layout_below="@+id/ly_form"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="5dp"
-                android:drawableEnd="@mipmap/ic_ethanol_36dp"
-                android:drawableRight="@mipmap/ic_ethanol_36dp"
                 android:drawablePadding="10dp"
                 android:gravity="center_vertical"
                 android:text="@string/msg_require_ethanol"
                 android:textColor="@android:color/white"
                 android:textSize="20sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:drawableEndCompat="@drawable/ic_ethanol_36dp"
+                app:drawableRightCompat="@drawable/ic_ethanol_36dp" />
 
             <TextView
                 android:id="@+id/tv_proportion"
@@ -163,7 +163,7 @@
                     android:layout_alignParentBottom="true"
                     android:layout_centerHorizontal="true"
                     android:text="@string/version"
-                    android:textColor="@color/colorTextSecondary"
+                    android:textColor="@color/textColorLight"
                     android:textSize="12sp" />
             </RelativeLayout>
         </RelativeLayout>

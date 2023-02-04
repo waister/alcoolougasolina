@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_date"
         android:contentDescription="@string/success_description"
-        android:src="@mipmap/ic_ethanol_36dp" />
+        android:src="@drawable/ic_ethanol_36dp" />
 
     <TextView
         android:id="@+id/tv_date"
@@ -22,7 +22,6 @@
         android:layout_gravity="center"
         android:layout_marginTop="5dp"
         android:layout_toEndOf="@+id/iv_icon"
-        android:layout_toRightOf="@+id/iv_icon"
         android:gravity="center"
         android:textColor="@android:color/white"
         android:textSize="18sp"
@@ -36,7 +35,6 @@
         android:layout_below="@+id/tv_date"
         android:layout_marginTop="10dp"
         android:layout_toEndOf="@+id/iv_icon"
-        android:layout_toRightOf="@+id/iv_icon"
         android:gravity="center"
         android:orientation="horizontal">
 
@@ -52,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginLeft="10dp"
             android:layout_marginRight="10dp"
-            android:textColor="@color/colorTextSecondary"
+            android:textColor="@color/textColorLight"
             android:textSize="14sp"
             tools:text="x" />
 
@@ -72,7 +70,6 @@
         android:layout_gravity="center"
         android:layout_marginTop="5dp"
         android:layout_toEndOf="@+id/iv_icon"
-        android:layout_toRightOf="@+id/iv_icon"
         android:gravity="center"
         android:textColor="@android:color/white"
         android:textSize="14sp"

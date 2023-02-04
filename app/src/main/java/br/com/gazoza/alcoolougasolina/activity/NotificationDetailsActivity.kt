@@ -2,25 +2,28 @@ package br.com.gazoza.alcoolougasolina.activity
 
 import android.os.Bundle
 import android.view.MenuItem
-import android.view.View
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import br.com.gazoza.alcoolougasolina.R
+import br.com.gazoza.alcoolougasolina.databinding.ActivityNotificationDetailsBinding
 import br.com.gazoza.alcoolougasolina.util.*
 import com.github.kittinunf.fuel.httpGet
 import com.orhanobut.hawk.Hawk
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_notification_details.*
-import org.jetbrains.anko.alert
-import org.jetbrains.anko.okButton
 import org.json.JSONObject
 
 class NotificationDetailsActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivityNotificationDetailsBinding
+
+    private val context = this@NotificationDetailsActivity
     private var notificationId: String = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_notification_details)
+
+        binding = ActivityNotificationDetailsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
@@ -28,25 +31,28 @@ class NotificationDetailsActivity : AppCompatActivity() {
 
         val notificationObj = Hawk.get<JSONObject>(PREF_NOTIFICATION_JSON + notificationId)
 
-        if (notificationObj != null)
+        if (notificationObj != null) {
+
             renderNotification(notificationObj)
-        else
+
+        } else {
+
             loadNotification()
+
+        }
     }
 
-    private fun loadNotification() {
-        pb_loading.visibility = View.VISIBLE
+    private fun loadNotification() = with(binding) {
+        llLoading.show()
 
         val routeApi = API_ROUTE_NOTIFICATION + notificationId
 
         routeApi.httpGet().responseString { request, _, result ->
             appLog("NotificationDetails", "Request: $request")
 
-            if (pb_loading == null) return@responseString
-
-            pb_loading.visibility = View.GONE
-
             var errorMessage = getString(R.string.error_connection)
+
+            llLoading.hide()
 
             val (data, error) = result
 
@@ -67,15 +73,22 @@ class NotificationDetailsActivity : AppCompatActivity() {
             }
 
             if (errorMessage.isNotEmpty()) {
-                alert(errorMessage, getString(R.string.ops)) {
-                    okButton { finish() }
-                    onCancelled { finish() }
-                }.show()
+                AlertDialog.Builder(context)
+                    .setTitle(R.string.ops)
+                    .setMessage(errorMessage)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.ok) { dialog, _ ->
+                        finish()
+
+                        dialog.dismiss()
+                    }
+                    .create()
+                    .show()
             }
         }
     }
 
-    private fun renderNotification(notificationObj: JSONObject) {
+    private fun renderNotification(notificationObj: JSONObject) = with(binding) {
         val title = notificationObj.getStringVal(API_TITLE)
         var message = notificationObj.getStringVal(API_BODY)
         val date = notificationObj.getStringVal(API_DATE)
@@ -85,23 +98,23 @@ class NotificationDetailsActivity : AppCompatActivity() {
         if (link.isNotEmpty())
             message += "\n\n" + getString(R.string.label_link, link)
 
-        tv_title.text = title
-        tv_message.text = message
-        tv_date.text = getString(R.string.label_received, date.formatDatetime())
+        tvTitle.text = title
+        tvMessage.text = message
+        tvDate.text = getString(R.string.label_received, date.formatDatetime())
 
         if (image.isValidUrl()) {
             Picasso.get()
                 .load(getThumbUrl(image))
                 .placeholder(R.drawable.ic_image_loading)
                 .error(R.drawable.ic_image_error)
-                .into(iv_image)
+                .into(ivImage)
         } else {
-            iv_image.visibility = View.GONE
+            ivImage.hide()
         }
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        onBackPressed()
+        onBackPressedDispatcher.onBackPressed()
         return super.onOptionsItemSelected(item)
     }
 

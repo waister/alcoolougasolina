@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    package="br.com.gazoza.alcoolougasolina">
+    xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.VIBRATE" />
@@ -13,7 +12,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme"
+        android:theme="@style/Theme.App.Starting"
         tools:ignore="GoogleAppIndexingWarning">
 
         <meta-data
@@ -21,8 +20,8 @@
             android:value="ca-app-pub-6521704558504566~2883906768" />
 
         <activity
-            android:name=".activity.SplashActivity"
-            android:theme="@style/SplashTheme"
+            android:name=".activity.StartActivity"
+            android:theme="@style/StartActivityTheme"
             android:windowSoftInputMode="stateAlwaysHidden"
             android:exported="true">
             <intent-filter>
@@ -35,21 +34,25 @@
             android:name=".activity.MainActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activity.HistoryActivity"
             android:label="@string/history"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activity.NotificationsActivity"
             android:label="@string/notifications"
+            android:theme="@style/AppTheme"
             android:screenOrientation="portrait"
             tools:ignore="LockedOrientationActivity" />
         <activity
             android:name=".activity.NotificationDetailsActivity"
             android:label="@string/notification_details"
             android:screenOrientation="portrait"
+            android:theme="@style/AppTheme"
             tools:ignore="LockedOrientationActivity" />
 
         <service

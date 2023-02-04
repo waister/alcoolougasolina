@@ -10,7 +10,8 @@
     <color name="colorLayoutCard">#E7E7E7</color>
 
     <color name="colorTextPrimary">#ffffff</color>
-    <color name="colorTextSecondary">#959595</color>
+    <color name="textColorLight">#959595</color>
+    <color name="textColorMiddle">#C2C2C2</color>
     <color name="screenBackground">#1A1A1A</color>
     <color name="colorDivider">#26FFFFFF</color>
 

@@ -17,7 +17,6 @@
             android:id="@+id/tv_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorTextPrimary"
             android:textSize="16sp"
             tools:text="Notification title" />
 
@@ -25,9 +24,9 @@
             android:id="@+id/iv_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:adjustViewBounds="true"
+            android:layout_gravity="center_horizontal"
             android:contentDescription="@string/notification_image"
             android:maxWidth="140dp"
             android:src="@drawable/ic_image_loading" />
@@ -38,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_vertical_margin"
             android:autoLink="all"
-            android:textColor="@color/colorTextSecondary"
+            android:textColor="@color/textColorMiddle"
             android:textIsSelectable="true"
             android:textSize="15sp"
             tools:text="This is the message content long or short." />
@@ -48,12 +47,34 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_vertical_margin"
-            android:textColor="@color/colorTextSecondary"
+            android:textColor="@color/textColorLight"
             android:textSize="12sp"
             tools:text="Received at 23/05/2019" />
     </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/pb_loading"
-        style="@style/MyProgressBar" />
+    <LinearLayout
+        android:id="@+id/ll_loading"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/screenBackgroundProgress"
+        android:clickable="true"
+        android:elevation="3dp"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        tools:ignore="UnusedAttribute">
+
+        <ProgressBar
+            android:layout_width="36dp"
+            android:layout_height="36dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="7dp"
+            android:text="@string/loading_data"
+            android:textColor="@color/textColorLight"
+            android:textSize="12sp" />
+    </LinearLayout>
 </RelativeLayout>

@@ -11,6 +11,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import br.com.gazoza.alcoolougasolina.BuildConfig
 import br.com.gazoza.alcoolougasolina.R
+import br.com.gazoza.alcoolougasolina.databinding.ActivityMainBinding
 import br.com.gazoza.alcoolougasolina.domain.Comparison
 import br.com.gazoza.alcoolougasolina.util.*
 import com.github.kittinunf.fuel.httpGet
@@ -24,11 +25,12 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.orhanobut.hawk.Hawk
 import io.realm.Realm
 import io.realm.Sort
-import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.*
 import java.text.DecimalFormat
 
 class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
+
+    private lateinit var binding: ActivityMainBinding
 
     private val realm = Realm.getDefaultInstance()
     private var interstitialAd: InterstitialAd? = null
@@ -39,37 +41,45 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         initAdMob()
         initViews()
+
+        binding.etEthanol.addTextChangedListener(this)
+        binding.etGasoline.addTextChangedListener(this)
+
+        binding.btCalculate.setOnClickListener(this)
+        binding.btClear.setOnClickListener(this)
     }
 
-    private fun initAdMob() {
-        MobileAds.initialize(this) {
+    private fun initAdMob() = with(binding) {
+        MobileAds.initialize(applicationContext) {
             appLog("MainActivity", "Mobile ads initialized")
 
             val deviceId = listOf(AdRequest.DEVICE_ID_EMULATOR)
             val configuration = RequestConfiguration.Builder().setTestDeviceIds(deviceId).build()
             MobileAds.setRequestConfiguration(configuration)
 
-            loadAdBanner(ll_banner, "ca-app-pub-6521704558504566/7944661753")
+            loadAdBanner(llBanner, "ca-app-pub-6521704558504566/7944661753")
 
             createInterstitialAd()
         }
     }
 
-    private fun initViews() {
+    private fun initViews() = with(binding) {
         verifyButtonsState(showMessage = false, requestFocus = true)
 
         val lastEthanol = Hawk.get(LAST_ETHANOL, "")
         val lastGasoline = Hawk.get(LAST_GASOLINE, "")
 
-        et_ethanol.setText(lastEthanol)
-        et_gasoline.setText(lastGasoline)
+        etEthanol.setText(lastEthanol)
+        etGasoline.setText(lastGasoline)
 
-        et_ethanol.addTextChangedListener(MaskMoney(et_ethanol))
-        et_gasoline.addTextChangedListener(MaskMoney(et_gasoline))
+        etEthanol.addTextChangedListener(MaskMoney(etEthanol))
+        etGasoline.addTextChangedListener(MaskMoney(etGasoline))
 
         if (lastEthanol.isNotEmpty() && lastGasoline.isNotEmpty()) {
             submitAction(false)
@@ -77,23 +87,17 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
             window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN)
         } else {
             if (lastEthanol.isEmpty())
-                showKeyboard(et_ethanol)
+                showKeyboard(etEthanol)
             else if (lastGasoline.isEmpty())
-                showKeyboard(et_gasoline)
+                showKeyboard(etGasoline)
         }
 
-        et_ethanol.addTextChangedListener(this)
-        et_gasoline.addTextChangedListener(this)
-
-        bt_calculate.setOnClickListener(this)
-        bt_clear.setOnClickListener(this)
-
-        et_gasoline.setOnEditorActionListener { _, _, _ ->
+        etGasoline.setOnEditorActionListener { _, _, _ ->
             submitAction()
             false
         }
 
-        tv_version.text = getString(R.string.version, BuildConfig.VERSION_NAME)
+        tvVersion.text = getString(R.string.version, BuildConfig.VERSION_NAME)
 
         checkTokenFcm()
     }
@@ -113,14 +117,14 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
         })
     }
 
-    override fun onClick(view: View?) {
+    override fun onClick(view: View?) = with(binding) {
         when (view?.id) {
             R.id.bt_calculate -> {
                 submitAction()
             }
             R.id.bt_clear -> {
-                et_ethanol.setText("")
-                et_gasoline.setText("")
+                etEthanol.setText("")
+                etGasoline.setText("")
 
                 Hawk.delete(LAST_ETHANOL)
                 Hawk.delete(LAST_GASOLINE)
@@ -143,18 +147,18 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
             interstitialAd?.show(this)
 
         var message = 0
-        val priceEthanol = et_ethanol.getPrice()
-        val priceGasoline = et_gasoline.getPrice()
-        val textEthanol = et_ethanol.text.toString()
-        val textGasoline = et_gasoline.text.toString()
+        val priceEthanol = binding.etEthanol.getPrice()
+        val priceGasoline = binding.etGasoline.getPrice()
+        val textEthanol = binding.etEthanol.text.toString()
+        val textGasoline = binding.etGasoline.text.toString()
 
         when {
             priceEthanol == 0.0 -> {
-                et_ethanol.requestFocus()
+                binding.etEthanol.requestFocus()
                 message = R.string.msg_require_ethanol
             }
             priceGasoline == 0.0 -> {
-                et_gasoline.requestFocus()
+                binding.etGasoline.requestFocus()
                 message = R.string.msg_require_gasoline
             }
             else -> {
@@ -167,18 +171,18 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
                 val text: Int
 
                 if (proportion < 0.7) {
-                    icon = R.mipmap.ic_ethanol_36dp
+                    icon = R.drawable.ic_ethanol_36dp
                     text = R.string.msg_use_ethanol
                 } else {
-                    icon = R.mipmap.ic_gasoline_36dp
+                    icon = R.drawable.ic_gasoline_36dp
                     text = R.string.msg_use_gasoline
                 }
 
-                tv_message.setCompoundDrawablesWithIntrinsicBounds(0, 0, icon, 0)
-                tv_message.setText(text)
+                binding.tvMessage.setCompoundDrawablesWithIntrinsicBounds(0, 0, icon, 0)
+                binding.tvMessage.setText(text)
 
                 val percentage = DecimalFormat("#.##").format(proportion * 100) + "%"
-                tv_proportion.text = getString(R.string.msg_result, percentage)
+                binding.tvProportion.text = getString(R.string.msg_result, percentage)
 
                 realm.executeTransaction {
                     var last = realm.where(Comparison::class.java)
@@ -211,27 +215,27 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
             toast(message)
     }
 
-    private fun verifyButtonsState(showMessage: Boolean, requestFocus: Boolean) {
-        val isEthanolEmpty = et_ethanol.getPrice() == 0.0
-        val isGasolineEmpty = et_gasoline.getPrice() == 0.0
+    private fun verifyButtonsState(showMessage: Boolean, requestFocus: Boolean) = with(binding) {
+        val isEthanolEmpty = etEthanol.getPrice() == 0.0
+        val isGasolineEmpty = etGasoline.getPrice() == 0.0
 
         if (requestFocus) {
             if (isEthanolEmpty)
-                et_ethanol.requestFocus()
+                etEthanol.requestFocus()
 
             if (isGasolineEmpty)
-                et_gasoline.requestFocus()
+                etGasoline.requestFocus()
         }
 
-        bt_calculate.changeButtonState(!isEthanolEmpty && !isGasolineEmpty)
-        bt_clear.changeButtonState(!isEthanolEmpty || !isGasolineEmpty)
+        btCalculate.changeButtonState(!isEthanolEmpty && !isGasolineEmpty)
+        btClear.changeButtonState(!isEthanolEmpty || !isGasolineEmpty)
 
         if (showMessage) {
-            tv_message.visibility = View.VISIBLE
-            tv_proportion.visibility = View.VISIBLE
+            tvMessage.show()
+            tvProportion.show()
         } else {
-            tv_message.visibility = View.GONE
-            tv_proportion.visibility = View.GONE
+            tvMessage.hide()
+            tvProportion.hide()
         }
     }
 
@@ -240,7 +244,7 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
         this.alpha = if (enable) 1f else 0.3f
     }
 
-    private fun checkVersion() {
+    private fun checkVersion() = with(binding) {
         val token = Hawk.get(PREF_FCM_TOKEN, "")
 
         if (token.isNotEmpty()) {
@@ -251,7 +255,7 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
 
                 val (data, error) = result
 
-                if (error == null && cl_root != null) {
+                if (error == null && !isFinishing) {
                     val apiObj = data.getValidJSONObject()
 
                     if (apiObj.getBooleanVal(API_SUCCESS)) {
@@ -336,9 +340,7 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
             R.id.action_notifications -> {
                 startActivity(intentFor<NotificationsActivity>())
             }
-            else -> {
-                onBackPressed()
-            }
+            else -> finish()
         }
         return super.onOptionsItemSelected(item)
     }

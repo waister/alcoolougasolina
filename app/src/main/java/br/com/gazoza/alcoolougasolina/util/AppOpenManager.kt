@@ -12,7 +12,7 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
 import java.util.*
 
-class AppOpenManager(private var myApplication: CustomApplication) : DefaultLifecycleObserver,
+class AppOpenManager(private var application: CustomApplication) : DefaultLifecycleObserver,
     Application.ActivityLifecycleCallbacks {
     private var appOpenAd: AppOpenAd? = null
     private lateinit var loadCallback: AppOpenAd.AppOpenAdLoadCallback
@@ -22,18 +22,14 @@ class AppOpenManager(private var myApplication: CustomApplication) : DefaultLife
 
     companion object {
         private const val LOG_TAG = "AppOpenManager"
-
-        private const val AD_UNIT_ID = "ca-app-pub-6521704558504566/5819935173"
     }
 
     init {
-        this.myApplication.registerActivityLifecycleCallbacks(this)
+        this.application.registerActivityLifecycleCallbacks(this)
         ProcessLifecycleOwner.get().lifecycle.addObserver(this)
     }
 
     override fun onStart(owner: LifecycleOwner) {
-        appLog(LOG_TAG, "Ad unit id: $AD_UNIT_ID")
-
         showAdIfAvailable()
 
         super.onStart(owner)
@@ -78,10 +74,12 @@ class AppOpenManager(private var myApplication: CustomApplication) : DefaultLife
             }
         }
 
-        val request: AdRequest = AdRequest.Builder().build()
-        val orientation = AppOpenAd.APP_OPEN_AD_ORIENTATION_PORTRAIT
+        val adUnitId = if (isDebug())
+            "ca-app-pub-3940256099942544/3419835294"
+        else
+            "ca-app-pub-6521704558504566/5819935173"
 
-        AppOpenAd.load(myApplication, AD_UNIT_ID, request, orientation, loadCallback)
+        AppOpenAd.load(application, adUnitId, AdRequest.Builder().build(), loadCallback)
     }
 
     private fun isAdAvailable(): Boolean {

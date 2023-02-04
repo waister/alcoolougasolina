@@ -12,24 +12,22 @@ import android.os.Build
 import android.os.VibrationEffect
 import android.os.Vibrator
 import android.os.VibratorManager
-import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import br.com.gazoza.alcoolougasolina.BuildConfig
 import br.com.gazoza.alcoolougasolina.R
-import br.com.gazoza.alcoolougasolina.activity.SplashActivity
+import br.com.gazoza.alcoolougasolina.activity.StartActivity
 import br.com.gazoza.alcoolougasolina.util.*
 import com.github.kittinunf.fuel.httpGet
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import com.orhanobut.hawk.Hawk
-import java.io.IOException
-import java.net.ConnectException
 import java.net.URL
 
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     companion object {
+        const val ID = "id"
         const val TYPE = "type"
         const val TITLE = "title"
         const val BODY = "body"
@@ -47,11 +45,15 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         appLog(TAG, "New token: $token")
 
-        Hawk.put(PREF_FCM_TOKEN, token)
+        val latToken = Hawk.get(PREF_FCM_TOKEN, "")
 
-        val params = listOf(API_TOKEN to token)
-        API_ROUTE_IDENTIFY.httpGet(params).responseString { request, response, result ->
-            printFuelLog(request, response, result)
+        if (token != latToken) {
+            Hawk.put(PREF_FCM_TOKEN, token)
+
+            val params = listOf(API_TOKEN to token)
+            API_ROUTE_IDENTIFY.httpGet(params).responseString { request, response, result ->
+                printFuelLog(request, response, result)
+            }
         }
     }
 
@@ -64,6 +66,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         appLog(TAG, "Push message data: $data")
 
+        var id = ""
         var type = ""
         var title = ""
         var body = ""
@@ -77,6 +80,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             val value = entry.value
 
             when (entry.key) {
+                ID -> id = value
                 TYPE -> type = value
                 TITLE -> title = value
                 BODY -> body = value
@@ -88,6 +92,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             }
         }
 
+        appLog(TAG, "Push id: $id")
         appLog(TAG, "Push type: $type")
         appLog(TAG, "Push title: $title")
         appLog(TAG, "Push body: $body")
@@ -97,20 +102,21 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         appLog(TAG, "Push itemId: $itemId")
         appLog(TAG, "Push vibrate: $vibrate")
 
-        if (title.isEmpty() || type == API_WAKEUP) {
+        sendNotificationReport(id, true)
+
+        if (title.isEmpty() || type == API_WAKEUP)
             return
-        }
 
         val channelId = "${type}_channel"
 
-        var notifyIntent = Intent(applicationContext, SplashActivity::class.java)
+        var notifyIntent = Intent(applicationContext, StartActivity::class.java)
 
         if (version.isNotEmpty()) {
             val versionCode = version.stringToInt()
 
             if (versionCode > 0) {
                 if (BuildConfig.VERSION_CODE < versionCode) {
-                    link = storeAppLink()
+                    link = applicationContext.storeAppLink()
                 } else {
                     return
                 }
@@ -123,6 +129,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         } else {
 
+            notifyIntent.putExtra(PARAM_ID, id)
             notifyIntent.putExtra(PARAM_TYPE, type)
             notifyIntent.putExtra(PARAM_ITEM_ID, itemId)
 
@@ -132,13 +139,18 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val pendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
             addNextIntentWithParentStack(notifyIntent)
-            getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
+            } else {
+                getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+            }
         }
 
         builder.setAutoCancel(true)
         builder.setContentIntent(pendingIntent)
         builder.setDefaults(NotificationCompat.DEFAULT_ALL)
-        builder.setSmallIcon(R.mipmap.ic_notification)
+        builder.setSmallIcon(R.drawable.ic_notification)
         builder.setContentTitle(title)
         builder.setContentText(body)
         builder.setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
@@ -159,10 +171,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 if (icon != null) {
                     builder.setLargeIcon(icon.getCircleCroppedBitmap())
                 }
-            } catch (e: IOException) {
-                e.printStackTrace()
-            } catch (e: ConnectException) {
-                e.printStackTrace()
+            } catch (e: Exception) {
+                if (isDebug()) e.printStackTrace()
             }
         }
 
@@ -170,7 +180,6 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = when (type) {
-                API_PREMIUM -> R.string.remove_ads
                 API_FEEDBACK -> R.string.feedback
                 API_NOTIFICATIONS -> R.string.notifications
                 API_ABOUT_APP -> R.string.about_app
@@ -182,7 +191,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             builder.setChannelId(channelId)
         }
 
-        manager.notify(NOTIFICATION_DEFAULT_ID, builder.build())
+        manager.notify(1, builder.build())
 
         appLog(TAG, "Push notification displayed")
 

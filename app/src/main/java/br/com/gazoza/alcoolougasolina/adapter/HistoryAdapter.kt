@@ -55,10 +55,10 @@ class HistoryAdapter(private val context: Context) :
                 val text: Int
 
                 if (comparison.proportion < 0.7) {
-                    icon = R.mipmap.ic_ethanol_36dp
+                    icon = R.drawable.ic_ethanol_36dp
                     text = R.string.msg_use_ethanol
                 } else {
-                    icon = R.mipmap.ic_gasoline_36dp
+                    icon = R.drawable.ic_gasoline_36dp
                     text = R.string.msg_use_gasoline
                 }
 

@@ -1,25 +1,24 @@
 package br.com.gazoza.alcoolougasolina.adapter
 
-import android.app.Activity
+import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.activity.NotificationDetailsActivity
+import br.com.gazoza.alcoolougasolina.databinding.ItemNotificationBinding
 import br.com.gazoza.alcoolougasolina.util.*
-import org.jetbrains.anko.find
-import org.jetbrains.anko.intentFor
 import org.json.JSONArray
 import org.json.JSONObject
 
 class NotificationsAdapter(
-    private val activity: Activity
-) : RecyclerView.Adapter<NotificationsAdapter.MyViewHolder>() {
+    private val activity: Context
+) : RecyclerView.Adapter<NotificationsAdapter.ViewHolder>() {
 
     private var itemsArr: JSONArray? = null
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setData(data: JSONArray?) {
         if (data != null) {
             itemsArr = data
@@ -27,13 +26,17 @@ class NotificationsAdapter(
         }
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MyViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_notification, parent, false)
-        return MyViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        return ViewHolder(
+            ItemNotificationBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
-    override fun onBindViewHolder(holder: MyViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         if (itemsArr != null) {
             holder.setData(itemsArr!!.get(position) as JSONObject)
         }
@@ -45,34 +48,30 @@ class NotificationsAdapter(
                 return itemsArr!!.length()
             }
         } catch (e: IllegalStateException) {
+            if (isDebug()) e.printStackTrace()
         }
         return 0
     }
 
-    inner class MyViewHolder internal constructor(itemView: View) :
-        RecyclerView.ViewHolder(itemView) {
-        private var tvTitle: TextView = itemView.find(R.id.tv_title)
-        private var tvMessage: TextView = itemView.find(R.id.tv_message)
-        private var tvDate: TextView = itemView.find(R.id.tv_date)
+    inner class ViewHolder internal constructor(private val binding: ItemNotificationBinding) :
+        RecyclerView.ViewHolder(binding.root) {
 
-        fun setData(itemObj: JSONObject) {
+        fun setData(itemObj: JSONObject) = with(binding) {
             val title = itemObj.getStringVal(API_TITLE)
             val body = itemObj.getStringVal(API_BODY)
             val date = itemObj.getStringVal(API_DATE)
 
             tvTitle.text = title
             tvMessage.text = body
-            tvDate.text = date.formatDatetime()
+            tvDate.text = date.formatDate()
 
             itemView.setOnClickListener {
-                activity.startActivity(
-                    activity.intentFor<NotificationDetailsActivity>(
-                        PARAM_ITEM_ID to itemObj.getStringVal(API_ID)
-                    )
-                )
+                val intent = Intent(activity, NotificationDetailsActivity::class.java).apply {
+                    putExtra(PARAM_ITEM_ID, itemObj.getStringVal(API_ID))
+                }
+                intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                activity.startActivity(intent)
             }
         }
-
     }
-
 }

@@ -15,7 +15,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toStartOf="@+id/tv_date"
-        android:layout_toLeftOf="@+id/tv_date"
         android:textSize="16sp"
         tools:text="Notification title" />
 
@@ -25,7 +24,7 @@
         android:layout_height="wrap_content"
         android:layout_below="@+id/tv_title"
         android:layout_marginTop="3dp"
-        android:textColor="@color/colorTextSecondary"
+        android:textColor="@color/textColorLight"
         android:textSize="12sp"
         tools:text="This is the message content long or short." />
 
@@ -34,9 +33,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
         android:layout_marginTop="2dp"
-        android:textColor="@color/colorTextSecondary"
+        android:textColor="@color/textColorLight"
         android:textSize="11sp"
         tools:ignore="SmallSp"
         tools:text="23/05/2019" />

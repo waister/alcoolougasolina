@@ -13,10 +13,9 @@ import br.com.gazoza.alcoolougasolina.BuildConfig
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
+import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.*
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -53,7 +52,7 @@ fun Activity?.hideKeyboard() {
 fun printFuelLog(request: Request, response: Response, result: Result<String, FuelError>) {
     Log.w("FUEL_API_CALL", "API was called to route: ${request.url}")
 
-    if (BuildConfig.DEBUG) {
+    if (isDebug()) {
         val url = request.url
 
         println("\n------------ FUEL_REQUEST_START - $url\n")
@@ -80,10 +79,6 @@ fun String?.stringToInt(): Int {
 }
 
 fun String?.isValidUrl(): Boolean = this != null && this.isNotEmpty() && URLUtil.isValidUrl(this)
-
-fun storeAppLink(): String =
-    "https://play.google.com/store/apps/details?id=${BuildConfig.APPLICATION_ID}"
-
 
 fun Context?.getThumbUrl(
     image: String?,
@@ -158,6 +153,21 @@ fun String?.getStringValid(): String {
     return ""
 }
 
+fun String?.formatDate(): String {
+    try {
+        if (this != null && this.isNotEmpty()) {
+            val locale = Locale.getDefault()
+            val parsed = SimpleDateFormat(FORMAT_DATETIME_API, locale).parse(this)
+
+            if (parsed != null)
+                DateFormat.getDateInstance(DateFormat.SHORT).format(parsed.time)
+        }
+    } catch (e: ParseException) {
+        if (isDebug()) e.printStackTrace()
+    }
+    return ""
+}
+
 fun String?.formatDatetime(): String {
     try {
         if (this != null && this.isNotEmpty()) {
@@ -178,17 +188,50 @@ fun Long.formatDatetime(): String {
     return DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.MEDIUM).format(this)
 }
 
-fun Activity?.loadAdBanner(adViewContainer: LinearLayout?, adUnitId: String, adSize: AdSize? = null) {
-    if (this == null || adViewContainer == null) return
+fun Activity?.loadAdBanner(
+    adViewContainer: LinearLayout?,
+    adUnitId: String,
+    adSize: AdSize? = null
+) {
+    if (this == null || adViewContainer == null) {
+        appLog("LOAD_BANNER", "Can't show ad")
+        return
+    }
+
+    appLog("LOAD_BANNER", "adUnitId: $adUnitId")
 
     val adView = AdView(this)
     adViewContainer.addView(adView)
 
-    adView.adUnitId = adUnitId
+    adView.adUnitId = if (isDebug()) "ca-app-pub-3940256099942544/6300978111" else adUnitId
 
-    adView.adSize = adSize ?: getAdSize(adViewContainer)
+    adView.setAdSize(adSize ?: getAdSize(adViewContainer))
 
     adView.loadAd(AdRequest.Builder().build())
+
+    adView.adListener = object : AdListener() {
+        override fun onAdLoaded() {
+            super.onAdLoaded()
+            appLog("LOAD_BANNER", "onAdLoaded()")
+        }
+
+        override fun onAdFailedToLoad(error: LoadAdError) {
+            super.onAdFailedToLoad(error)
+            appLog("LOAD_BANNER", "onAdFailedToLoad(): ${error.message}")
+        }
+
+        override fun onAdOpened() {
+            super.onAdOpened()
+            appLog("LOAD_BANNER", "onAdOpened()")
+        }
+
+        override fun onAdClosed() {
+            super.onAdClosed()
+            appLog("LOAD_BANNER", "onAdClosed()")
+        }
+    }
+
+    appLog("LOAD_BANNER", "ENDS")
 }
 
 fun Activity.getAdSize(adViewContainer: LinearLayout): AdSize {
@@ -205,7 +248,50 @@ fun Activity?.displayWidth(): Int {
     return if (this != null) resources.displayMetrics.widthPixels else 0
 }
 
+fun Context.storeAppLink(): String = "https://play.google.com/store/apps/details?id=$packageName"
+
+fun sendNotificationReport(notificationId: String, isForReceived: Boolean) {
+    if (notificationId.isEmpty()) return
+
+    val millis = System.currentTimeMillis().toString()
+
+    val params = mutableListOf(API_NOTIFICATION_ID to notificationId)
+
+    if (isForReceived)
+        params.add(API_RECEIVED_AT to millis)
+    else
+        params.add(API_CLICKED_AT to millis)
+
+    API_ROUTE_NOTIFICATION_REPORT.httpGet(params).responseString { request, response, result ->
+        printFuelLog(request, response, result)
+    }
+}
+
 fun appLog(tag: String, msg: String) {
-    if (BuildConfig.DEBUG)
+    if (isDebug())
         Log.i("MAGGAPPS_LOG", "➡➡➡ $tag: $msg")
 }
+
+fun String?.isNumeric(): Boolean {
+    if (this == null) return false
+    val regex = "-?[0-9]+(\\.[0-9]+)?".toRegex()
+    return this.matches(regex)
+}
+
+fun String?.isNotNumeric(): Boolean {
+    return !this.isNumeric()
+}
+
+fun View?.isVisible(isVisible: Boolean) {
+    this?.visibility = if (isVisible) View.VISIBLE else View.GONE
+}
+
+fun View?.show() {
+    this.isVisible(true)
+}
+
+fun View?.hide() {
+    this.isVisible(false)
+}
+
+fun isDebug() = BuildConfig.DEBUG
