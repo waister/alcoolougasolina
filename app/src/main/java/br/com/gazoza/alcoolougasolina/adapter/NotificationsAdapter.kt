@@ -8,7 +8,14 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import br.com.gazoza.alcoolougasolina.activity.NotificationDetailsActivity
 import br.com.gazoza.alcoolougasolina.databinding.ItemNotificationBinding
-import br.com.gazoza.alcoolougasolina.util.*
+import br.com.gazoza.alcoolougasolina.util.API_BODY
+import br.com.gazoza.alcoolougasolina.util.API_DATE
+import br.com.gazoza.alcoolougasolina.util.API_ID
+import br.com.gazoza.alcoolougasolina.util.API_TITLE
+import br.com.gazoza.alcoolougasolina.util.PARAM_ITEM_ID
+import br.com.gazoza.alcoolougasolina.util.formatDate
+import br.com.gazoza.alcoolougasolina.util.getStringVal
+import br.com.gazoza.alcoolougasolina.util.isDebug
 import org.json.JSONArray
 import org.json.JSONObject
 

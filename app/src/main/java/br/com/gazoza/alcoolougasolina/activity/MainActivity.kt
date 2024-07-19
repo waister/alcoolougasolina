@@ -13,7 +13,32 @@ import br.com.gazoza.alcoolougasolina.BuildConfig
 import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.databinding.ActivityMainBinding
 import br.com.gazoza.alcoolougasolina.domain.Comparison
-import br.com.gazoza.alcoolougasolina.util.*
+import br.com.gazoza.alcoolougasolina.util.API_APP_NAME
+import br.com.gazoza.alcoolougasolina.util.API_ROUTE_IDENTIFY
+import br.com.gazoza.alcoolougasolina.util.API_SHARE_LINK
+import br.com.gazoza.alcoolougasolina.util.API_SUCCESS
+import br.com.gazoza.alcoolougasolina.util.API_TOKEN
+import br.com.gazoza.alcoolougasolina.util.API_VERSION_LAST
+import br.com.gazoza.alcoolougasolina.util.API_VERSION_MIN
+import br.com.gazoza.alcoolougasolina.util.LAST_ETHANOL
+import br.com.gazoza.alcoolougasolina.util.LAST_GASOLINE
+import br.com.gazoza.alcoolougasolina.util.MaskMoney
+import br.com.gazoza.alcoolougasolina.util.PREF_APP_NAME
+import br.com.gazoza.alcoolougasolina.util.PREF_FCM_TOKEN
+import br.com.gazoza.alcoolougasolina.util.PREF_SHARE_LINK
+import br.com.gazoza.alcoolougasolina.util.appLog
+import br.com.gazoza.alcoolougasolina.util.getBooleanVal
+import br.com.gazoza.alcoolougasolina.util.getIntVal
+import br.com.gazoza.alcoolougasolina.util.getPrice
+import br.com.gazoza.alcoolougasolina.util.getStringVal
+import br.com.gazoza.alcoolougasolina.util.getValidJSONObject
+import br.com.gazoza.alcoolougasolina.util.hide
+import br.com.gazoza.alcoolougasolina.util.hideKeyboard
+import br.com.gazoza.alcoolougasolina.util.loadAdBanner
+import br.com.gazoza.alcoolougasolina.util.printFuelLog
+import br.com.gazoza.alcoolougasolina.util.show
+import br.com.gazoza.alcoolougasolina.util.showKeyboard
+import br.com.gazoza.alcoolougasolina.util.storeAppLink
 import com.github.kittinunf.fuel.httpGet
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
@@ -25,7 +50,11 @@ import com.google.firebase.messaging.FirebaseMessaging
 import com.orhanobut.hawk.Hawk
 import io.realm.Realm
 import io.realm.Sort
-import org.jetbrains.anko.*
+import org.jetbrains.anko.alert
+import org.jetbrains.anko.browse
+import org.jetbrains.anko.intentFor
+import org.jetbrains.anko.share
+import org.jetbrains.anko.toast
 import java.text.DecimalFormat
 
 class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
@@ -122,6 +151,7 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
             R.id.bt_calculate -> {
                 submitAction()
             }
+
             R.id.bt_clear -> {
                 etEthanol.setText("")
                 etGasoline.setText("")
@@ -157,10 +187,12 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
                 binding.etEthanol.requestFocus()
                 message = R.string.msg_require_ethanol
             }
+
             priceGasoline == 0.0 -> {
                 binding.etGasoline.requestFocus()
                 message = R.string.msg_require_gasoline
             }
+
             else -> {
                 Hawk.put(LAST_ETHANOL, textEthanol)
                 Hawk.put(LAST_GASOLINE, textGasoline)
@@ -328,18 +360,22 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
             R.id.action_history -> {
                 startActivity(intentFor<HistoryActivity>())
             }
+
             R.id.action_share -> {
                 val app = Hawk.get(PREF_APP_NAME, "")
                 val link = Hawk.get(PREF_SHARE_LINK, storeAppLink())
 
                 share(getString(R.string.share_text, link), getString(R.string.share_subject, app))
             }
+
             R.id.action_rate -> {
                 browse(storeAppLink())
             }
+
             R.id.action_notifications -> {
                 startActivity(intentFor<NotificationsActivity>())
             }
+
             else -> finish()
         }
         return super.onOptionsItemSelected(item)

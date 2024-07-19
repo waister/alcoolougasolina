@@ -3,14 +3,27 @@ package br.com.gazoza.alcoolougasolina.application
 import android.app.Application
 import android.os.Build
 import br.com.gazoza.alcoolougasolina.BuildConfig
-import br.com.gazoza.alcoolougasolina.util.*
+import br.com.gazoza.alcoolougasolina.util.API_ANDROID
+import br.com.gazoza.alcoolougasolina.util.API_DEBUG
+import br.com.gazoza.alcoolougasolina.util.API_IDENTIFIER
+import br.com.gazoza.alcoolougasolina.util.API_IDENTIFIER_OLD
+import br.com.gazoza.alcoolougasolina.util.API_LANG
+import br.com.gazoza.alcoolougasolina.util.API_PLATFORM
+import br.com.gazoza.alcoolougasolina.util.API_PLATFORM_V
+import br.com.gazoza.alcoolougasolina.util.API_V
+import br.com.gazoza.alcoolougasolina.util.API_VERSION
+import br.com.gazoza.alcoolougasolina.util.APP_HOST
+import br.com.gazoza.alcoolougasolina.util.AppOpenManager
+import br.com.gazoza.alcoolougasolina.util.PREF_DEVICE_ID
+import br.com.gazoza.alcoolougasolina.util.PREF_DEVICE_ID_OLD
+import br.com.gazoza.alcoolougasolina.util.isDebug
 import com.github.kittinunf.fuel.core.FuelManager
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.messaging.FirebaseMessaging
 import com.orhanobut.hawk.Hawk
 import io.realm.Realm
 import io.realm.RealmConfiguration
-import java.util.*
+import java.util.Locale
 
 class CustomApplication : Application() {
 

@@ -9,7 +9,18 @@ import androidx.recyclerview.widget.GridLayoutManager
 import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.adapter.NotificationsAdapter
 import br.com.gazoza.alcoolougasolina.databinding.ActivityNotificationsBinding
-import br.com.gazoza.alcoolougasolina.util.*
+import br.com.gazoza.alcoolougasolina.util.API_MESSAGE
+import br.com.gazoza.alcoolougasolina.util.API_NOTIFICATIONS
+import br.com.gazoza.alcoolougasolina.util.API_ROUTE_NOTIFICATIONS
+import br.com.gazoza.alcoolougasolina.util.API_SUCCESS
+import br.com.gazoza.alcoolougasolina.util.displayWidth
+import br.com.gazoza.alcoolougasolina.util.getBooleanVal
+import br.com.gazoza.alcoolougasolina.util.getJSONArrayVal
+import br.com.gazoza.alcoolougasolina.util.getStringVal
+import br.com.gazoza.alcoolougasolina.util.getValidJSONObject
+import br.com.gazoza.alcoolougasolina.util.hide
+import br.com.gazoza.alcoolougasolina.util.printFuelLog
+import br.com.gazoza.alcoolougasolina.util.show
 import com.github.kittinunf.fuel.httpGet
 import org.json.JSONArray
 

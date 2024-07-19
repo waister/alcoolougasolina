@@ -1,5 +1,6 @@
 package br.com.gazoza.alcoolougasolina.adapter
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -18,6 +19,7 @@ class HistoryAdapter(private val context: Context) :
 
     private var comparisons: RealmResults<Comparison>? = null
 
+    @SuppressLint("NotifyDataSetChanged")
     fun setData(data: RealmResults<Comparison>?) {
         comparisons = data
         notifyDataSetChanged()

@@ -2,7 +2,12 @@ package br.com.gazoza.alcoolougasolina.util
 
 import android.app.Activity
 import android.content.Context
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.graphics.Rect
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -15,11 +20,15 @@ import com.github.kittinunf.fuel.core.Request
 import com.github.kittinunf.fuel.core.Response
 import com.github.kittinunf.fuel.httpGet
 import com.github.kittinunf.result.Result
-import com.google.android.gms.ads.*
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdSize
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.LoadAdError
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Locale
 
 fun AppCompatEditText.getPrice(): Double {
     val value = this.text.toString()
@@ -71,14 +80,14 @@ fun printFuelLog(request: Request, response: Response, result: Result<String, Fu
 
 fun String?.stringToInt(): Int {
     if (this != null && this != "null") {
-        val number = this.replace("[^\\d]".toRegex(), "")
+        val number = this.replace("\\D".toRegex(), "")
         if (number.isNotEmpty())
             return number.toInt()
     }
     return 0
 }
 
-fun String?.isValidUrl(): Boolean = this != null && this.isNotEmpty() && URLUtil.isValidUrl(this)
+fun String?.isValidUrl(): Boolean = !this.isNullOrEmpty() && URLUtil.isValidUrl(this)
 
 fun Context?.getThumbUrl(
     image: String?,
@@ -116,7 +125,7 @@ fun Bitmap?.getCircleCroppedBitmap(): Bitmap? {
     if (bitmap != null) {
         try {
             output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
-            val canvas = Canvas(output!!)
+            val canvas = Canvas(output)
 
             val color = -0xbdbdbe
             val paint = Paint()
@@ -147,7 +156,7 @@ fun Bitmap?.getCircleCroppedBitmap(): Bitmap? {
 }
 
 fun String?.getStringValid(): String {
-    if (this != null && this.isNotEmpty() && this != "null" && this != "[null]") {
+    if (!this.isNullOrEmpty() && this != "null" && this != "[null]") {
         return this
     }
     return ""
@@ -155,7 +164,7 @@ fun String?.getStringValid(): String {
 
 fun String?.formatDate(): String {
     try {
-        if (this != null && this.isNotEmpty()) {
+        if (!this.isNullOrEmpty()) {
             val locale = Locale.getDefault()
             val parsed = SimpleDateFormat(FORMAT_DATETIME_API, locale).parse(this)
 
@@ -170,7 +179,7 @@ fun String?.formatDate(): String {
 
 fun String?.formatDatetime(): String {
     try {
-        if (this != null && this.isNotEmpty()) {
+        if (!this.isNullOrEmpty()) {
             val locale = Locale.getDefault()
             val parsed = SimpleDateFormat(FORMAT_DATETIME_API, locale).parse(this)
 

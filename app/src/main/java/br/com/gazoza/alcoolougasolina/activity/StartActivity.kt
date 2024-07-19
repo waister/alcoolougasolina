@@ -1,6 +1,5 @@
 package br.com.gazoza.alcoolougasolina.activity
 
-import android.annotation.SuppressLint
 import android.content.IntentSender
 import android.os.Bundle
 import androidx.activity.result.ActivityResultLauncher
@@ -12,7 +11,17 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.application.CustomApplication
 import br.com.gazoza.alcoolougasolina.databinding.ActivityStartBinding
-import br.com.gazoza.alcoolougasolina.util.*
+import br.com.gazoza.alcoolougasolina.util.API_NOTIFICATIONS
+import br.com.gazoza.alcoolougasolina.util.PARAM_ID
+import br.com.gazoza.alcoolougasolina.util.PARAM_ITEM_ID
+import br.com.gazoza.alcoolougasolina.util.PARAM_TYPE
+import br.com.gazoza.alcoolougasolina.util.PREF_DEVICE_ID
+import br.com.gazoza.alcoolougasolina.util.PREF_DEVICE_ID_OLD
+import br.com.gazoza.alcoolougasolina.util.appLog
+import br.com.gazoza.alcoolougasolina.util.hide
+import br.com.gazoza.alcoolougasolina.util.isDebug
+import br.com.gazoza.alcoolougasolina.util.isNotNumeric
+import br.com.gazoza.alcoolougasolina.util.sendNotificationReport
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
@@ -21,10 +30,9 @@ import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.orhanobut.hawk.Hawk
 import org.jetbrains.anko.intentFor
-import java.util.*
+import java.util.Calendar
 import kotlin.random.Random
 
-@SuppressLint("CustomSplashScreen")
 class StartActivity : AppCompatActivity() {
 
     companion object {
@@ -39,7 +47,6 @@ class StartActivity : AppCompatActivity() {
 
     private var updateFlowResultLauncher: ActivityResultLauncher<IntentSenderRequest>? = null
 
-    @SuppressLint("HardwareIds")
     override fun onCreate(savedInstanceState: Bundle?) {
         installSplashScreen().apply {
             appLog(TAG, "installSplashScreen() called")
