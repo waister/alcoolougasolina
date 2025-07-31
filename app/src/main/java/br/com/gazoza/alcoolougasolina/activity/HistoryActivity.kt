@@ -8,25 +8,24 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.adapter.HistoryAdapter
+import br.com.gazoza.alcoolougasolina.application.CustomApplication
 import br.com.gazoza.alcoolougasolina.databinding.ActivityHistoryBinding
-import br.com.gazoza.alcoolougasolina.domain.Comparison
+import br.com.gazoza.alcoolougasolina.util.alert
 import br.com.gazoza.alcoolougasolina.util.appLog
 import br.com.gazoza.alcoolougasolina.util.hide
 import br.com.gazoza.alcoolougasolina.util.loadAdBanner
+import br.com.gazoza.alcoolougasolina.util.negativeButton
+import br.com.gazoza.alcoolougasolina.util.positiveButton
+import br.com.gazoza.alcoolougasolina.util.setupCommonInsets
 import br.com.gazoza.alcoolougasolina.util.show
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
-import io.realm.Realm
-import io.realm.Sort
-import org.jetbrains.anko.alert
-import org.jetbrains.anko.displayMetrics
 
 class HistoryActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityHistoryBinding
 
-    private val realm = Realm.getDefaultInstance()
     private var historyAdapter: HistoryAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -35,10 +34,11 @@ class HistoryActivity : AppCompatActivity() {
         binding = ActivityHistoryBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setSupportActionBar(binding.incToolbar.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         initAdMob()
-        renderNotifications()
+        initViews()
     }
 
     private fun initAdMob() = with(binding) {
@@ -61,15 +61,11 @@ class HistoryActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.action_clear) {
             alert(R.string.confirm_clear_history, R.string.confirmation) {
-                also { ctx.setTheme(R.style.CustomAlertDialog) }
                 positiveButton(R.string.clear_history) {
-                    realm.executeTransaction {
-                        realm.where(Comparison::class.java)
-                            .findAll()
-                            .deleteAllFromRealm()
-                    }
+                    val dao = CustomApplication.database.comparisonDao()
+                    dao.deleteAll()
 
-                    renderNotifications()
+                    initViews()
                 }
                 negativeButton(R.string.cancel) {}
             }.show()
@@ -79,12 +75,13 @@ class HistoryActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun renderNotifications() = with(binding) {
-        val history = realm.where(Comparison::class.java)
-            .sort("timestamp", Sort.DESCENDING)
-            .findAll()
+    private fun initViews() = with(binding) {
+        setupCommonInsets(incToolbar.appBarLayout, root)
 
-        if (history.isNullOrEmpty()) {
+        val dao = CustomApplication.database.comparisonDao()
+        val history = dao.getAllComparisons()
+
+        if (history.isEmpty()) {
             tvHistoryEmpty.show()
             rvHistory.hide()
             return@with
@@ -95,7 +92,7 @@ class HistoryActivity : AppCompatActivity() {
 
         rvHistory.setHasFixedSize(true)
 
-        val columns = if (displayMetrics.widthPixels > 1900) 2 else 1
+        val columns = if (resources.displayMetrics.widthPixels > 1900) 2 else 1
 
         val layoutManager = GridLayoutManager(applicationContext, columns)
         rvHistory.layoutManager = layoutManager
@@ -108,11 +105,6 @@ class HistoryActivity : AppCompatActivity() {
         rvHistory.addItemDecoration(divider)
 
         historyAdapter?.setData(history)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        realm.close()
     }
 
 }

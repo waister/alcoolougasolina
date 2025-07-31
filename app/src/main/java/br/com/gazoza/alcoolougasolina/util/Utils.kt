@@ -1,7 +1,9 @@
 package br.com.gazoza.alcoolougasolina.util
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Paint
@@ -13,7 +15,14 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.webkit.URLUtil
 import android.widget.LinearLayout
+import android.widget.RelativeLayout
+import android.widget.Toast
 import androidx.appcompat.widget.AppCompatEditText
+import androidx.core.graphics.createBitmap
+import androidx.core.net.toUri
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.updatePadding
 import br.com.gazoza.alcoolougasolina.BuildConfig
 import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.core.Request
@@ -25,6 +34,7 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.LoadAdError
+import com.google.android.material.appbar.AppBarLayout
 import java.text.DateFormat
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -124,7 +134,7 @@ fun Bitmap?.getCircleCroppedBitmap(): Bitmap? {
 
     if (bitmap != null) {
         try {
-            output = Bitmap.createBitmap(bitmap.width, bitmap.height, Bitmap.Config.ARGB_8888)
+            output = createBitmap(bitmap.width, bitmap.height)
             val canvas = Canvas(output)
 
             val color = -0xbdbdbe
@@ -304,3 +314,103 @@ fun View?.hide() {
 }
 
 fun isDebug() = BuildConfig.DEBUG
+
+fun Context.alert(
+    message: String,
+    title: String = "",
+    init: AlertDialog.Builder.() -> Unit
+): AlertDialog {
+    val builder = AlertDialog.Builder(this)
+    builder.setMessage(message)
+    if (title.isNotEmpty()) {
+        builder.setTitle(title)
+    }
+    builder.init()
+    return builder.create()
+}
+
+fun Context.alert(
+    messageRes: Int,
+    titleRes: Int,
+    init: AlertDialog.Builder.() -> Unit
+): AlertDialog {
+    return alert(getString(messageRes), getString(titleRes), init)
+}
+
+fun AlertDialog.Builder.positiveButton(textRes: Int, handler: (() -> Unit)? = null) {
+    setPositiveButton(textRes) { _, _ -> handler?.invoke() }
+}
+
+fun AlertDialog.Builder.negativeButton(textRes: Int, handler: (() -> Unit)? = null) {
+    setNegativeButton(textRes) { _, _ -> handler?.invoke() }
+}
+
+fun AlertDialog.Builder.onCancelled(handler: () -> Unit) {
+    setOnCancelListener { handler() }
+}
+
+@Suppress("unused")
+fun Context.toast(message: String) {
+    Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+}
+
+fun Context.toast(messageRes: Int) {
+    Toast.makeText(this, messageRes, Toast.LENGTH_SHORT).show()
+}
+
+fun Context.browse(url: String): Boolean {
+    return try {
+        val intent = Intent(Intent.ACTION_VIEW, url.toUri())
+        startActivity(intent)
+        true
+    } catch (e: Exception) {
+        if (isDebug()) e.printStackTrace()
+        false
+    }
+}
+
+fun Context.share(text: String, subject: String = "") {
+    val intent = Intent(Intent.ACTION_SEND).apply {
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, text)
+        if (subject.isNotEmpty()) {
+            putExtra(Intent.EXTRA_SUBJECT, subject)
+        }
+    }
+    startActivity(Intent.createChooser(intent, "Compartilhar"))
+}
+
+inline fun <reified T> Context.intentFor(vararg params: Pair<String, Any?>): Intent {
+    val intent = Intent(this, T::class.java)
+    params.forEach { (key, value) ->
+        when (value) {
+            is String -> intent.putExtra(key, value)
+            is Int -> intent.putExtra(key, value)
+            is Long -> intent.putExtra(key, value)
+            is Boolean -> intent.putExtra(key, value)
+            is Float -> intent.putExtra(key, value)
+            is Double -> intent.putExtra(key, value)
+        }
+    }
+    return intent
+}
+
+fun setupCommonInsets(appBarLayout: AppBarLayout, contentRoot: RelativeLayout) {
+    ViewCompat.setOnApplyWindowInsetsListener(appBarLayout) { view, insets ->
+        val bars =
+            insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
+        view.apply {
+            updatePadding(left = bars.left, top = bars.top, right = bars.right)
+        }
+        insets
+    }
+
+    ViewCompat.setOnApplyWindowInsetsListener(contentRoot) { view, insets ->
+        val bars =
+            insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
+        view.apply {
+            updatePadding(left = bars.left, right = bars.right, bottom = bars.bottom)
+        }
+        insets
+    }
+}

@@ -3,6 +3,7 @@ package br.com.gazoza.alcoolougasolina.application
 import android.app.Application
 import android.os.Build
 import br.com.gazoza.alcoolougasolina.BuildConfig
+import br.com.gazoza.alcoolougasolina.data.AppDatabase
 import br.com.gazoza.alcoolougasolina.util.API_ANDROID
 import br.com.gazoza.alcoolougasolina.util.API_DEBUG
 import br.com.gazoza.alcoolougasolina.util.API_IDENTIFIER
@@ -21,13 +22,16 @@ import com.github.kittinunf.fuel.core.FuelManager
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.messaging.FirebaseMessaging
 import com.orhanobut.hawk.Hawk
-import io.realm.Realm
-import io.realm.RealmConfiguration
 import java.util.Locale
 
 class CustomApplication : Application() {
 
     private var isCheckUpdatesNeeded: Boolean = true
+
+    companion object {
+        lateinit var database: AppDatabase
+            private set
+    }
 
     override fun onCreate() {
         super.onCreate()
@@ -40,13 +44,7 @@ class CustomApplication : Application() {
 
         AppOpenManager(this)
 
-        Realm.init(this)
-        Realm.setDefaultConfiguration(
-            RealmConfiguration.Builder()
-                .allowWritesOnUiThread(true)
-                .deleteRealmIfMigrationNeeded()
-                .build()
-        )
+        database = AppDatabase.getDatabase(this)
 
         FuelManager.instance.basePath = "${APP_HOST}api/${BuildConfig.API_APP_NAME}"
 

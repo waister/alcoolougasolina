@@ -7,17 +7,23 @@
     android:gravity="center_horizontal"
     tools:context=".activity.HistoryActivity">
 
+    <include
+        android:id="@+id/inc_toolbar"
+        layout="@layout/toolbar" />
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_history"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/ll_banner" />
+        android:layout_above="@+id/ll_banner"
+        android:layout_below="@+id/inc_toolbar" />
 
     <TextView
         android:id="@+id/tv_history_empty"
         style="@style/EmptyAlert"
         android:layout_height="match_parent"
         android:layout_above="@+id/ll_banner"
+        android:layout_below="@+id/inc_toolbar"
         android:text="@string/history_empty" />
 
     <LinearLayout

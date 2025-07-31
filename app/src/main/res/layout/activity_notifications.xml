@@ -1,27 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/ly_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
-    android:id="@+id/ly_main"
     tools:context=".activity.NotificationsActivity">
+
+    <include
+        android:id="@+id/inc_toolbar"
+        layout="@layout/toolbar" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_notifications"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_below="@+id/inc_toolbar" />
 
     <TextView
         android:id="@+id/tv_notifications_empty"
         style="@style/EmptyAlert"
         android:layout_height="match_parent"
+        android:layout_below="@+id/inc_toolbar"
         android:text="@string/notifications_empty" />
 
     <LinearLayout
         android:id="@+id/ll_loading"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@+id/inc_toolbar"
         android:background="@color/screenBackgroundProgress"
         android:clickable="true"
         android:elevation="3dp"

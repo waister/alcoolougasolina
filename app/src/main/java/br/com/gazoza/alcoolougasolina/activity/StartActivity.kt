@@ -29,7 +29,7 @@ import com.google.android.play.core.common.IntentSenderForResultStarter
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
 import com.orhanobut.hawk.Hawk
-import org.jetbrains.anko.intentFor
+import br.com.gazoza.alcoolougasolina.util.intentFor
 import java.util.Calendar
 import kotlin.random.Random
 

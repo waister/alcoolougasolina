@@ -11,6 +11,7 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import br.com.gazoza.alcoolougasolina.BuildConfig
 import br.com.gazoza.alcoolougasolina.R
+import br.com.gazoza.alcoolougasolina.application.CustomApplication
 import br.com.gazoza.alcoolougasolina.databinding.ActivityMainBinding
 import br.com.gazoza.alcoolougasolina.domain.Comparison
 import br.com.gazoza.alcoolougasolina.util.API_APP_NAME
@@ -26,7 +27,9 @@ import br.com.gazoza.alcoolougasolina.util.MaskMoney
 import br.com.gazoza.alcoolougasolina.util.PREF_APP_NAME
 import br.com.gazoza.alcoolougasolina.util.PREF_FCM_TOKEN
 import br.com.gazoza.alcoolougasolina.util.PREF_SHARE_LINK
+import br.com.gazoza.alcoolougasolina.util.alert
 import br.com.gazoza.alcoolougasolina.util.appLog
+import br.com.gazoza.alcoolougasolina.util.browse
 import br.com.gazoza.alcoolougasolina.util.getBooleanVal
 import br.com.gazoza.alcoolougasolina.util.getIntVal
 import br.com.gazoza.alcoolougasolina.util.getPrice
@@ -34,11 +37,19 @@ import br.com.gazoza.alcoolougasolina.util.getStringVal
 import br.com.gazoza.alcoolougasolina.util.getValidJSONObject
 import br.com.gazoza.alcoolougasolina.util.hide
 import br.com.gazoza.alcoolougasolina.util.hideKeyboard
+import br.com.gazoza.alcoolougasolina.util.intentFor
 import br.com.gazoza.alcoolougasolina.util.loadAdBanner
+import br.com.gazoza.alcoolougasolina.util.negativeButton
+import br.com.gazoza.alcoolougasolina.util.onCancelled
+import br.com.gazoza.alcoolougasolina.util.positiveButton
 import br.com.gazoza.alcoolougasolina.util.printFuelLog
+import br.com.gazoza.alcoolougasolina.util.setupCommonInsets
+import br.com.gazoza.alcoolougasolina.util.share
 import br.com.gazoza.alcoolougasolina.util.show
 import br.com.gazoza.alcoolougasolina.util.showKeyboard
 import br.com.gazoza.alcoolougasolina.util.storeAppLink
+import br.com.gazoza.alcoolougasolina.util.toast
+import com.github.kittinunf.fuel.core.FuelError
 import com.github.kittinunf.fuel.httpGet
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.LoadAdError
@@ -48,20 +59,12 @@ import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.firebase.messaging.FirebaseMessaging
 import com.orhanobut.hawk.Hawk
-import io.realm.Realm
-import io.realm.Sort
-import org.jetbrains.anko.alert
-import org.jetbrains.anko.browse
-import org.jetbrains.anko.intentFor
-import org.jetbrains.anko.share
-import org.jetbrains.anko.toast
 import java.text.DecimalFormat
 
 class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
 
     private lateinit var binding: ActivityMainBinding
 
-    private val realm = Realm.getDefaultInstance()
     private var interstitialAd: InterstitialAd? = null
 
     companion object {
@@ -73,6 +76,8 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        setSupportActionBar(binding.incToolbar.toolbar)
 
         initAdMob()
         initViews()
@@ -99,6 +104,8 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
     }
 
     private fun initViews() = with(binding) {
+        setupCommonInsets(incToolbar.appBarLayout, root)
+
         verifyButtonsState(showMessage = false, requestFocus = true)
 
         val lastEthanol = Hawk.get(LAST_ETHANOL, "")
@@ -216,26 +223,24 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
                 val percentage = DecimalFormat("#.##").format(proportion * 100) + "%"
                 binding.tvProportion.text = getString(R.string.msg_result, percentage)
 
-                realm.executeTransaction {
-                    var last = realm.where(Comparison::class.java)
-                        .sort("timestamp", Sort.DESCENDING)
-                        .findFirst()
+                val dao = CustomApplication.database.comparisonDao()
+                var last = dao.getComparisonByPrices(textEthanol, textGasoline)
 
-                    if (last == null || last.priceEthanol != textEthanol || last.priceGasoline != textGasoline) {
-                        last = Comparison()
-
-                        val max = realm.where(Comparison::class.java).max("id")
-                        last.id = if (max != null) max.toLong() + 1 else 1
-                    }
-
-                    last.priceEthanol = textEthanol
-                    last.priceGasoline = textGasoline
+                if (last == null) {
+                    last = Comparison(
+                        priceEthanol = textEthanol,
+                        priceGasoline = textGasoline,
+                        proportion = proportion,
+                        percentage = percentage,
+                        timestamp = System.currentTimeMillis()
+                    )
+                } else {
                     last.proportion = proportion
                     last.percentage = percentage
                     last.timestamp = System.currentTimeMillis()
-
-                    realm.copyToRealmOrUpdate(last)
                 }
+
+                dao.insertOrUpdate(last)
 
                 verifyButtonsState(showMessage = true, requestFocus = false)
 
@@ -287,42 +292,49 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
 
                 val (data, error) = result
 
-                if (error == null && !isFinishing) {
-                    val apiObj = data.getValidJSONObject()
+                buildResponse(data, error)
+            }
+        }
+    }
 
-                    if (apiObj.getBooleanVal(API_SUCCESS)) {
-                        Hawk.put(PREF_SHARE_LINK, apiObj.getStringVal(API_SHARE_LINK))
-                        Hawk.put(PREF_APP_NAME, apiObj.getStringVal(API_APP_NAME))
+    private fun buildResponse(data: String?, error: FuelError?) = with(binding) {
+        if (error != null || isFinishing) return@with
 
-                        val versionLast = apiObj.getIntVal(API_VERSION_LAST)
-                        val versionMin = apiObj.getIntVal(API_VERSION_MIN)
+        val apiObj = data.getValidJSONObject()
 
-                        if (BuildConfig.VERSION_CODE < versionMin) {
-                            alert(
-                                getString(R.string.update_needed),
-                                getString(R.string.update_title)
-                            ) {
-                                positiveButton(R.string.update_positive) {
-                                    browse(storeAppLink())
-                                }
-                                negativeButton(R.string.update_logout) { finish() }
-                                onCancelled { finish() }
-                            }.show()
-                        } else if (BuildConfig.VERSION_CODE < versionLast) {
-                            alert(
-                                getString(R.string.update_available),
-                                getString(R.string.update_title)
-                            ) {
-                                positiveButton(R.string.update_positive) {
-                                    browse(storeAppLink())
-                                }
-                                negativeButton(R.string.update_negative) {}
-                            }.show()
-                        }
+        if (apiObj.getBooleanVal(API_SUCCESS)) {
+            Hawk.put(PREF_SHARE_LINK, apiObj.getStringVal(API_SHARE_LINK))
+            Hawk.put(PREF_APP_NAME, apiObj.getStringVal(API_APP_NAME))
+
+            val versionLast = apiObj.getIntVal(API_VERSION_LAST)
+            val versionMin = apiObj.getIntVal(API_VERSION_MIN)
+
+            if (BuildConfig.VERSION_CODE < versionMin) {
+                alert(
+                    getString(R.string.update_needed),
+                    getString(R.string.update_title)
+                ) {
+                    positiveButton(R.string.update_positive) {
+                        browse(storeAppLink())
                     }
-                }
+                    negativeButton(R.string.update_logout) { finish() }
+                    onCancelled { finish() }
+                }.show()
+
+                return@with
             }
 
+            if (BuildConfig.VERSION_CODE < versionLast) {
+                alert(
+                    getString(R.string.update_available),
+                    getString(R.string.update_title)
+                ) {
+                    positiveButton(R.string.update_positive) {
+                        browse(storeAppLink())
+                    }
+                    negativeButton(R.string.update_negative) {}
+                }.show()
+            }
         }
     }
 
@@ -383,7 +395,7 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
 
     override fun onDestroy() {
         super.onDestroy()
-        realm.close()
+        // Room não precisa fechar conexões manualmente
     }
 
 }

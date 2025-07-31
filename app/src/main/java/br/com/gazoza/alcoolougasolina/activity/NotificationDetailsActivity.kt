@@ -24,6 +24,7 @@ import br.com.gazoza.alcoolougasolina.util.getThumbUrl
 import br.com.gazoza.alcoolougasolina.util.getValidJSONObject
 import br.com.gazoza.alcoolougasolina.util.hide
 import br.com.gazoza.alcoolougasolina.util.isValidUrl
+import br.com.gazoza.alcoolougasolina.util.setupCommonInsets
 import br.com.gazoza.alcoolougasolina.util.show
 import com.github.kittinunf.fuel.httpGet
 import com.orhanobut.hawk.Hawk
@@ -43,9 +44,16 @@ class NotificationDetailsActivity : AppCompatActivity() {
         binding = ActivityNotificationDetailsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setSupportActionBar(binding.incToolbar.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         notificationId = intent.getStringExtra(PARAM_ITEM_ID) ?: ""
+
+        initViews()
+    }
+
+    private fun initViews() = with(binding) {
+        setupCommonInsets(incToolbar.appBarLayout, root)
 
         val notificationObj = Hawk.get<JSONObject>(PREF_NOTIFICATION_JSON + notificationId)
 

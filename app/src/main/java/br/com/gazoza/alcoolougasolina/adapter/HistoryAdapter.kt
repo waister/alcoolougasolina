@@ -11,16 +11,14 @@ import androidx.recyclerview.widget.RecyclerView
 import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.domain.Comparison
 import br.com.gazoza.alcoolougasolina.util.formatDatetime
-import io.realm.RealmResults
-import org.jetbrains.anko.find
 
 class HistoryAdapter(private val context: Context) :
     RecyclerView.Adapter<HistoryAdapter.ViewHolder>() {
 
-    private var comparisons: RealmResults<Comparison>? = null
+    private var comparisons: List<Comparison>? = null
 
     @SuppressLint("NotifyDataSetChanged")
-    fun setData(data: RealmResults<Comparison>?) {
+    fun setData(data: List<Comparison>?) {
         comparisons = data
         notifyDataSetChanged()
     }
@@ -45,11 +43,11 @@ class HistoryAdapter(private val context: Context) :
     }
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private var ivIcon = itemView.find<ImageView>(R.id.iv_icon)
-        private var tvDate = itemView.find<TextView>(R.id.tv_date)
-        private var tvEthanol = itemView.find<TextView>(R.id.tv_ethanol)
-        private var tvGasoline = itemView.find<TextView>(R.id.tv_gasoline)
-        private var tvResult = itemView.find<TextView>(R.id.tv_result)
+        private var ivIcon = itemView.findViewById<ImageView>(R.id.iv_icon)
+        private var tvDate = itemView.findViewById<TextView>(R.id.tv_date)
+        private var tvEthanol = itemView.findViewById<TextView>(R.id.tv_ethanol)
+        private var tvGasoline = itemView.findViewById<TextView>(R.id.tv_gasoline)
+        private var tvResult = itemView.findViewById<TextView>(R.id.tv_result)
 
         fun setData(comparison: Comparison?) {
             if (comparison != null) {
@@ -71,7 +69,7 @@ class HistoryAdapter(private val context: Context) :
                 tvGasoline.text =
                     context.getString(R.string.label_gasoline, comparison.priceGasoline)
 
-                val result = "${context.getString(text)} (${comparison.percentage}%)"
+                val result = "${context.getString(text)} (${comparison.percentage})"
 
                 tvResult.text = result
             }

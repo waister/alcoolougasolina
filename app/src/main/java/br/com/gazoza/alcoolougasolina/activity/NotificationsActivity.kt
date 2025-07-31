@@ -20,6 +20,7 @@ import br.com.gazoza.alcoolougasolina.util.getStringVal
 import br.com.gazoza.alcoolougasolina.util.getValidJSONObject
 import br.com.gazoza.alcoolougasolina.util.hide
 import br.com.gazoza.alcoolougasolina.util.printFuelLog
+import br.com.gazoza.alcoolougasolina.util.setupCommonInsets
 import br.com.gazoza.alcoolougasolina.util.show
 import com.github.kittinunf.fuel.httpGet
 import org.json.JSONArray
@@ -37,9 +38,10 @@ class NotificationsActivity : AppCompatActivity() {
         binding = ActivityNotificationsBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        setSupportActionBar(binding.incToolbar.toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        loadNotifications()
+        initViews()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -47,7 +49,9 @@ class NotificationsActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun loadNotifications() = with(binding) {
+    private fun initViews() = with(binding) {
+        setupCommonInsets(incToolbar.appBarLayout, root)
+
         llLoading.show()
         tvNotificationsEmpty.hide()
 

@@ -46,7 +46,8 @@ fun JSONObject?.getStringVal(tag: String, default: String = ""): String {
     if (this != null && has(tag)) {
         try {
             return getString(tag).getStringValid()
-        } catch (_: JSONException) {
+        } catch (e: JSONException) {
+            if (isDebug()) e.printStackTrace()
         }
     }
     return default
@@ -56,7 +57,8 @@ fun JSONObject?.getIntVal(tag: String, default: Int = 0): Int {
     if (this != null && has(tag)) {
         try {
             return getInt(tag)
-        } catch (_: JSONException) {
+        } catch (e: JSONException) {
+            if (isDebug()) e.printStackTrace()
         }
     }
     return default
@@ -66,7 +68,8 @@ fun JSONObject?.getBooleanVal(tag: String, default: Boolean = false): Boolean {
     if (this != null && has(tag)) {
         try {
             return getBoolean(tag)
-        } catch (_: JSONException) {
+        } catch (e: JSONException) {
+            if (isDebug()) e.printStackTrace()
         }
     }
     return default

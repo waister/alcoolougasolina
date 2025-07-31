@@ -7,10 +7,15 @@
     android:layout_height="match_parent"
     tools:context=".activity.MainActivity">
 
+    <include
+        android:id="@+id/inc_toolbar"
+        layout="@layout/toolbar" />
+
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/ll_banner"
+        android:layout_below="@+id/inc_toolbar"
         android:fillViewport="true">
 
         <RelativeLayout
