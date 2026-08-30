@@ -1,19 +1,18 @@
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
 apply plugin: 'com.google.devtools.ksp'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.google.gms.google-services'
 
 android {
     namespace 'br.com.gazoza.alcoolougasolina'
-    compileSdk 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId "br.com.gazoza.alcoolougasolina"
-        minSdkVersion 23
-        targetSdkVersion 36
-        versionCode 19
-        versionName "2.3.0"
+        minSdk = 23
+        targetSdk = 37
+        versionCode 20
+        versionName "2.4.0"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -31,10 +30,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
-    kotlinOptions {
-        jvmTarget = '17'
-        freeCompilerArgs += ["-Xallow-unstable-dependencies"]
-    }
     viewBinding {
         enabled = true
     }
@@ -43,11 +38,17 @@ android {
     }
 }
 
+kotlin {
+    compilerOptions {
+        freeCompilerArgs.add("-Xallow-unstable-dependencies")
+    }
+}
+
 dependencies {
-    implementation 'androidx.core:core-ktx:1.16.0'
-    implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'com.google.android.material:material:1.12.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+    implementation 'androidx.core:core-ktx:1.19.0'
+    implementation 'androidx.appcompat:appcompat:1.8.0'
+    implementation 'com.google.android.material:material:1.14.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.2'
     testImplementation 'junit:junit:4.13.2'
     androidTestImplementation 'androidx.test.ext:junit:1.3.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.7.0'
@@ -55,26 +56,26 @@ dependencies {
     implementation 'com.orhanobut:hawk:2.0.1'
     implementation 'com.github.kittinunf.fuel:fuel-android:2.3.1'
     implementation 'com.google.firebase:firebase-core:21.1.1'
-    implementation 'com.google.firebase:firebase-messaging:25.0.0'
-    implementation 'com.google.firebase:firebase-crashlytics:20.0.0'
-    implementation 'com.google.firebase:firebase-analytics:23.0.0'
-    implementation 'com.google.android.gms:play-services-ads:24.5.0'
-    implementation 'com.google.android.gms:play-services-measurement:23.0.0'
-    implementation 'com.google.android.gms:play-services-measurement-sdk:23.0.0'
+    implementation 'com.google.firebase:firebase-messaging:25.1.2'
+    implementation 'com.google.firebase:firebase-crashlytics:20.1.0'
+    implementation 'com.google.firebase:firebase-analytics:23.2.0'
+    implementation 'com.google.android.gms:play-services-ads:25.4.0'
+    implementation 'com.google.android.gms:play-services-measurement:23.2.0'
+    implementation 'com.google.android.gms:play-services-measurement-sdk:23.2.0'
     implementation 'com.davemorrissey.labs:subsampling-scale-image-view-androidx:3.10.0'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.google.android.flexbox:flexbox:3.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.9.2'
-    implementation 'androidx.lifecycle:lifecycle-common-java8:2.9.2'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.11.0'
+    implementation 'androidx.lifecycle:lifecycle-common-java8:2.11.0'
     implementation "androidx.multidex:multidex:2.0.1"
-    implementation 'androidx.work:work-runtime:2.10.3'
-    implementation 'androidx.core:core-splashscreen:1.0.1'
+    implementation 'androidx.work:work-runtime:2.11.2'
+    implementation 'androidx.core:core-splashscreen:1.2.0'
     implementation 'com.google.android.play:app-update-ktx:2.1.0'
-    
+
     // Room dependencies
-    implementation 'androidx.room:room-runtime:2.7.2'
-    implementation 'androidx.room:room-ktx:2.7.2'
-    ksp 'androidx.room:room-compiler:2.7.2'
+    implementation 'androidx.room:room-runtime:2.8.4'
+    implementation 'androidx.room:room-ktx:2.8.4'
+    ksp 'androidx.room:room-compiler:2.8.4'
 }
