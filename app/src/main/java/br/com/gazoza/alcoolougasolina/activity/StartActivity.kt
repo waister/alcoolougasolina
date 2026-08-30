@@ -17,8 +17,10 @@ import br.com.gazoza.alcoolougasolina.util.PARAM_ITEM_ID
 import br.com.gazoza.alcoolougasolina.util.PARAM_TYPE
 import br.com.gazoza.alcoolougasolina.util.PREF_DEVICE_ID
 import br.com.gazoza.alcoolougasolina.util.PREF_DEVICE_ID_OLD
+import br.com.gazoza.alcoolougasolina.util.StorageHelper
 import br.com.gazoza.alcoolougasolina.util.appLog
 import br.com.gazoza.alcoolougasolina.util.hide
+import br.com.gazoza.alcoolougasolina.util.intentFor
 import br.com.gazoza.alcoolougasolina.util.isDebug
 import br.com.gazoza.alcoolougasolina.util.isNotNumeric
 import br.com.gazoza.alcoolougasolina.util.sendNotificationReport
@@ -28,8 +30,6 @@ import com.google.android.play.core.appupdate.AppUpdateManagerFactory
 import com.google.android.play.core.common.IntentSenderForResultStarter
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.UpdateAvailability
-import com.orhanobut.hawk.Hawk
-import br.com.gazoza.alcoolougasolina.util.intentFor
 import java.util.Calendar
 import kotlin.random.Random
 
@@ -190,12 +190,12 @@ class StartActivity : AppCompatActivity() {
     }
 
     private fun createDeviceID() {
-        val currentDeviceID = Hawk.get(PREF_DEVICE_ID, "")
+        val currentDeviceID = StorageHelper.get(PREF_DEVICE_ID, "")
         val isNotNumeric = currentDeviceID.isNotNumeric()
         appLog(TAG, "createDeviceID() - currentDeviceID: $currentDeviceID")
 
         if (currentDeviceID.isEmpty() || isNotNumeric) {
-            if (isNotNumeric) Hawk.put(PREF_DEVICE_ID_OLD, currentDeviceID)
+            if (isNotNumeric) StorageHelper.put(PREF_DEVICE_ID_OLD, currentDeviceID)
 
             val milliseconds = Calendar.getInstance().timeInMillis.toString()
             val random = Random.nextInt(10000, 99999)
@@ -207,7 +207,7 @@ class StartActivity : AppCompatActivity() {
                 stringID = stringID.padEnd(18, '9')
             }
 
-            Hawk.put(PREF_DEVICE_ID, stringID)
+            StorageHelper.put(PREF_DEVICE_ID, stringID)
             CustomApplication().updateFuelParams()
 
             appLog("GENERATE_DEVICE_ID", "New device ID: $stringID")

@@ -17,11 +17,14 @@ import br.com.gazoza.alcoolougasolina.util.APP_HOST
 import br.com.gazoza.alcoolougasolina.util.AppOpenManager
 import br.com.gazoza.alcoolougasolina.util.PREF_DEVICE_ID
 import br.com.gazoza.alcoolougasolina.util.PREF_DEVICE_ID_OLD
+import br.com.gazoza.alcoolougasolina.util.StorageHelper
 import br.com.gazoza.alcoolougasolina.util.isDebug
 import com.github.kittinunf.fuel.core.FuelManager
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.messaging.FirebaseMessaging
-import com.orhanobut.hawk.Hawk
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.util.Locale
 
 class CustomApplication : Application() {
@@ -36,25 +39,27 @@ class CustomApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        FirebaseMessaging.getInstance().isAutoInitEnabled = true
-
-        Hawk.init(this).build()
-
-        MobileAds.initialize(this) {}
+        StorageHelper.init(this)
 
         AppOpenManager(this)
 
         database = AppDatabase.getDatabase(this)
 
-        FuelManager.instance.basePath = "${APP_HOST}api/${BuildConfig.API_APP_NAME}"
+        CoroutineScope(Dispatchers.IO).launch {
+            FirebaseMessaging.getInstance().isAutoInitEnabled = true
 
-        updateFuelParams()
+            MobileAds.initialize(this@CustomApplication) {}
+
+            FuelManager.instance.basePath = "${APP_HOST}api/${BuildConfig.API_APP_NAME}"
+
+            updateFuelParams()
+        }
     }
 
     fun updateFuelParams() {
         FuelManager.instance.baseParams = listOf(
-            API_IDENTIFIER to Hawk.get(PREF_DEVICE_ID, ""),
-            API_IDENTIFIER_OLD to Hawk.get(PREF_DEVICE_ID_OLD, ""),
+            API_IDENTIFIER to StorageHelper.get(PREF_DEVICE_ID, ""),
+            API_IDENTIFIER_OLD to StorageHelper.get(PREF_DEVICE_ID_OLD, ""),
             API_LANG to Locale.getDefault().toString(),
             API_VERSION to BuildConfig.VERSION_CODE,
             API_PLATFORM to API_ANDROID,

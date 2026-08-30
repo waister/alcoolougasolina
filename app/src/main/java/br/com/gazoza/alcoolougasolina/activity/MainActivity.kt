@@ -27,6 +27,7 @@ import br.com.gazoza.alcoolougasolina.util.MaskMoney
 import br.com.gazoza.alcoolougasolina.util.PREF_APP_NAME
 import br.com.gazoza.alcoolougasolina.util.PREF_FCM_TOKEN
 import br.com.gazoza.alcoolougasolina.util.PREF_SHARE_LINK
+import br.com.gazoza.alcoolougasolina.util.StorageHelper
 import br.com.gazoza.alcoolougasolina.util.alert
 import br.com.gazoza.alcoolougasolina.util.appLog
 import br.com.gazoza.alcoolougasolina.util.browse
@@ -57,8 +58,7 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import com.google.firebase.messaging.FirebaseMessaging
-import com.orhanobut.hawk.Hawk
+import com.google.firebase.installations.FirebaseInstallations
 import java.text.DecimalFormat
 
 class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
@@ -108,8 +108,8 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
 
         verifyButtonsState(showMessage = false, requestFocus = true)
 
-        val lastEthanol = Hawk.get(LAST_ETHANOL, "")
-        val lastGasoline = Hawk.get(LAST_GASOLINE, "")
+        val lastEthanol = StorageHelper.get(LAST_ETHANOL, "")
+        val lastGasoline = StorageHelper.get(LAST_GASOLINE, "")
 
         etEthanol.setText(lastEthanol)
         etGasoline.setText(lastGasoline)
@@ -163,8 +163,8 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
                 etEthanol.setText("")
                 etGasoline.setText("")
 
-                Hawk.delete(LAST_ETHANOL)
-                Hawk.delete(LAST_GASOLINE)
+                StorageHelper.delete(LAST_ETHANOL)
+                StorageHelper.delete(LAST_GASOLINE)
 
                 verifyButtonsState(showMessage = false, requestFocus = true)
             }
@@ -201,8 +201,8 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
             }
 
             else -> {
-                Hawk.put(LAST_ETHANOL, textEthanol)
-                Hawk.put(LAST_GASOLINE, textGasoline)
+                StorageHelper.put(LAST_ETHANOL, textEthanol)
+                StorageHelper.put(LAST_GASOLINE, textGasoline)
 
                 val proportion = priceEthanol / priceGasoline
 
@@ -282,7 +282,7 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
     }
 
     private fun checkVersion() = with(binding) {
-        val token = Hawk.get(PREF_FCM_TOKEN, "")
+        val token = StorageHelper.get(PREF_FCM_TOKEN, "")
 
         if (token.isNotEmpty()) {
             val params = listOf(API_TOKEN to token)
@@ -303,8 +303,8 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
         val apiObj = data.getValidJSONObject()
 
         if (apiObj.getBooleanVal(API_SUCCESS)) {
-            Hawk.put(PREF_SHARE_LINK, apiObj.getStringVal(API_SHARE_LINK))
-            Hawk.put(PREF_APP_NAME, apiObj.getStringVal(API_APP_NAME))
+            StorageHelper.put(PREF_SHARE_LINK, apiObj.getStringVal(API_SHARE_LINK))
+            StorageHelper.put(PREF_APP_NAME, apiObj.getStringVal(API_APP_NAME))
 
             val versionLast = apiObj.getIntVal(API_VERSION_LAST)
             val versionMin = apiObj.getIntVal(API_VERSION_MIN)
@@ -339,21 +339,21 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
     }
 
     private fun checkTokenFcm() {
-        val currentToken = Hawk.get(PREF_FCM_TOKEN, "")
+        val currentToken = StorageHelper.get(PREF_FCM_TOKEN, "")
 
         appLog(TAG, "Current token: $currentToken")
 
         if (currentToken.isNotEmpty()) {
             checkVersion()
         } else {
-            FirebaseMessaging.getInstance().token.addOnCompleteListener {
-                if (it.isComplete) {
-                    val token = it.result?.toString()
+            FirebaseInstallations.getInstance().id.addOnCompleteListener {
+                if (it.isSuccessful) {
+                    val token = it.result
 
-                    appLog(TAG, "New token: $token")
+                    appLog(TAG, "New registered installationId: $token")
 
                     if (token != null) {
-                        Hawk.put(PREF_FCM_TOKEN, token)
+                        StorageHelper.put(PREF_FCM_TOKEN, token)
 
                         checkVersion()
                     }
@@ -374,8 +374,8 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
             }
 
             R.id.action_share -> {
-                val app = Hawk.get(PREF_APP_NAME, "")
-                val link = Hawk.get(PREF_SHARE_LINK, storeAppLink())
+                val app = StorageHelper.get(PREF_APP_NAME, "")
+                val link = StorageHelper.get(PREF_SHARE_LINK, storeAppLink())
 
                 share(getString(R.string.share_text, link), getString(R.string.share_subject, app))
             }

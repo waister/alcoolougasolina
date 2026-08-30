@@ -27,6 +27,7 @@ import br.com.gazoza.alcoolougasolina.util.PARAM_ID
 import br.com.gazoza.alcoolougasolina.util.PARAM_ITEM_ID
 import br.com.gazoza.alcoolougasolina.util.PARAM_TYPE
 import br.com.gazoza.alcoolougasolina.util.PREF_FCM_TOKEN
+import br.com.gazoza.alcoolougasolina.util.StorageHelper
 import br.com.gazoza.alcoolougasolina.util.appLog
 import br.com.gazoza.alcoolougasolina.util.getCircleCroppedBitmap
 import br.com.gazoza.alcoolougasolina.util.getThumbUrl
@@ -39,9 +40,9 @@ import br.com.gazoza.alcoolougasolina.util.stringToInt
 import com.github.kittinunf.fuel.httpGet
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import com.orhanobut.hawk.Hawk
 import java.net.URL
 
+@Suppress("MissingFirebaseInstanceTokenRefresh")
 class MyFirebaseMessagingService : FirebaseMessagingService() {
 
     companion object {
@@ -58,17 +59,17 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         const val TAG = "MyFCM"
     }
 
-    override fun onNewToken(token: String) {
-        super.onNewToken(token)
+    override fun onRegistered(installationId: String) {
+        super.onRegistered(installationId)
 
-        appLog(TAG, "New token: $token")
+        appLog(TAG, "New registered installationId: $installationId")
 
-        val latToken = Hawk.get(PREF_FCM_TOKEN, "")
+        val latToken = StorageHelper.get(PREF_FCM_TOKEN, "")
 
-        if (token != latToken) {
-            Hawk.put(PREF_FCM_TOKEN, token)
+        if (installationId != latToken) {
+            StorageHelper.put(PREF_FCM_TOKEN, installationId)
 
-            val params = listOf(API_TOKEN to token)
+            val params = listOf(API_TOKEN to installationId)
             API_ROUTE_IDENTIFY.httpGet(params).responseString { request, response, result ->
                 printFuelLog(request, response, result)
             }
@@ -158,11 +159,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val pendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
             addNextIntentWithParentStack(notifyIntent)
 
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
-            } else {
-                getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
-            }
+            getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
         }
 
         builder.setAutoCancel(true)

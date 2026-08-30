@@ -16,6 +16,7 @@ import br.com.gazoza.alcoolougasolina.util.API_ROUTE_NOTIFICATION
 import br.com.gazoza.alcoolougasolina.util.API_TITLE
 import br.com.gazoza.alcoolougasolina.util.PARAM_ITEM_ID
 import br.com.gazoza.alcoolougasolina.util.PREF_NOTIFICATION_JSON
+import br.com.gazoza.alcoolougasolina.util.StorageHelper
 import br.com.gazoza.alcoolougasolina.util.appLog
 import br.com.gazoza.alcoolougasolina.util.formatDatetime
 import br.com.gazoza.alcoolougasolina.util.getJSONObjectVal
@@ -27,7 +28,6 @@ import br.com.gazoza.alcoolougasolina.util.isValidUrl
 import br.com.gazoza.alcoolougasolina.util.setupCommonInsets
 import br.com.gazoza.alcoolougasolina.util.show
 import com.github.kittinunf.fuel.httpGet
-import com.orhanobut.hawk.Hawk
 import com.squareup.picasso.Picasso
 import org.json.JSONObject
 
@@ -55,7 +55,7 @@ class NotificationDetailsActivity : AppCompatActivity() {
     private fun initViews() = with(binding) {
         setupCommonInsets(incToolbar.appBarLayout, root)
 
-        val notificationObj = Hawk.get<JSONObject>(PREF_NOTIFICATION_JSON + notificationId)
+        val notificationObj = StorageHelper.getJSONObject(PREF_NOTIFICATION_JSON + notificationId)
 
         if (notificationObj != null) {
 
@@ -92,7 +92,7 @@ class NotificationDetailsActivity : AppCompatActivity() {
                 if (notificationObj != null) {
                     errorMessage = ""
 
-                    Hawk.put(PREF_NOTIFICATION_JSON + notificationId, notificationObj)
+                    StorageHelper.put(PREF_NOTIFICATION_JSON + notificationId, notificationObj)
 
                     renderNotification(notificationObj)
                 }
