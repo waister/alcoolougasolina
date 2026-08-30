@@ -11,8 +11,8 @@ android {
         applicationId "br.com.gazoza.alcoolougasolina"
         minSdk = 23
         targetSdk = 37
-        versionCode 20
-        versionName "2.4.0"
+        versionCode 21
+        versionName "2.4.1"
         multiDexEnabled true
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -20,9 +20,27 @@ android {
         buildConfigField 'String', 'API_APP_NAME', '"alcoolougasolina"'
     }
 
+    signingConfigs {
+        release {
+            def props = new Properties()
+            def propFile = file('../keystore/signing.properties')
+            if (propFile.exists()) {
+                propFile.withInputStream { stream ->
+                    props.load(new InputStreamReader(stream, "UTF-8"))
+                }
+                storeFile = file('../keystore/keystore.jks')
+                storePassword = props['storePassword']
+                keyAlias = props['keyAlias']
+                keyPassword = props['keyPassword']
+            }
+        }
+    }
+
     buildTypes {
         release {
-            minifyEnabled false
+            signingConfig signingConfigs.release
+            minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
