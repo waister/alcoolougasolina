@@ -5,25 +5,26 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import br.com.gazoza.alcoolougasolina.domain.Comparison
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ComparisonDao {
 
     @Query("SELECT * FROM comparisons ORDER BY timestamp DESC")
-    fun getAllComparisons(): List<Comparison>
+    fun getAllComparisons(): Flow<List<Comparison>>
 
     @Query("SELECT * FROM comparisons ORDER BY timestamp DESC LIMIT 1")
-    fun getLastComparison(): Comparison?
+    suspend fun getLastComparison(): Comparison?
 
     @Query("SELECT MAX(id) FROM comparisons")
-    fun getMaxId(): Long?
+    suspend fun getMaxId(): Long?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insertOrUpdate(comparison: Comparison): Long
+    suspend fun insertOrUpdate(comparison: Comparison): Long
 
     @Query("DELETE FROM comparisons")
-    fun deleteAll()
+    suspend fun deleteAll()
 
     @Query("SELECT * FROM comparisons WHERE priceEthanol = :priceEthanol AND priceGasoline = :priceGasoline ORDER BY timestamp DESC LIMIT 1")
-    fun getComparisonByPrices(priceEthanol: String, priceGasoline: String): Comparison?
+    suspend fun getComparisonByPrices(priceEthanol: String, priceGasoline: String): Comparison?
 }

@@ -9,6 +9,8 @@ import android.view.View
 import android.view.WindowManager
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
+import kotlinx.coroutines.launch
 import br.com.gazoza.alcoolougasolina.BuildConfig
 import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.application.CustomApplication
@@ -223,24 +225,26 @@ class MainActivity : AppCompatActivity(), TextWatcher, View.OnClickListener {
                 val percentage = DecimalFormat("#.##").format(proportion * 100) + "%"
                 binding.tvProportion.text = getString(R.string.msg_result, percentage)
 
-                val dao = CustomApplication.database.comparisonDao()
-                var last = dao.getComparisonByPrices(textEthanol, textGasoline)
+                lifecycleScope.launch {
+                    val dao = CustomApplication.database.comparisonDao()
+                    var last = dao.getComparisonByPrices(textEthanol, textGasoline)
 
-                if (last == null) {
-                    last = Comparison(
-                        priceEthanol = textEthanol,
-                        priceGasoline = textGasoline,
-                        proportion = proportion,
-                        percentage = percentage,
-                        timestamp = System.currentTimeMillis()
-                    )
-                } else {
-                    last.proportion = proportion
-                    last.percentage = percentage
-                    last.timestamp = System.currentTimeMillis()
+                    if (last == null) {
+                        last = Comparison(
+                            priceEthanol = textEthanol,
+                            priceGasoline = textGasoline,
+                            proportion = proportion,
+                            percentage = percentage,
+                            timestamp = System.currentTimeMillis()
+                        )
+                    } else {
+                        last.proportion = proportion
+                        last.percentage = percentage
+                        last.timestamp = System.currentTimeMillis()
+                    }
+
+                    dao.insertOrUpdate(last)
                 }
-
-                dao.insertOrUpdate(last)
 
                 verifyButtonsState(showMessage = true, requestFocus = false)
 

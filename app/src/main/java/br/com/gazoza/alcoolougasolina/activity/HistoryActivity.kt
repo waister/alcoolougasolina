@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.GridLayoutManager
 import br.com.gazoza.alcoolougasolina.R
@@ -21,6 +22,7 @@ import br.com.gazoza.alcoolougasolina.util.show
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.RequestConfiguration
+import kotlinx.coroutines.launch
 
 class HistoryActivity : AppCompatActivity() {
 
@@ -62,10 +64,10 @@ class HistoryActivity : AppCompatActivity() {
         if (item.itemId == R.id.action_clear) {
             alert(R.string.confirm_clear_history, R.string.confirmation) {
                 positiveButton(R.string.clear_history) {
-                    val dao = CustomApplication.database.comparisonDao()
-                    dao.deleteAll()
-
-                    initViews()
+                    lifecycleScope.launch {
+                        val dao = CustomApplication.database.comparisonDao()
+                        dao.deleteAll()
+                    }
                 }
                 negativeButton(R.string.cancel) {}
             }.show()
@@ -75,36 +77,38 @@ class HistoryActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun initViews() = with(binding) {
-        setupCommonInsets(incToolbar.appBarLayout, root)
+    private fun initViews() {
+        with(binding) {
+            setupCommonInsets(incToolbar.appBarLayout, root)
 
-        val dao = CustomApplication.database.comparisonDao()
-        val history = dao.getAllComparisons()
+            rvHistory.setHasFixedSize(true)
 
-        if (history.isEmpty()) {
-            tvHistoryEmpty.show()
-            rvHistory.hide()
-            return@with
+            val columns = if (resources.displayMetrics.widthPixels > 1900) 2 else 1
+
+            val layoutManager = GridLayoutManager(applicationContext, columns)
+            rvHistory.layoutManager = layoutManager
+
+            historyAdapter = HistoryAdapter(applicationContext)
+
+            rvHistory.adapter = historyAdapter
+
+            val divider = DividerItemDecoration(applicationContext, layoutManager.orientation)
+            rvHistory.addItemDecoration(divider)
+
+            lifecycleScope.launch {
+                val dao = CustomApplication.database.comparisonDao()
+                dao.getAllComparisons().collect { history ->
+                    if (history.isEmpty()) {
+                        tvHistoryEmpty.show()
+                        rvHistory.hide()
+                    } else {
+                        tvHistoryEmpty.hide()
+                        rvHistory.show()
+                        historyAdapter?.setData(history)
+                    }
+                }
+            }
         }
-
-        tvHistoryEmpty.hide()
-        rvHistory.show()
-
-        rvHistory.setHasFixedSize(true)
-
-        val columns = if (resources.displayMetrics.widthPixels > 1900) 2 else 1
-
-        val layoutManager = GridLayoutManager(applicationContext, columns)
-        rvHistory.layoutManager = layoutManager
-
-        historyAdapter = HistoryAdapter(applicationContext)
-
-        rvHistory.adapter = historyAdapter
-
-        val divider = DividerItemDecoration(applicationContext, layoutManager.orientation)
-        rvHistory.addItemDecoration(divider)
-
-        historyAdapter?.setData(history)
     }
 
 }

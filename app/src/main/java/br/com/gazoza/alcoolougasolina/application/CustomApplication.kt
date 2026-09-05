@@ -6,6 +6,7 @@ import br.com.gazoza.alcoolougasolina.BuildConfig
 import br.com.gazoza.alcoolougasolina.data.AppDatabase
 import br.com.gazoza.alcoolougasolina.di.appModule
 import br.com.gazoza.alcoolougasolina.di.localModule
+import br.com.gazoza.alcoolougasolina.di.repositoryModule
 import br.com.gazoza.alcoolougasolina.util.API_ANDROID
 import br.com.gazoza.alcoolougasolina.util.API_DEBUG
 import br.com.gazoza.alcoolougasolina.util.API_IDENTIFIER
@@ -50,7 +51,8 @@ class CustomApplication : Application() {
             androidContext(this@CustomApplication)
             modules(
                 appModule,
-                localModule
+                localModule,
+                repositoryModule,
             )
         }
 
@@ -80,7 +82,7 @@ class CustomApplication : Application() {
             API_PLATFORM to API_ANDROID,
             API_PLATFORM_V to Build.VERSION.SDK_INT,
             API_DEBUG to (if (isDebug()) "1" else "0"),
-            API_V to 8
+            API_V to 8,
         )
     }
 
