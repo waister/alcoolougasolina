@@ -4,22 +4,17 @@ kotlin = "2.4.10"
 ksp = "2.3.11"
 googleServices = "4.5.0"
 crashlyticsPlugin = "3.0.8"
-ktlintPlugin = "12.1.2"
 ktlintCli = "1.5.0"
 
 # AndroidX Core & UI
 coreKtx = "1.15.0"
 appcompat = "1.7.0"
-material = "1.12.0"
-constraintlayout = "2.2.0"
-activityCompose = "1.10.0"
+activityCompose = "1.10.1"
 splashscreen = "1.0.1"
-appUpdate = "2.1.0"
-workRuntime = "2.10.0"
 
 # Compose
 composeBom = "2025.02.00"
-navigationCompose = "2.8.7"
+navigationCompose = "2.8.8"
 lifecycleRuntimeCompose = "2.8.7"
 lifecycleViewmodelCompose = "2.8.7"
 lifecycleProcess = "2.8.7"
@@ -31,25 +26,23 @@ coroutines = "1.10.1"
 room = "2.8.4"
 
 # Koin
-koin = "4.0.0"
-koinCompose = "4.0.0"
+koin = "4.0.2"
+koinCompose = "4.0.2"
 
 # Firebase & Play Services
-firebaseBom = "33.9.0"
+firebaseBom = "33.10.0"
 playServicesAds = "23.6.0"
 
 # Networking & Utilities
 fuel = "2.3.1"
 coil = "2.7.0"
-picasso = "2.71828"
-subsamplingImageView = "3.10.0"
 
 # Testing
 junit = "4.13.2"
 androidxTestExt = "1.2.1"
 androidxTestCore = "1.6.1"
 espresso = "3.6.1"
-mockk = "1.13.16"
+mockk = "1.13.17"
 turbine = "1.2.0"
 robolectric = "4.14.1"
 
@@ -57,12 +50,8 @@ robolectric = "4.14.1"
 # AndroidX & Core
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
-material = { group = "com.google.android.material", name = "material", version.ref = "material" }
-androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
-play-app-update = { group = "com.google.android.play", name = "app-update-ktx", version.ref = "appUpdate" }
-androidx-work-runtime = { group = "androidx.work", name = "work-runtime-ktx", version.ref = "workRuntime" }
 
 # Compose BOM & UI
 compose-bom = { group = "androidx.compose", name = "compose-bom", version.ref = "composeBom" }
@@ -107,10 +96,8 @@ play-services-ads = { group = "com.google.android.gms", name = "play-services-ad
 
 # Image & Networking
 coil-compose = { group = "io.coil-kt", name = "coil-compose", version.ref = "coil" }
-picasso = { group = "com.squareup.picasso", name = "picasso", version.ref = "picasso" }
 fuel-android = { group = "com.github.kittinunf.fuel", name = "fuel-android", version.ref = "fuel" }
 fuel-coroutines = { group = "com.github.kittinunf.fuel", name = "fuel-coroutines", version.ref = "fuel" }
-subsampling-scale-image-view = { group = "com.davemorrissey.labs", name = "subsampling-scale-image-view-androidx", version.ref = "subsamplingImageView" }
 
 # Testing
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -130,4 +117,3 @@ kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "ko
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlyticsPlugin" }
-ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlintPlugin" }

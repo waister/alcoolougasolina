@@ -91,12 +91,8 @@ dependencies {
     // AndroidX & UI
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    implementation(libs.androidx.constraintlayout)
     implementation(libs.androidx.activity.compose)
     implementation(libs.androidx.core.splashscreen)
-    implementation(libs.play.app.update)
-    implementation(libs.androidx.work.runtime)
     implementation(libs.androidx.lifecycle.process)
 
     // Compose
@@ -138,10 +134,8 @@ dependencies {
 
     // Utilities & Network
     implementation(libs.coil.compose)
-    implementation(libs.picasso)
     implementation(libs.fuel.android)
     implementation(libs.fuel.coroutines)
-    implementation(libs.subsampling.scale.image.view)
 
     // Unit Testing
     testImplementation(libs.junit)
@@ -156,9 +150,7 @@ dependencies {
     testImplementation(libs.room.testing)
 
     // Instrumentation Testing
-    androidTestImplementation(libs.androidx.test.ext.junit)
     androidTestImplementation(libs.androidx.test.espresso.core)
-    androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.compose.ui.test.junit4)
 
     // KtLint CLI
