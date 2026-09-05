@@ -61,9 +61,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.tooling.preview.Preview
 import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.ui.components.AppTopBar
 import br.com.gazoza.alcoolougasolina.ui.components.BannerAd
+import br.com.gazoza.alcoolougasolina.ui.theme.AppTheme
 import br.com.gazoza.alcoolougasolina.ui.theme.DarkBackground
 import br.com.gazoza.alcoolougasolina.ui.theme.DarkCard
 import br.com.gazoza.alcoolougasolina.ui.theme.GreenLight
@@ -82,43 +84,7 @@ fun MainScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
-    val focusManager = LocalFocusManager.current
     var updateUrlToOpen by remember { mutableStateOf<String?>(null) }
-
-    var ethanolTextFieldValue by remember {
-        mutableStateOf(
-            TextFieldValue(
-                text = uiState.priceEthanol,
-                selection = TextRange(uiState.priceEthanol.length),
-            ),
-        )
-    }
-    var gasolineTextFieldValue by remember {
-        mutableStateOf(
-            TextFieldValue(
-                text = uiState.priceGasoline,
-                selection = TextRange(uiState.priceGasoline.length),
-            ),
-        )
-    }
-
-    LaunchedEffect(uiState.priceEthanol) {
-        if (uiState.priceEthanol != ethanolTextFieldValue.text) {
-            ethanolTextFieldValue = TextFieldValue(
-                text = uiState.priceEthanol,
-                selection = TextRange(uiState.priceEthanol.length),
-            )
-        }
-    }
-
-    LaunchedEffect(uiState.priceGasoline) {
-        if (uiState.priceGasoline != gasolineTextFieldValue.text) {
-            gasolineTextFieldValue = TextFieldValue(
-                text = uiState.priceGasoline,
-                selection = TextRange(uiState.priceGasoline.length),
-            )
-        }
-    }
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
@@ -173,26 +139,86 @@ fun MainScreen(
         )
     }
 
+    MainContent(
+        uiState = uiState,
+        onEthanolPriceChanged = viewModel::onEthanolPriceChanged,
+        onGasolinePriceChanged = viewModel::onGasolinePriceChanged,
+        onCalculate = viewModel::calculate,
+        onClearInputs = viewModel::clearInputs,
+        onNotificationsClick = onNavigateToNotifications,
+        onHistoryClick = onNavigateToHistory,
+        onShareClick = viewModel::onShareClicked,
+    )
+}
+
+@Composable
+fun MainContent(
+    uiState: MainUiState,
+    onEthanolPriceChanged: (String) -> Unit,
+    onGasolinePriceChanged: (String) -> Unit,
+    onCalculate: () -> Unit,
+    onClearInputs: () -> Unit,
+    onNotificationsClick: () -> Unit,
+    onHistoryClick: () -> Unit,
+    onShareClick: () -> Unit,
+) {
+    val focusManager = LocalFocusManager.current
+
+    var ethanolTextFieldValue by remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = uiState.priceEthanol,
+                selection = TextRange(uiState.priceEthanol.length),
+            ),
+        )
+    }
+    var gasolineTextFieldValue by remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = uiState.priceGasoline,
+                selection = TextRange(uiState.priceGasoline.length),
+            ),
+        )
+    }
+
+    LaunchedEffect(uiState.priceEthanol) {
+        if (uiState.priceEthanol != ethanolTextFieldValue.text) {
+            ethanolTextFieldValue = TextFieldValue(
+                text = uiState.priceEthanol,
+                selection = TextRange(uiState.priceEthanol.length),
+            )
+        }
+    }
+
+    LaunchedEffect(uiState.priceGasoline) {
+        if (uiState.priceGasoline != gasolineTextFieldValue.text) {
+            gasolineTextFieldValue = TextFieldValue(
+                text = uiState.priceGasoline,
+                selection = TextRange(uiState.priceGasoline.length),
+            )
+        }
+    }
+
     Scaffold(
         topBar = {
             AppTopBar(
                 title = stringResource(R.string.app_name),
                 actions = {
-                    IconButton(onClick = onNavigateToNotifications) {
+                    IconButton(onClick = onNotificationsClick) {
                         Icon(
                             imageVector = Icons.Default.Notifications,
                             contentDescription = stringResource(R.string.notifications),
                             tint = TextPrimary,
                         )
                     }
-                    IconButton(onClick = onNavigateToHistory) {
+                    IconButton(onClick = onHistoryClick) {
                         Icon(
                             imageVector = Icons.Default.History,
                             contentDescription = stringResource(R.string.history),
                             tint = TextPrimary,
                         )
                     }
-                    IconButton(onClick = { viewModel.onShareClicked() }) {
+                    IconButton(onClick = onShareClick) {
                         Icon(
                             imageVector = Icons.Default.Share,
                             contentDescription = stringResource(R.string.share_app),
@@ -260,7 +286,7 @@ fun MainScreen(
                                     text = formatted,
                                     selection = TextRange(formatted.length),
                                 )
-                                viewModel.onEthanolPriceChanged(formatted)
+                                onEthanolPriceChanged(formatted)
                             }
                         },
                         placeholder = { Text("R$ 0,00", color = TextMuted) },
@@ -328,7 +354,7 @@ fun MainScreen(
                                     text = formatted,
                                     selection = TextRange(formatted.length),
                                 )
-                                viewModel.onGasolinePriceChanged(formatted)
+                                onGasolinePriceChanged(formatted)
                             }
                         },
                         placeholder = { Text("R$ 0,00", color = TextMuted) },
@@ -340,7 +366,7 @@ fun MainScreen(
                         keyboardActions = KeyboardActions(
                             onDone = {
                                 focusManager.clearFocus()
-                                viewModel.calculate()
+                                onCalculate()
                             },
                         ),
                         colors = OutlinedTextFieldDefaults.colors(
@@ -368,7 +394,8 @@ fun MainScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             // Result Card
-            if (uiState.isResultVisible && uiState.messageRes != null) {
+            val messageRes = uiState.messageRes
+            if (uiState.isResultVisible && messageRes != null) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = DarkCard),
@@ -383,7 +410,7 @@ fun MainScreen(
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = stringResource(uiState.messageRes!!),
+                                text = stringResource(messageRes),
                                 color = GreenLight,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 18.sp,
@@ -418,7 +445,7 @@ fun MainScreen(
             Button(
                 onClick = {
                     focusManager.clearFocus()
-                    viewModel.calculate()
+                    onCalculate()
                 },
                 enabled = uiState.isCalculateEnabled,
                 colors = ButtonDefaults.buttonColors(
@@ -443,7 +470,7 @@ fun MainScreen(
                 TextButton(
                     onClick = {
                         focusManager.clearFocus()
-                        viewModel.clearInputs()
+                        onClearInputs()
                     },
                     modifier = Modifier.fillMaxWidth(),
                 ) {
@@ -455,5 +482,74 @@ fun MainScreen(
                 }
             }
         }
+    }
+}
+
+@Preview(name = "Main Screen - Initial", showBackground = true)
+@Composable
+private fun MainScreenInitialPreview() {
+    AppTheme {
+        MainContent(
+            uiState = MainUiState(),
+            onEthanolPriceChanged = {},
+            onGasolinePriceChanged = {},
+            onCalculate = {},
+            onClearInputs = {},
+            onNotificationsClick = {},
+            onHistoryClick = {},
+            onShareClick = {},
+        )
+    }
+}
+
+@Preview(name = "Main Screen - Ethanol Result", showBackground = true)
+@Composable
+private fun MainScreenEthanolResultPreview() {
+    AppTheme {
+        MainContent(
+            uiState = MainUiState(
+                priceEthanol = "R$ 3,28",
+                priceGasoline = "R$ 5,90",
+                isCalculateEnabled = true,
+                isClearEnabled = true,
+                isResultVisible = true,
+                recommendation = FuelRecommendation.ETHANOL,
+                messageRes = R.string.msg_use_ethanol,
+                percentageText = "55.59%",
+            ),
+            onEthanolPriceChanged = {},
+            onGasolinePriceChanged = {},
+            onCalculate = {},
+            onClearInputs = {},
+            onNotificationsClick = {},
+            onHistoryClick = {},
+            onShareClick = {},
+        )
+    }
+}
+
+@Preview(name = "Main Screen - Gasoline Result", showBackground = true)
+@Composable
+private fun MainScreenGasolineResultPreview() {
+    AppTheme {
+        MainContent(
+            uiState = MainUiState(
+                priceEthanol = "R$ 4,80",
+                priceGasoline = "R$ 5,50",
+                isCalculateEnabled = true,
+                isClearEnabled = true,
+                isResultVisible = true,
+                recommendation = FuelRecommendation.GASOLINE,
+                messageRes = R.string.msg_use_gasoline,
+                percentageText = "87.27%",
+            ),
+            onEthanolPriceChanged = {},
+            onGasolinePriceChanged = {},
+            onCalculate = {},
+            onClearInputs = {},
+            onNotificationsClick = {},
+            onHistoryClick = {},
+            onShareClick = {},
+        )
     }
 }

@@ -42,10 +42,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.tooling.preview.Preview
 import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.domain.Comparison
 import br.com.gazoza.alcoolougasolina.ui.components.AppTopBar
 import br.com.gazoza.alcoolougasolina.ui.components.BannerAd
+import br.com.gazoza.alcoolougasolina.ui.theme.AppTheme
 import br.com.gazoza.alcoolougasolina.ui.theme.DarkBackground
 import br.com.gazoza.alcoolougasolina.ui.theme.DarkCard
 import br.com.gazoza.alcoolougasolina.ui.theme.GreenLight
@@ -96,6 +98,19 @@ fun HistoryScreen(
         )
     }
 
+    HistoryContent(
+        uiState = uiState,
+        onBackClick = onBackClick,
+        onClearHistoryClick = viewModel::onClearHistoryClicked,
+    )
+}
+
+@Composable
+fun HistoryContent(
+    uiState: HistoryUiState,
+    onBackClick: () -> Unit,
+    onClearHistoryClick: () -> Unit,
+) {
     Scaffold(
         topBar = {
             AppTopBar(
@@ -103,7 +118,7 @@ fun HistoryScreen(
                 onBackClick = onBackClick,
                 actions = {
                     if (uiState.comparisons.isNotEmpty()) {
-                        IconButton(onClick = { viewModel.onClearHistoryClicked() }) {
+                        IconButton(onClick = onClearHistoryClick) {
                             Icon(
                                 imageVector = Icons.Default.Delete,
                                 contentDescription = stringResource(R.string.clear_history),
@@ -222,5 +237,61 @@ private fun HistoryItem(
                 )
             }
         }
+    }
+}
+
+@Preview(name = "History Screen - Loaded", showBackground = true)
+@Composable
+private fun HistoryScreenLoadedPreview() {
+    AppTheme {
+        HistoryContent(
+            uiState = HistoryUiState(
+                isLoading = false,
+                comparisons = listOf(
+                    Comparison(
+                        id = 1,
+                        priceEthanol = "R$ 3,28",
+                        priceGasoline = "R$ 5,90",
+                        proportion = 0.5559,
+                        percentage = "55.59%",
+                        timestamp = 1718000000000L,
+                    ),
+                    Comparison(
+                        id = 2,
+                        priceEthanol = "R$ 4,80",
+                        priceGasoline = "R$ 5,50",
+                        proportion = 0.8727,
+                        percentage = "87.27%",
+                        timestamp = 1717900000000L,
+                    ),
+                ),
+            ),
+            onBackClick = {},
+            onClearHistoryClick = {},
+        )
+    }
+}
+
+@Preview(name = "History Screen - Empty", showBackground = true)
+@Composable
+private fun HistoryScreenEmptyPreview() {
+    AppTheme {
+        HistoryContent(
+            uiState = HistoryUiState(isLoading = false, comparisons = emptyList()),
+            onBackClick = {},
+            onClearHistoryClick = {},
+        )
+    }
+}
+
+@Preview(name = "History Screen - Loading", showBackground = true)
+@Composable
+private fun HistoryScreenLoadingPreview() {
+    AppTheme {
+        HistoryContent(
+            uiState = HistoryUiState(isLoading = true, comparisons = emptyList()),
+            onBackClick = {},
+            onClearHistoryClick = {},
+        )
     }
 }

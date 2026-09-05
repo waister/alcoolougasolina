@@ -30,10 +30,12 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.tooling.preview.Preview
 import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.domain.NotificationItem
 import br.com.gazoza.alcoolougasolina.ui.components.AppTopBar
 import br.com.gazoza.alcoolougasolina.ui.components.BannerAd
+import br.com.gazoza.alcoolougasolina.ui.theme.AppTheme
 import br.com.gazoza.alcoolougasolina.ui.theme.DarkBackground
 import br.com.gazoza.alcoolougasolina.ui.theme.DarkCard
 import br.com.gazoza.alcoolougasolina.ui.theme.GreenPrimary
@@ -51,6 +53,19 @@ fun NotificationsScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    NotificationsContent(
+        uiState = uiState,
+        onBackClick = onBackClick,
+        onNotificationClick = onNotificationClick,
+    )
+}
+
+@Composable
+fun NotificationsContent(
+    uiState: NotificationsUiState,
+    onBackClick: () -> Unit,
+    onNotificationClick: (String) -> Unit,
+) {
     Scaffold(
         topBar = {
             AppTopBar(
@@ -68,23 +83,24 @@ fun NotificationsScreen(
                 .fillMaxSize()
                 .padding(paddingValues),
         ) {
-            when {
-                uiState.isLoading -> {
-                    CircularProgressIndicator(
-                        color = GreenPrimary,
-                        modifier = Modifier.align(Alignment.Center),
-                    )
-                }
-                uiState.errorMessage != null -> {
-                    Text(
-                        text = uiState.errorMessage!!,
-                        color = TextMuted,
-                        fontSize = 16.sp,
-                        modifier = Modifier
-                            .align(Alignment.Center)
-                            .padding(24.dp),
-                    )
-                }
+                val error = uiState.errorMessage
+                when {
+                    uiState.isLoading -> {
+                        CircularProgressIndicator(
+                            color = GreenPrimary,
+                            modifier = Modifier.align(Alignment.Center),
+                        )
+                    }
+                    error != null -> {
+                        Text(
+                            text = error,
+                            color = TextMuted,
+                            fontSize = 16.sp,
+                            modifier = Modifier
+                                .align(Alignment.Center)
+                                .padding(24.dp),
+                        )
+                    }
                 uiState.notifications.isEmpty() -> {
                     Text(
                         text = stringResource(R.string.notifications_empty),
@@ -166,5 +182,57 @@ private fun NotificationRow(
                 )
             }
         }
+    }
+}
+
+@Preview(name = "Notifications Screen - Loaded", showBackground = true)
+@Composable
+private fun NotificationsScreenLoadedPreview() {
+    AppTheme {
+        NotificationsContent(
+            uiState = NotificationsUiState(
+                isLoading = false,
+                notifications = listOf(
+                    NotificationItem(
+                        id = "1",
+                        title = "Preço dos combustíveis subiu!",
+                        body = "Confira a nova proporção calculada para abastecer com economia.",
+                        date = "2026-06-01 10:30:00",
+                    ),
+                    NotificationItem(
+                        id = "2",
+                        title = "Dica da semana",
+                        body = "Saiba como melhorar a autonomia do seu carro flex no trânsito urbano.",
+                        date = "2026-05-28 14:00:00",
+                    ),
+                ),
+            ),
+            onBackClick = {},
+            onNotificationClick = {},
+        )
+    }
+}
+
+@Preview(name = "Notifications Screen - Empty", showBackground = true)
+@Composable
+private fun NotificationsScreenEmptyPreview() {
+    AppTheme {
+        NotificationsContent(
+            uiState = NotificationsUiState(isLoading = false, notifications = emptyList()),
+            onBackClick = {},
+            onNotificationClick = {},
+        )
+    }
+}
+
+@Preview(name = "Notifications Screen - Loading", showBackground = true)
+@Composable
+private fun NotificationsScreenLoadingPreview() {
+    AppTheme {
+        NotificationsContent(
+            uiState = NotificationsUiState(isLoading = true, notifications = emptyList()),
+            onBackClick = {},
+            onNotificationClick = {},
+        )
     }
 }

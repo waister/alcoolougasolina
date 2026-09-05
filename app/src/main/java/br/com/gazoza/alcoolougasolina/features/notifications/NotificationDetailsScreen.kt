@@ -32,9 +32,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.tooling.preview.Preview
 import br.com.gazoza.alcoolougasolina.R
+import br.com.gazoza.alcoolougasolina.domain.NotificationItem
 import br.com.gazoza.alcoolougasolina.ui.components.AppTopBar
 import br.com.gazoza.alcoolougasolina.ui.components.BannerAd
+import br.com.gazoza.alcoolougasolina.ui.theme.AppTheme
 import br.com.gazoza.alcoolougasolina.ui.theme.DarkBackground
 import br.com.gazoza.alcoolougasolina.ui.theme.GreenPrimary
 import br.com.gazoza.alcoolougasolina.ui.theme.TextMuted
@@ -57,6 +60,22 @@ fun NotificationDetailsScreen(
         viewModel.loadNotificationDetail(notificationId)
     }
 
+    NotificationDetailsContent(
+        uiState = uiState,
+        onBackClick = onBackClick,
+        onOpenLink = { url ->
+            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+            context.startActivity(intent)
+        },
+    )
+}
+
+@Composable
+fun NotificationDetailsContent(
+    uiState: NotificationsUiState,
+    onBackClick: () -> Unit,
+    onOpenLink: (String) -> Unit,
+) {
     Scaffold(
         topBar = {
             AppTopBar(
@@ -74,16 +93,16 @@ fun NotificationDetailsScreen(
                 .fillMaxSize()
                 .padding(paddingValues),
         ) {
-            when {
-                uiState.isLoading -> {
-                    CircularProgressIndicator(
-                        color = GreenPrimary,
-                        modifier = Modifier.align(Alignment.Center),
-                    )
-                }
-                uiState.selectedNotification != null -> {
-                    val notif = uiState.selectedNotification!!
-                    Column(
+                val notif = uiState.selectedNotification
+                when {
+                    uiState.isLoading -> {
+                        CircularProgressIndicator(
+                            color = GreenPrimary,
+                            modifier = Modifier.align(Alignment.Center),
+                        )
+                    }
+                    notif != null -> {
+                        Column(
                         modifier = Modifier
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())
@@ -130,10 +149,7 @@ fun NotificationDetailsScreen(
                         if (notif.link.isNotEmpty()) {
                             Spacer(modifier = Modifier.height(24.dp))
                             Button(
-                                onClick = {
-                                    val intent = Intent(Intent.ACTION_VIEW, Uri.parse(notif.link))
-                                    context.startActivity(intent)
-                                },
+                                onClick = { onOpenLink(notif.link) },
                                 colors = ButtonDefaults.buttonColors(containerColor = GreenPrimary),
                                 shape = RoundedCornerShape(8.dp),
                                 modifier = Modifier.fillMaxWidth(),
@@ -149,5 +165,41 @@ fun NotificationDetailsScreen(
                 }
             }
         }
+    }
+}
+
+@Preview(name = "Notification Details - Loaded", showBackground = true)
+@Composable
+private fun NotificationDetailsLoadedPreview() {
+    AppTheme {
+        NotificationDetailsContent(
+            uiState = NotificationsUiState(
+                isLoading = false,
+                selectedNotification = NotificationItem(
+                    id = "1",
+                    title = "Preço dos combustíveis subiu!",
+                    body = "Confira a nova proporção calculada para abastecer com economia nos postos da sua região.",
+                    date = "2026-06-01 10:30:00",
+                    link = "https://maggapps.com",
+                ),
+            ),
+            onBackClick = {},
+            onOpenLink = {},
+        )
+    }
+}
+
+@Preview(name = "Notification Details - Loading", showBackground = true)
+@Composable
+private fun NotificationDetailsLoadingPreview() {
+    AppTheme {
+        NotificationDetailsContent(
+            uiState = NotificationsUiState(
+                isLoading = true,
+                selectedNotification = null,
+            ),
+            onBackClick = {},
+            onOpenLink = {},
+        )
     }
 }

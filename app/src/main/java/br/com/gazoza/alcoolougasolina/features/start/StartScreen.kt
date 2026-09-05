@@ -13,7 +13,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.tooling.preview.Preview
 import br.com.gazoza.alcoolougasolina.R
+import br.com.gazoza.alcoolougasolina.ui.theme.AppTheme
 import br.com.gazoza.alcoolougasolina.ui.theme.DarkBackground
 import br.com.gazoza.alcoolougasolina.ui.theme.GreenPrimary
 import org.koin.androidx.compose.koinViewModel
@@ -42,6 +44,11 @@ fun StartScreen(
         viewModel.initApp(id = id, type = type, itemId = itemId)
     }
 
+    StartContent()
+}
+
+@Composable
+fun StartContent() {
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -61,5 +68,13 @@ fun StartScreen(
                 .padding(bottom = 64.dp)
                 .size(36.dp),
         )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun StartScreenPreview() {
+    AppTheme {
+        StartContent()
     }
 }
