@@ -1,4 +1,4 @@
-package br.com.gazoza.alcoolougasolina.activity
+package br.com.gazoza.alcoolougasolina
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity

@@ -16,7 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import br.com.gazoza.alcoolougasolina.BuildConfig
 import br.com.gazoza.alcoolougasolina.R
-import br.com.gazoza.alcoolougasolina.activity.MainActivity
+import br.com.gazoza.alcoolougasolina.MainActivity
 import br.com.gazoza.alcoolougasolina.util.API_ABOUT_APP
 import br.com.gazoza.alcoolougasolina.util.API_FEEDBACK
 import br.com.gazoza.alcoolougasolina.util.API_NOTIFICATIONS
