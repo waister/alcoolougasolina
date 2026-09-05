@@ -46,6 +46,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
@@ -244,15 +245,23 @@ fun MainScreen(
                     OutlinedTextField(
                         value = ethanolTextFieldValue,
                         onValueChange = { newValue ->
-                            val formatted = MaskMoney.formatMoneyInput(
-                                previousText = ethanolTextFieldValue.text,
-                                newText = newValue.text,
-                            )
-                            ethanolTextFieldValue = TextFieldValue(
-                                text = formatted,
-                                selection = TextRange(formatted.length),
-                            )
-                            viewModel.onEthanolPriceChanged(formatted)
+                            if (newValue.text == ethanolTextFieldValue.text) {
+                                if (newValue.text.isNotEmpty() && newValue.selection != TextRange(0, newValue.text.length)) {
+                                    ethanolTextFieldValue = newValue.copy(
+                                        selection = TextRange(0, newValue.text.length),
+                                    )
+                                }
+                            } else {
+                                val formatted = MaskMoney.formatMoneyInput(
+                                    previousText = ethanolTextFieldValue.text,
+                                    newText = newValue.text,
+                                )
+                                ethanolTextFieldValue = TextFieldValue(
+                                    text = formatted,
+                                    selection = TextRange(formatted.length),
+                                )
+                                viewModel.onEthanolPriceChanged(formatted)
+                            }
                         },
                         placeholder = { Text("R$ 0,00", color = TextMuted) },
                         singleLine = true,
@@ -269,7 +278,15 @@ fun MainScreen(
                             unfocusedContainerColor = DarkCard,
                         ),
                         shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .onFocusChanged { focusState ->
+                                if (focusState.isFocused && ethanolTextFieldValue.text.isNotEmpty()) {
+                                    ethanolTextFieldValue = ethanolTextFieldValue.copy(
+                                        selection = TextRange(0, ethanolTextFieldValue.text.length),
+                                    )
+                                }
+                            },
                     )
                 }
 
@@ -296,15 +313,23 @@ fun MainScreen(
                     OutlinedTextField(
                         value = gasolineTextFieldValue,
                         onValueChange = { newValue ->
-                            val formatted = MaskMoney.formatMoneyInput(
-                                previousText = gasolineTextFieldValue.text,
-                                newText = newValue.text,
-                            )
-                            gasolineTextFieldValue = TextFieldValue(
-                                text = formatted,
-                                selection = TextRange(formatted.length),
-                            )
-                            viewModel.onGasolinePriceChanged(formatted)
+                            if (newValue.text == gasolineTextFieldValue.text) {
+                                if (newValue.text.isNotEmpty() && newValue.selection != TextRange(0, newValue.text.length)) {
+                                    gasolineTextFieldValue = newValue.copy(
+                                        selection = TextRange(0, newValue.text.length),
+                                    )
+                                }
+                            } else {
+                                val formatted = MaskMoney.formatMoneyInput(
+                                    previousText = gasolineTextFieldValue.text,
+                                    newText = newValue.text,
+                                )
+                                gasolineTextFieldValue = TextFieldValue(
+                                    text = formatted,
+                                    selection = TextRange(formatted.length),
+                                )
+                                viewModel.onGasolinePriceChanged(formatted)
+                            }
                         },
                         placeholder = { Text("R$ 0,00", color = TextMuted) },
                         singleLine = true,
@@ -327,7 +352,15 @@ fun MainScreen(
                             unfocusedContainerColor = DarkCard,
                         ),
                         shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .onFocusChanged { focusState ->
+                                if (focusState.isFocused && gasolineTextFieldValue.text.isNotEmpty()) {
+                                    gasolineTextFieldValue = gasolineTextFieldValue.copy(
+                                        selection = TextRange(0, gasolineTextFieldValue.text.length),
+                                    )
+                                }
+                            },
                     )
                 }
             }
