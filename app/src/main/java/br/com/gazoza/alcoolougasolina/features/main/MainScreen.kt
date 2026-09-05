@@ -73,7 +73,11 @@ import br.com.gazoza.alcoolougasolina.util.MaskMoney
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun MainScreen(onNavigateToHistory: () -> Unit, onNavigateToNotifications: () -> Unit, viewModel: MainViewModel = koinViewModel()) {
+fun MainScreen(
+    onNavigateToHistory: () -> Unit,
+    onNavigateToNotifications: () -> Unit,
+    viewModel: MainViewModel = koinViewModel(),
+) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
     var updateUrlToOpen by remember { mutableStateOf<String?>(null) }
@@ -96,8 +100,8 @@ fun MainScreen(onNavigateToHistory: () -> Unit, onNavigateToNotifications: () ->
                     context.startActivity(
                         Intent.createChooser(
                             intent,
-                            context.getString(R.string.share_app)
-                        )
+                            context.getString(R.string.share_app),
+                        ),
                     )
                 }
 
@@ -135,7 +139,7 @@ fun MainScreen(onNavigateToHistory: () -> Unit, onNavigateToNotifications: () ->
                             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
                             context.startActivity(intent)
                         }
-                    }
+                    },
                 ) {
                     Text(stringResource(R.string.update_positive))
                 }
@@ -144,7 +148,7 @@ fun MainScreen(onNavigateToHistory: () -> Unit, onNavigateToNotifications: () ->
                 TextButton(onClick = { updateUrlToOpen = null }) {
                     Text(stringResource(R.string.update_negative))
                 }
-            }
+            },
         )
     }
 
@@ -156,7 +160,7 @@ fun MainScreen(onNavigateToHistory: () -> Unit, onNavigateToNotifications: () ->
         onClearInputs = viewModel::clearInputs,
         onNotificationsClick = onNavigateToNotifications,
         onHistoryClick = onNavigateToHistory,
-        onShareClick = viewModel::onShareClicked
+        onShareClick = viewModel::onShareClicked,
     )
 }
 
@@ -169,7 +173,7 @@ fun MainContent(
     onClearInputs: () -> Unit,
     onNotificationsClick: () -> Unit,
     onHistoryClick: () -> Unit,
-    onShareClick: () -> Unit
+    onShareClick: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
 
@@ -177,16 +181,16 @@ fun MainContent(
         mutableStateOf(
             TextFieldValue(
                 text = uiState.priceEthanol,
-                selection = TextRange(uiState.priceEthanol.length)
-            )
+                selection = TextRange(uiState.priceEthanol.length),
+            ),
         )
     }
     var gasolineTextFieldValue by remember {
         mutableStateOf(
             TextFieldValue(
                 text = uiState.priceGasoline,
-                selection = TextRange(uiState.priceGasoline.length)
-            )
+                selection = TextRange(uiState.priceGasoline.length),
+            ),
         )
     }
 
@@ -195,7 +199,7 @@ fun MainContent(
             ethanolTextFieldValue =
                 TextFieldValue(
                     text = uiState.priceEthanol,
-                    selection = TextRange(uiState.priceEthanol.length)
+                    selection = TextRange(uiState.priceEthanol.length),
                 )
         }
     }
@@ -205,7 +209,7 @@ fun MainContent(
             gasolineTextFieldValue =
                 TextFieldValue(
                     text = uiState.priceGasoline,
-                    selection = TextRange(uiState.priceGasoline.length)
+                    selection = TextRange(uiState.priceGasoline.length),
                 )
         }
     }
@@ -219,30 +223,30 @@ fun MainContent(
                         Icon(
                             imageVector = Icons.Default.Notifications,
                             contentDescription = stringResource(R.string.notifications),
-                            tint = TextPrimary
+                            tint = TextPrimary,
                         )
                     }
                     IconButton(onClick = onHistoryClick) {
                         Icon(
                             imageVector = Icons.Default.History,
                             contentDescription = stringResource(R.string.history),
-                            tint = TextPrimary
+                            tint = TextPrimary,
                         )
                     }
                     IconButton(onClick = onShareClick) {
                         Icon(
                             imageVector = Icons.Default.Share,
                             contentDescription = stringResource(R.string.share_app),
-                            tint = TextPrimary
+                            tint = TextPrimary,
                         )
                     }
-                }
+                },
             )
         },
         bottomBar = {
             BannerAd()
         },
-        containerColor = DarkBackground
+        containerColor = DarkBackground,
     ) { paddingValues ->
         Column(
             modifier =
@@ -251,7 +255,7 @@ fun MainContent(
                 .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp, vertical = 16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Image(
                 painter = painterResource(id = R.drawable.logo_128dp),
@@ -259,7 +263,7 @@ fun MainContent(
                 modifier =
                 Modifier
                     .size(110.dp)
-                    .padding(vertical = 8.dp)
+                    .padding(vertical = 8.dp),
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -267,7 +271,7 @@ fun MainContent(
             // Labels Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = stringResource(R.string.ethanol),
@@ -275,14 +279,14 @@ fun MainContent(
                     fontWeight = FontWeight.Bold,
                     fontSize = 15.sp,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 )
                 Text(
                     text = stringResource(R.string.separator),
                     color = Color.Transparent,
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 12.dp)
+                    modifier = Modifier.padding(horizontal = 12.dp),
                 )
                 Text(
                     text = stringResource(R.string.gasoline),
@@ -290,7 +294,7 @@ fun MainContent(
                     fontWeight = FontWeight.Bold,
                     fontSize = 15.sp,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 )
             }
 
@@ -299,7 +303,7 @@ fun MainContent(
             // Price Inputs Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 OutlinedTextField(
                     value = ethanolTextFieldValue,
@@ -309,24 +313,24 @@ fun MainContent(
                                 newValue.selection !=
                                 TextRange(
                                     0,
-                                    newValue.text.length
+                                    newValue.text.length,
                                 )
                             ) {
                                 ethanolTextFieldValue =
                                     newValue.copy(
-                                        selection = TextRange(0, newValue.text.length)
+                                        selection = TextRange(0, newValue.text.length),
                                     )
                             }
                         } else {
                             val formatted =
                                 MaskMoney.formatMoneyInput(
                                     previousText = ethanolTextFieldValue.text,
-                                    newText = newValue.text
+                                    newText = newValue.text,
                                 )
                             ethanolTextFieldValue =
                                 TextFieldValue(
                                     text = formatted,
-                                    selection = TextRange(formatted.length)
+                                    selection = TextRange(formatted.length),
                                 )
                             onEthanolPriceChanged(formatted)
                         }
@@ -336,7 +340,7 @@ fun MainContent(
                     keyboardOptions =
                     KeyboardOptions(
                         keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next
+                        imeAction = ImeAction.Next,
                     ),
                     colors =
                     OutlinedTextFieldDefaults.colors(
@@ -345,7 +349,7 @@ fun MainContent(
                         focusedBorderColor = GreenLight,
                         unfocusedBorderColor = Color.Gray,
                         focusedContainerColor = DarkCard,
-                        unfocusedContainerColor = DarkCard
+                        unfocusedContainerColor = DarkCard,
                     ),
                     shape = RoundedCornerShape(8.dp),
                     modifier =
@@ -355,10 +359,10 @@ fun MainContent(
                             if (focusState.isFocused && ethanolTextFieldValue.text.isNotEmpty()) {
                                 ethanolTextFieldValue =
                                     ethanolTextFieldValue.copy(
-                                        selection = TextRange(0, ethanolTextFieldValue.text.length)
+                                        selection = TextRange(0, ethanolTextFieldValue.text.length),
                                     )
                             }
-                        }
+                        },
                 )
 
                 Text(
@@ -367,7 +371,7 @@ fun MainContent(
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(horizontal = 12.dp)
+                    modifier = Modifier.padding(horizontal = 12.dp),
                 )
 
                 OutlinedTextField(
@@ -378,24 +382,24 @@ fun MainContent(
                                 newValue.selection !=
                                 TextRange(
                                     0,
-                                    newValue.text.length
+                                    newValue.text.length,
                                 )
                             ) {
                                 gasolineTextFieldValue =
                                     newValue.copy(
-                                        selection = TextRange(0, newValue.text.length)
+                                        selection = TextRange(0, newValue.text.length),
                                     )
                             }
                         } else {
                             val formatted =
                                 MaskMoney.formatMoneyInput(
                                     previousText = gasolineTextFieldValue.text,
-                                    newText = newValue.text
+                                    newText = newValue.text,
                                 )
                             gasolineTextFieldValue =
                                 TextFieldValue(
                                     text = formatted,
-                                    selection = TextRange(formatted.length)
+                                    selection = TextRange(formatted.length),
                                 )
                             onGasolinePriceChanged(formatted)
                         }
@@ -405,14 +409,14 @@ fun MainContent(
                     keyboardOptions =
                     KeyboardOptions(
                         keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done
+                        imeAction = ImeAction.Done,
                     ),
                     keyboardActions =
                     KeyboardActions(
                         onDone = {
                             focusManager.clearFocus()
                             onCalculate()
-                        }
+                        },
                     ),
                     colors =
                     OutlinedTextFieldDefaults.colors(
@@ -421,7 +425,7 @@ fun MainContent(
                         focusedBorderColor = GreenLight,
                         unfocusedBorderColor = Color.Gray,
                         focusedContainerColor = DarkCard,
-                        unfocusedContainerColor = DarkCard
+                        unfocusedContainerColor = DarkCard,
                     ),
                     shape = RoundedCornerShape(8.dp),
                     modifier =
@@ -431,10 +435,10 @@ fun MainContent(
                             if (focusState.isFocused && gasolineTextFieldValue.text.isNotEmpty()) {
                                 gasolineTextFieldValue =
                                     gasolineTextFieldValue.copy(
-                                        selection = TextRange(0, gasolineTextFieldValue.text.length)
+                                        selection = TextRange(0, gasolineTextFieldValue.text.length),
                                     )
                             }
-                        }
+                        },
                 )
             }
 
@@ -446,7 +450,7 @@ fun MainContent(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = DarkCard),
-                    shape = RoundedCornerShape(12.dp)
+                    shape = RoundedCornerShape(12.dp),
                 ) {
                     Row(
                         modifier =
@@ -454,14 +458,14 @@ fun MainContent(
                             .fillMaxWidth()
                             .padding(16.dp),
                         verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
+                        horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
                                 text = stringResource(messageRes),
                                 color = GreenLight,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 18.sp
+                                fontSize = 18.sp,
                             )
                             if (uiState.percentageText.isNotEmpty()) {
                                 Spacer(modifier = Modifier.height(4.dp))
@@ -469,10 +473,10 @@ fun MainContent(
                                     text =
                                     stringResource(
                                         R.string.msg_result,
-                                        uiState.percentageText
+                                        uiState.percentageText,
                                     ),
                                     color = TextSecondary,
-                                    fontSize = 14.sp
+                                    fontSize = 14.sp,
                                 )
                             }
                         }
@@ -486,7 +490,7 @@ fun MainContent(
                         Image(
                             painter = painterResource(id = iconRes),
                             contentDescription = null,
-                            modifier = Modifier.size(40.dp)
+                            modifier = Modifier.size(40.dp),
                         )
                     }
                 }
@@ -505,18 +509,18 @@ fun MainContent(
                 ButtonDefaults.buttonColors(
                     containerColor = GreenPrimary,
                     disabledContainerColor = GreenPrimary.copy(alpha = 0.4f),
-                    contentColor = TextPrimary
+                    contentColor = TextPrimary,
                 ),
                 shape = RoundedCornerShape(8.dp),
                 modifier =
                 Modifier
                     .fillMaxWidth()
-                    .height(50.dp)
+                    .height(50.dp),
             ) {
                 Text(
                     text = stringResource(R.string.calculate).uppercase(),
                     fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp
+                    fontSize = 16.sp,
                 )
             }
 
@@ -527,12 +531,12 @@ fun MainContent(
                         focusManager.clearFocus()
                         onClearInputs()
                     },
-                    modifier = Modifier.fillMaxWidth()
+                    modifier = Modifier.fillMaxWidth(),
                 ) {
                     Text(
                         text = stringResource(R.string.clear),
                         color = TextMuted,
-                        fontSize = 14.sp
+                        fontSize = 14.sp,
                     )
                 }
             }
@@ -552,7 +556,7 @@ private fun MainScreenInitialPreview() {
             onClearInputs = {},
             onNotificationsClick = {},
             onHistoryClick = {},
-            onShareClick = {}
+            onShareClick = {},
         )
     }
 }
@@ -571,7 +575,7 @@ private fun MainScreenEthanolResultPreview() {
                 isResultVisible = true,
                 recommendation = FuelRecommendation.ETHANOL,
                 messageRes = R.string.msg_use_ethanol,
-                percentageText = "55.59%"
+                percentageText = "55.59%",
             ),
             onEthanolPriceChanged = {},
             onGasolinePriceChanged = {},
@@ -579,7 +583,7 @@ private fun MainScreenEthanolResultPreview() {
             onClearInputs = {},
             onNotificationsClick = {},
             onHistoryClick = {},
-            onShareClick = {}
+            onShareClick = {},
         )
     }
 }
@@ -598,7 +602,7 @@ private fun MainScreenGasolineResultPreview() {
                 isResultVisible = true,
                 recommendation = FuelRecommendation.GASOLINE,
                 messageRes = R.string.msg_use_gasoline,
-                percentageText = "87.27%"
+                percentageText = "87.27%",
             ),
             onEthanolPriceChanged = {},
             onGasolinePriceChanged = {},
@@ -606,7 +610,7 @@ private fun MainScreenGasolineResultPreview() {
             onClearInputs = {},
             onNotificationsClick = {},
             onHistoryClick = {},
-            onShareClick = {}
+            onShareClick = {},
         )
     }
 }

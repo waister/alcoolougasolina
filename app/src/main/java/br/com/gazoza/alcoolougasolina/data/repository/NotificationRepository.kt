@@ -65,8 +65,8 @@ class NotificationRepositoryImpl(private val preferencesRepository: PreferencesR
                                         date = itemObj.getStringVal(API_DATE),
                                         image = itemObj.getStringVal(API_IMAGE),
                                         link = itemObj.getStringVal(API_LINK),
-                                        type = itemObj.getStringVal(API_TYPE)
-                                    )
+                                        type = itemObj.getStringVal(API_TYPE),
+                                    ),
                                 )
                             }
                         }
@@ -79,7 +79,7 @@ class NotificationRepositoryImpl(private val preferencesRepository: PreferencesR
                 },
                 failure = { error ->
                     DataResult.Error(error.message ?: CONNECTION_ERROR, error)
-                }
+                },
             )
         } catch (e: Exception) {
             e.printOrReport()
@@ -104,8 +104,8 @@ class NotificationRepositoryImpl(private val preferencesRepository: PreferencesR
                         date = obj.getStringVal(API_DATE),
                         image = obj.getStringVal(API_IMAGE),
                         link = obj.getStringVal(API_LINK),
-                        type = obj.getStringVal(API_TYPE)
-                    )
+                        type = obj.getStringVal(API_TYPE),
+                    ),
                 )
             }
 
@@ -125,8 +125,8 @@ class NotificationRepositoryImpl(private val preferencesRepository: PreferencesR
                                 date = notifObj.getStringVal(API_DATE),
                                 image = notifObj.getStringVal(API_IMAGE),
                                 link = notifObj.getStringVal(API_LINK),
-                                type = notifObj.getStringVal(API_TYPE)
-                            )
+                                type = notifObj.getStringVal(API_TYPE),
+                            ),
                         )
                     } else {
                         val msg =
@@ -136,7 +136,7 @@ class NotificationRepositoryImpl(private val preferencesRepository: PreferencesR
                 },
                 failure = { error ->
                     DataResult.Error(error.message ?: CONNECTION_ERROR, error)
-                }
+                },
             )
         } catch (e: Exception) {
             e.printOrReport()
@@ -159,7 +159,7 @@ class NotificationRepositoryImpl(private val preferencesRepository: PreferencesR
                 },
                 failure = { error ->
                     DataResult.Error(error.message ?: CONNECTION_ERROR, error)
-                }
+                },
             )
         } catch (e: Exception) {
             e.printOrReport()

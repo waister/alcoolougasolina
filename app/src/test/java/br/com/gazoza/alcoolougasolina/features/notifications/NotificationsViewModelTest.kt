@@ -30,8 +30,8 @@ class NotificationsViewModelTest : BaseRobolectricTest() {
                 id = "1",
                 title = "Promoção",
                 body = "Corpo da notificação",
-                date = "2026-09-05 10:00:00"
-            )
+                date = "2026-09-05 10:00:00",
+            ),
         )
 
     @Test

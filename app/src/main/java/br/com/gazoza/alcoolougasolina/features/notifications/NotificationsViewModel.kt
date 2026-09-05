@@ -32,7 +32,7 @@ class NotificationsViewModel(private val notificationRepository: NotificationRep
                         it.copy(
                             isLoading = false,
                             notifications = result.data,
-                            errorMessage = null
+                            errorMessage = null,
                         )
                     }
                 }
@@ -41,7 +41,7 @@ class NotificationsViewModel(private val notificationRepository: NotificationRep
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage = result.message
+                            errorMessage = result.message,
                         )
                     }
                 }
@@ -58,7 +58,7 @@ class NotificationsViewModel(private val notificationRepository: NotificationRep
                         it.copy(
                             isLoading = false,
                             selectedNotification = result.data,
-                            errorMessage = null
+                            errorMessage = null,
                         )
                     }
                 }
@@ -67,7 +67,7 @@ class NotificationsViewModel(private val notificationRepository: NotificationRep
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage = result.message
+                            errorMessage = result.message,
                         )
                     }
                     _events.emit(NotificationsEvent.ShowError(result.message))

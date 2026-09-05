@@ -9,25 +9,25 @@ import br.com.gazoza.alcoolougasolina.domain.Comparison
 @Database(
     entities = [Comparison::class],
     version = 1,
-    exportSchema = false
+    exportSchema = false,
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun comparisonDao(): ComparisonDao
 
     companion object {
         @Volatile
-        private var INSTANCE: AppDatabase? = null
+        private var instance: AppDatabase? = null
 
-        fun getDatabase(context: Context): AppDatabase = INSTANCE ?: synchronized(this) {
-            val instance =
+        fun getDatabase(context: Context): AppDatabase = instance ?: synchronized(this) {
+            val newInstance =
                 Room
                     .databaseBuilder(
                         context.applicationContext,
                         AppDatabase::class.java,
-                        "alcohol_gasoline_database"
+                        "alcohol_gasoline_database",
                     ).build()
-            INSTANCE = instance
-            instance
+            instance = newInstance
+            newInstance
         }
     }
 }

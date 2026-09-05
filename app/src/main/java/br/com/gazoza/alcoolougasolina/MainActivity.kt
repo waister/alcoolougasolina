@@ -18,7 +18,7 @@ class MainActivity : ComponentActivity() {
         installSplashScreen()
         enableEdgeToEdge(
             statusBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
-            navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT)
+            navigationBarStyle = SystemBarStyle.dark(Color.TRANSPARENT),
         )
         super.onCreate(savedInstanceState)
 
@@ -31,7 +31,7 @@ class MainActivity : ComponentActivity() {
                 AppNavHost(
                     initId = id,
                     initType = type,
-                    initItemId = itemId
+                    initItemId = itemId,
                 )
             }
         }

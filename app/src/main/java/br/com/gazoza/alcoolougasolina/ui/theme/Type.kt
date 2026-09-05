@@ -14,7 +14,7 @@ val Typography =
             fontWeight = FontWeight.Bold,
             fontSize = 22.sp,
             lineHeight = 28.sp,
-            color = TextPrimary
+            color = TextPrimary,
         ),
         titleMedium =
         TextStyle(
@@ -22,7 +22,7 @@ val Typography =
             fontWeight = FontWeight.SemiBold,
             fontSize = 18.sp,
             lineHeight = 24.sp,
-            color = TextPrimary
+            color = TextPrimary,
         ),
         bodyLarge =
         TextStyle(
@@ -30,7 +30,7 @@ val Typography =
             fontWeight = FontWeight.Normal,
             fontSize = 16.sp,
             lineHeight = 24.sp,
-            color = TextPrimary
+            color = TextPrimary,
         ),
         bodyMedium =
         TextStyle(
@@ -38,7 +38,7 @@ val Typography =
             fontWeight = FontWeight.Normal,
             fontSize = 14.sp,
             lineHeight = 20.sp,
-            color = TextSecondary
+            color = TextSecondary,
         ),
         labelLarge =
         TextStyle(
@@ -46,6 +46,6 @@ val Typography =
             fontWeight = FontWeight.Medium,
             fontSize = 14.sp,
             lineHeight = 20.sp,
-            color = TextPrimary
-        )
+            color = TextPrimary,
+        ),
     )

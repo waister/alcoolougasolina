@@ -83,7 +83,7 @@ fun HistoryScreen(onBackClick: () -> Unit, viewModel: HistoryViewModel = koinVie
                     onClick = {
                         showConfirmDialog = false
                         viewModel.clearHistory()
-                    }
+                    },
                 ) {
                     Text(stringResource(R.string.clear_history), color = GreenLight)
                 }
@@ -92,14 +92,14 @@ fun HistoryScreen(onBackClick: () -> Unit, viewModel: HistoryViewModel = koinVie
                 TextButton(onClick = { showConfirmDialog = false }) {
                     Text(stringResource(R.string.cancel))
                 }
-            }
+            },
         )
     }
 
     HistoryContent(
         uiState = uiState,
         onBackClick = onBackClick,
-        onClearHistoryClick = viewModel::onClearHistoryClicked
+        onClearHistoryClick = viewModel::onClearHistoryClicked,
     )
 }
 
@@ -116,29 +116,29 @@ fun HistoryContent(uiState: HistoryUiState, onBackClick: () -> Unit, onClearHist
                             Icon(
                                 imageVector = Icons.Default.Delete,
                                 contentDescription = stringResource(R.string.clear_history),
-                                tint = TextPrimary
+                                tint = TextPrimary,
                             )
                         }
                     }
-                }
+                },
             )
         },
         bottomBar = {
             BannerAd()
         },
-        containerColor = DarkBackground
+        containerColor = DarkBackground,
     ) { paddingValues ->
         Box(
             modifier =
             Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(paddingValues),
         ) {
             when {
                 uiState.isLoading -> {
                     CircularProgressIndicator(
                         color = GreenPrimary,
-                        modifier = Modifier.align(Alignment.Center)
+                        modifier = Modifier.align(Alignment.Center),
                     )
                 }
 
@@ -147,7 +147,7 @@ fun HistoryContent(uiState: HistoryUiState, onBackClick: () -> Unit, onClearHist
                         text = stringResource(R.string.history_empty),
                         color = TextMuted,
                         fontSize = 16.sp,
-                        modifier = Modifier.align(Alignment.Center)
+                        modifier = Modifier.align(Alignment.Center),
                     )
                 }
 
@@ -155,7 +155,7 @@ fun HistoryContent(uiState: HistoryUiState, onBackClick: () -> Unit, onClearHist
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
                     ) {
                         items(uiState.comparisons, key = { it.id }) { comparison ->
                             HistoryItem(comparison = comparison)
@@ -176,19 +176,19 @@ private fun HistoryItem(comparison: Comparison, modifier: Modifier = Modifier) {
     Card(
         modifier = modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = DarkCard),
-        shape = RoundedCornerShape(12.dp)
+        shape = RoundedCornerShape(12.dp),
     ) {
         Row(
             modifier =
             Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-            verticalAlignment = Alignment.CenterVertically
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Image(
                 painter = painterResource(id = iconRes),
                 contentDescription = null,
-                modifier = Modifier.size(40.dp)
+                modifier = Modifier.size(40.dp),
             )
 
             Spacer(modifier = Modifier.width(16.dp))
@@ -197,7 +197,7 @@ private fun HistoryItem(comparison: Comparison, modifier: Modifier = Modifier) {
                 Text(
                     text = comparison.timestamp.formatDatetime(),
                     color = TextMuted,
-                    fontSize = 12.sp
+                    fontSize = 12.sp,
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))
@@ -207,18 +207,18 @@ private fun HistoryItem(comparison: Comparison, modifier: Modifier = Modifier) {
                         text = stringResource(R.string.label_ethanol, comparison.priceEthanol),
                         color = TextPrimary,
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp
+                        fontSize = 14.sp,
                     )
                     Text(
                         text = " x ",
                         color = TextMuted,
-                        fontSize = 14.sp
+                        fontSize = 14.sp,
                     )
                     Text(
                         text = stringResource(R.string.label_gasoline, comparison.priceGasoline),
                         color = TextPrimary,
                         fontWeight = FontWeight.SemiBold,
-                        fontSize = 14.sp
+                        fontSize = 14.sp,
                     )
                 }
 
@@ -228,7 +228,7 @@ private fun HistoryItem(comparison: Comparison, modifier: Modifier = Modifier) {
                     text = "${stringResource(resultTextRes)} (${comparison.percentage})",
                     color = GreenLight,
                     fontWeight = FontWeight.Bold,
-                    fontSize = 14.sp
+                    fontSize = 14.sp,
                 )
             }
         }
@@ -251,7 +251,7 @@ private fun HistoryScreenLoadedPreview() {
                         priceGasoline = "R$ 5,90",
                         proportion = 0.5559,
                         percentage = "55.59%",
-                        timestamp = 1718000000000L
+                        timestamp = 1718000000000L,
                     ),
                     Comparison(
                         id = 2,
@@ -259,12 +259,12 @@ private fun HistoryScreenLoadedPreview() {
                         priceGasoline = "R$ 5,50",
                         proportion = 0.8727,
                         percentage = "87.27%",
-                        timestamp = 1717900000000L
-                    )
-                )
+                        timestamp = 1717900000000L,
+                    ),
+                ),
             ),
             onBackClick = {},
-            onClearHistoryClick = {}
+            onClearHistoryClick = {},
         )
     }
 }
@@ -276,7 +276,7 @@ private fun HistoryScreenEmptyPreview() {
         HistoryContent(
             uiState = HistoryUiState(isLoading = false, comparisons = emptyList()),
             onBackClick = {},
-            onClearHistoryClick = {}
+            onClearHistoryClick = {},
         )
     }
 }
@@ -288,7 +288,7 @@ private fun HistoryScreenLoadingPreview() {
         HistoryContent(
             uiState = HistoryUiState(isLoading = true, comparisons = emptyList()),
             onBackClick = {},
-            onClearHistoryClick = {}
+            onClearHistoryClick = {},
         )
     }
 }

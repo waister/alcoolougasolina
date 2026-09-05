@@ -11,5 +11,5 @@ data class Comparison(
     var priceGasoline: String = "",
     var proportion: Double = 0.0,
     var percentage: String = "",
-    var timestamp: Long = 0
+    var timestamp: Long = 0,
 )

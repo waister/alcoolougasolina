@@ -28,7 +28,7 @@ fun StartScreen(
     onNavigateToMain: (String) -> Unit,
     onNavigateToNotifications: () -> Unit,
     onNavigateToNotificationDetails: (String) -> Unit,
-    viewModel: StartViewModel = koinViewModel()
+    viewModel: StartViewModel = koinViewModel(),
 ) {
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
@@ -54,12 +54,12 @@ fun StartContent() {
         Modifier
             .fillMaxSize()
             .background(DarkBackground),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Image(
             painter = painterResource(id = R.drawable.logo_128dp),
             contentDescription = "Logo",
-            modifier = Modifier.size(128.dp)
+            modifier = Modifier.size(128.dp),
         )
 
         CircularProgressIndicator(
@@ -68,7 +68,7 @@ fun StartContent() {
             Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 64.dp)
-                .size(36.dp)
+                .size(36.dp),
         )
     }
 }

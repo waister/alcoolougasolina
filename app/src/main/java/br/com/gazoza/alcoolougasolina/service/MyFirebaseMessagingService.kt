@@ -225,8 +225,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                 vibrator.vibrate(
                     VibrationEffect.createWaveform(
                         pattern,
-                        VibrationEffect.DEFAULT_AMPLITUDE
-                    )
+                        VibrationEffect.DEFAULT_AMPLITUDE,
+                    ),
                 )
             } else {
                 @Suppress("DEPRECATION")

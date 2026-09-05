@@ -57,7 +57,7 @@ class CustomApplication : Application() {
                     appModule,
                     localModule,
                     repositoryModule,
-                    viewModelModule
+                    viewModelModule,
                 )
             }
         }
@@ -97,7 +97,7 @@ class CustomApplication : Application() {
                 API_PLATFORM to API_ANDROID,
                 API_PLATFORM_V to Build.VERSION.SDK_INT,
                 API_DEBUG to (if (isDebug()) "1" else "0"),
-                API_V to 8
+                API_V to 8,
             )
     }
 

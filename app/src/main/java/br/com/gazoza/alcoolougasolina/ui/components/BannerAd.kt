@@ -27,7 +27,7 @@ fun BannerAd(
             "ca-app-pub-3940256099942544/6300978111"
         } else {
             "ca-app-pub-6521704558504566/6221190272"
-        }
+        },
 ) {
     if (LocalInspectionMode.current) {
         Box(
@@ -36,7 +36,7 @@ fun BannerAd(
                 .fillMaxWidth()
                 .height(50.dp)
                 .background(DarkBackground),
-            contentAlignment = Alignment.Center
+            contentAlignment = Alignment.Center,
         ) {
             Text("Banner Ad", color = TextMuted)
         }
@@ -49,7 +49,7 @@ fun BannerAd(
             .fillMaxWidth()
             .background(DarkBackground)
             .navigationBarsPadding(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         AndroidView(
             modifier = Modifier.fillMaxWidth(),
@@ -59,7 +59,7 @@ fun BannerAd(
                     this.adUnitId = adUnitId
                     loadAd(AdRequest.Builder().build())
                 }
-            }
+            },
         )
     }
 }

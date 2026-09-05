@@ -35,8 +35,8 @@ class HistoryViewModelTest : BaseRobolectricTest() {
                 priceGasoline = "R$ 5,50",
                 proportion = 0.63,
                 percentage = "63.64%",
-                timestamp = 1000L
-            )
+                timestamp = 1000L,
+            ),
         )
 
     @Before

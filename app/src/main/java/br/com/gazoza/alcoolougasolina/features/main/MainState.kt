@@ -2,7 +2,7 @@ package br.com.gazoza.alcoolougasolina.features.main
 
 enum class FuelRecommendation {
     ETHANOL,
-    GASOLINE
+    GASOLINE,
 }
 
 data class MainUiState(
@@ -16,7 +16,7 @@ data class MainUiState(
     val isClearEnabled: Boolean = false,
     val isResultVisible: Boolean = false,
     val shareLink: String = "",
-    val appName: String = ""
+    val appName: String = "",
 )
 
 sealed class MainEvent {

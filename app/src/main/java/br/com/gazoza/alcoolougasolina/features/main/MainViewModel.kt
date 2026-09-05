@@ -29,7 +29,7 @@ import kotlinx.coroutines.launch
 class MainViewModel(
     private val historyRepository: HistoryRepository,
     private val preferencesRepository: PreferencesRepository,
-    private val notificationRepository: NotificationRepository
+    private val notificationRepository: NotificationRepository,
 ) : ViewModel() {
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
@@ -55,7 +55,7 @@ class MainViewModel(
                 shareLink = shareLink,
                 appName = appName,
                 isCalculateEnabled = lastEthanol.isNotEmpty() && lastGasoline.isNotEmpty(),
-                isClearEnabled = lastEthanol.isNotEmpty() || lastGasoline.isNotEmpty()
+                isClearEnabled = lastEthanol.isNotEmpty() || lastGasoline.isNotEmpty(),
             )
         }
     }
@@ -69,7 +69,7 @@ class MainViewModel(
                 priceEthanol = formatted,
                 isCalculateEnabled = canCalculate,
                 isClearEnabled = canClear,
-                isResultVisible = false
+                isResultVisible = false,
             )
         }
     }
@@ -83,7 +83,7 @@ class MainViewModel(
                 priceGasoline = formatted,
                 isCalculateEnabled = canCalculate,
                 isClearEnabled = canClear,
-                isResultVisible = false
+                isResultVisible = false,
             )
         }
     }
@@ -125,7 +125,7 @@ class MainViewModel(
                 proportion = proportion,
                 percentageText = percentage,
                 messageRes = messageRes,
-                isResultVisible = true
+                isResultVisible = true,
             )
         }
 
@@ -143,7 +143,7 @@ class MainViewModel(
                         priceGasoline = textGasoline,
                         proportion = proportion,
                         percentage = percentage,
-                        timestamp = System.currentTimeMillis()
+                        timestamp = System.currentTimeMillis(),
                     )
             } else {
                 existing.proportion = proportion
@@ -165,7 +165,7 @@ class MainViewModel(
                 messageRes = null,
                 isCalculateEnabled = false,
                 isClearEnabled = false,
-                isResultVisible = false
+                isResultVisible = false,
             )
         }
         preferencesRepository.setLastEthanolPrice("")
@@ -207,7 +207,7 @@ class MainViewModel(
                         _uiState.update {
                             it.copy(
                                 shareLink = shareLink,
-                                appName = appName
+                                appName = appName,
                             )
                         }
 

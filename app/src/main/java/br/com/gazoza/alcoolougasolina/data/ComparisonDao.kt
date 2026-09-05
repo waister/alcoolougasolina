@@ -25,7 +25,7 @@ interface ComparisonDao {
     suspend fun deleteAll()
 
     @Query(
-        "SELECT * FROM comparisons WHERE priceEthanol = :priceEthanol AND priceGasoline = :priceGasoline ORDER BY timestamp DESC LIMIT 1"
+        "SELECT * FROM comparisons WHERE priceEthanol = :priceEthanol AND priceGasoline = :priceGasoline ORDER BY timestamp DESC LIMIT 1",
     )
     suspend fun getComparisonByPrices(priceEthanol: String, priceGasoline: String): Comparison?
 }

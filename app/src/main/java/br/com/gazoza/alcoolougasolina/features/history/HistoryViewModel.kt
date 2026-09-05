@@ -29,7 +29,7 @@ class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewM
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        comparisons = comparisons
+                        comparisons = comparisons,
                     )
                 }
             }

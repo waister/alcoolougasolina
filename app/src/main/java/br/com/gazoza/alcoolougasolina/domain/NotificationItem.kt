@@ -7,5 +7,5 @@ data class NotificationItem(
     val date: String = "",
     val image: String = "",
     val link: String = "",
-    val type: String = ""
+    val type: String = "",
 )

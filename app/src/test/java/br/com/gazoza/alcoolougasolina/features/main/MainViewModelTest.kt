@@ -49,7 +49,7 @@ class MainViewModelTest : BaseRobolectricTest() {
             MainViewModel(
                 historyRepository = historyRepository,
                 preferencesRepository = preferencesRepository,
-                notificationRepository = notificationRepository
+                notificationRepository = notificationRepository,
             )
     }
 

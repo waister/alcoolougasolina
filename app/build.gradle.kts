@@ -53,7 +53,7 @@ android {
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro"
+                "proguard-rules.pro",
             )
         }
     }
@@ -75,7 +75,7 @@ android {
                 "-XX:+EnableDynamicAgentLoading",
                 "--add-opens=java.base/java.lang=ALL-UNNAMED",
                 "--add-opens=java.base/java.lang.reflect=ALL-UNNAMED",
-                "--add-opens=java.base/java.util=ALL-UNNAMED"
+                "--add-opens=java.base/java.util=ALL-UNNAMED",
             )
         }
     }
@@ -176,12 +176,12 @@ tasks.register<JavaExec>("ktlintCheck") {
     mainClass.set("com.pinterest.ktlint.Main")
     jvmArgs(
         "--add-opens=java.base/java.lang=ALL-UNNAMED",
-        "--add-opens=java.base/java.util=ALL-UNNAMED"
+        "--add-opens=java.base/java.util=ALL-UNNAMED",
     )
     args(
         "src/**/*.kt",
         "*.kts",
-        "!**/build/**"
+        "!**/build/**",
     )
 }
 
@@ -192,12 +192,12 @@ tasks.register<JavaExec>("ktlintFormat") {
     mainClass.set("com.pinterest.ktlint.Main")
     jvmArgs(
         "--add-opens=java.base/java.lang=ALL-UNNAMED",
-        "--add-opens=java.base/java.util=ALL-UNNAMED"
+        "--add-opens=java.base/java.util=ALL-UNNAMED",
     )
     args(
         "-F",
         "src/**/*.kt",
         "*.kts",
-        "!**/build/**"
+        "!**/build/**",
     )
 }

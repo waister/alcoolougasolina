@@ -22,7 +22,7 @@ fun AppTopBar(
     title: String,
     modifier: Modifier = Modifier,
     onBackClick: (() -> Unit)? = null,
-    actions: @Composable RowScope.() -> Unit = {}
+    actions: @Composable RowScope.() -> Unit = {},
 ) {
     TopAppBar(
         title = {
@@ -30,7 +30,7 @@ fun AppTopBar(
                 text = title,
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = TextPrimary
+                color = TextPrimary,
             )
         },
         navigationIcon = {
@@ -39,7 +39,7 @@ fun AppTopBar(
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Voltar",
-                        tint = TextPrimary
+                        tint = TextPrimary,
                     )
                 }
             }
@@ -50,8 +50,8 @@ fun AppTopBar(
             containerColor = DarkBackground,
             titleContentColor = TextPrimary,
             navigationIconContentColor = TextPrimary,
-            actionIconContentColor = TextPrimary
+            actionIconContentColor = TextPrimary,
         ),
-        modifier = modifier
+        modifier = modifier,
     )
 }

@@ -20,7 +20,7 @@ private val DarkColorScheme =
         onSurfaceVariant = TextSecondary,
         outline = DividerColor,
         error = StatusRed,
-        onError = TextPrimary
+        onError = TextPrimary,
     )
 
 @Composable
@@ -28,6 +28,6 @@ fun AppTheme(content: @Composable () -> Unit) {
     MaterialTheme(
         colorScheme = DarkColorScheme,
         typography = Typography,
-        content = content
+        content = content,
     )
 }

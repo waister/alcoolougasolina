@@ -49,43 +49,47 @@ import org.koin.androidx.compose.koinViewModel
 fun NotificationsScreen(
     onBackClick: () -> Unit,
     onNotificationClick: (String) -> Unit,
-    viewModel: NotificationsViewModel = koinViewModel()
+    viewModel: NotificationsViewModel = koinViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     NotificationsContent(
         uiState = uiState,
         onBackClick = onBackClick,
-        onNotificationClick = onNotificationClick
+        onNotificationClick = onNotificationClick,
     )
 }
 
 @Composable
-fun NotificationsContent(uiState: NotificationsUiState, onBackClick: () -> Unit, onNotificationClick: (String) -> Unit) {
+fun NotificationsContent(
+    uiState: NotificationsUiState,
+    onBackClick: () -> Unit,
+    onNotificationClick: (String) -> Unit,
+) {
     Scaffold(
         topBar = {
             AppTopBar(
                 title = stringResource(R.string.notifications),
-                onBackClick = onBackClick
+                onBackClick = onBackClick,
             )
         },
         bottomBar = {
             BannerAd()
         },
-        containerColor = DarkBackground
+        containerColor = DarkBackground,
     ) { paddingValues ->
         Box(
             modifier =
             Modifier
                 .fillMaxSize()
-                .padding(paddingValues)
+                .padding(paddingValues),
         ) {
             val error = uiState.errorMessage
             when {
                 uiState.isLoading -> {
                     CircularProgressIndicator(
                         color = GreenPrimary,
-                        modifier = Modifier.align(Alignment.Center)
+                        modifier = Modifier.align(Alignment.Center),
                     )
                 }
 
@@ -97,7 +101,7 @@ fun NotificationsContent(uiState: NotificationsUiState, onBackClick: () -> Unit,
                         modifier =
                         Modifier
                             .align(Alignment.Center)
-                            .padding(24.dp)
+                            .padding(24.dp),
                     )
                 }
 
@@ -106,7 +110,7 @@ fun NotificationsContent(uiState: NotificationsUiState, onBackClick: () -> Unit,
                         text = stringResource(R.string.notifications_empty),
                         color = TextMuted,
                         fontSize = 16.sp,
-                        modifier = Modifier.align(Alignment.Center)
+                        modifier = Modifier.align(Alignment.Center),
                     )
                 }
 
@@ -114,12 +118,12 @@ fun NotificationsContent(uiState: NotificationsUiState, onBackClick: () -> Unit,
                     LazyColumn(
                         modifier = Modifier.fillMaxSize(),
                         contentPadding = PaddingValues(16.dp),
-                        verticalArrangement = Arrangement.spacedBy(10.dp)
+                        verticalArrangement = Arrangement.spacedBy(10.dp),
                     ) {
                         items(uiState.notifications, key = { it.id }) { item ->
                             NotificationRow(
                                 item = item,
-                                onClick = { onNotificationClick(item.id) }
+                                onClick = { onNotificationClick(item.id) },
                             )
                         }
                     }
@@ -137,18 +141,18 @@ private fun NotificationRow(item: NotificationItem, onClick: () -> Unit, modifie
             .fillMaxWidth()
             .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(containerColor = DarkCard),
-        shape = RoundedCornerShape(10.dp)
+        shape = RoundedCornerShape(10.dp),
     ) {
         Column(
             modifier =
             Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(16.dp),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
                     text = item.title,
@@ -157,7 +161,7 @@ private fun NotificationRow(item: NotificationItem, onClick: () -> Unit, modifie
                     fontSize = 16.sp,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier.weight(1f),
                 )
 
                 if (item.date.isNotEmpty()) {
@@ -165,7 +169,7 @@ private fun NotificationRow(item: NotificationItem, onClick: () -> Unit, modifie
                     Text(
                         text = item.date.formatDatetime(),
                         color = TextMuted,
-                        fontSize = 11.sp
+                        fontSize = 11.sp,
                     )
                 }
             }
@@ -177,7 +181,7 @@ private fun NotificationRow(item: NotificationItem, onClick: () -> Unit, modifie
                     color = TextSecondary,
                     fontSize = 13.sp,
                     maxLines = 2,
-                    overflow = TextOverflow.Ellipsis
+                    overflow = TextOverflow.Ellipsis,
                 )
             }
         }
@@ -198,18 +202,18 @@ private fun NotificationsScreenLoadedPreview() {
                         id = "1",
                         title = "Preço dos combustíveis subiu!",
                         body = "Confira a nova proporção calculada para abastecer com economia.",
-                        date = "2026-06-01 10:30:00"
+                        date = "2026-06-01 10:30:00",
                     ),
                     NotificationItem(
                         id = "2",
                         title = "Dica da semana",
                         body = "Saiba como melhorar a autonomia do seu carro flex no trânsito urbano.",
-                        date = "2026-05-28 14:00:00"
-                    )
-                )
+                        date = "2026-05-28 14:00:00",
+                    ),
+                ),
             ),
             onBackClick = {},
-            onNotificationClick = {}
+            onNotificationClick = {},
         )
     }
 }
@@ -221,7 +225,7 @@ private fun NotificationsScreenEmptyPreview() {
         NotificationsContent(
             uiState = NotificationsUiState(isLoading = false, notifications = emptyList()),
             onBackClick = {},
-            onNotificationClick = {}
+            onNotificationClick = {},
         )
     }
 }
@@ -233,7 +237,7 @@ private fun NotificationsScreenLoadingPreview() {
         NotificationsContent(
             uiState = NotificationsUiState(isLoading = true, notifications = emptyList()),
             onBackClick = {},
-            onNotificationClick = {}
+            onNotificationClick = {},
         )
     }
 }

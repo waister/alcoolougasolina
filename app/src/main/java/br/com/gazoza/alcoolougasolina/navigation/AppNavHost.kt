@@ -31,12 +31,12 @@ fun AppNavHost(
     startDestination: String = Routes.START,
     initId: String = "",
     initType: String = "",
-    initItemId: String = ""
+    initItemId: String = "",
 ) {
     NavHost(
         navController = navController,
         startDestination = startDestination,
-        modifier = modifier
+        modifier = modifier,
     ) {
         composable(Routes.START) {
             StartScreen(
@@ -57,20 +57,20 @@ fun AppNavHost(
                     navController.navigate(Routes.notificationDetails(itemId)) {
                         popUpTo(Routes.START) { inclusive = true }
                     }
-                }
+                },
             )
         }
 
         composable(Routes.MAIN) {
             MainScreen(
                 onNavigateToHistory = { navController.navigate(Routes.HISTORY) },
-                onNavigateToNotifications = { navController.navigate(Routes.NOTIFICATIONS) }
+                onNavigateToNotifications = { navController.navigate(Routes.NOTIFICATIONS) },
             )
         }
 
         composable(Routes.HISTORY) {
             HistoryScreen(
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
             )
         }
 
@@ -79,7 +79,7 @@ fun AppNavHost(
                 onBackClick = { navController.popBackStack() },
                 onNotificationClick = { itemId ->
                     navController.navigate(Routes.notificationDetails(itemId))
-                }
+                },
             )
         }
 
@@ -87,13 +87,13 @@ fun AppNavHost(
             route = Routes.NOTIFICATION_DETAILS,
             arguments =
             listOf(
-                navArgument("itemId") { type = NavType.StringType }
-            )
+                navArgument("itemId") { type = NavType.StringType },
+            ),
         ) { backStackEntry ->
             val itemId = backStackEntry.arguments?.getString("itemId") ?: ""
             NotificationDetailsScreen(
                 notificationId = itemId,
-                onBackClick = { navController.popBackStack() }
+                onBackClick = { navController.popBackStack() },
             )
         }
     }
