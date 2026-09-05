@@ -16,7 +16,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import br.com.gazoza.alcoolougasolina.BuildConfig
 import br.com.gazoza.alcoolougasolina.R
-import br.com.gazoza.alcoolougasolina.activity.StartActivity
+import br.com.gazoza.alcoolougasolina.activity.MainActivity
 import br.com.gazoza.alcoolougasolina.util.API_ABOUT_APP
 import br.com.gazoza.alcoolougasolina.util.API_FEEDBACK
 import br.com.gazoza.alcoolougasolina.util.API_NOTIFICATIONS
@@ -128,7 +128,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         val channelId = "${type}_channel"
 
-        var notifyIntent = Intent(applicationContext, StartActivity::class.java)
+        var notifyIntent = Intent(applicationContext, MainActivity::class.java)
 
         if (version.isNotEmpty()) {
             val versionCode = version.stringToInt()
