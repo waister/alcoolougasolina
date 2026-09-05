@@ -27,6 +27,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
+import br.com.gazoza.alcoolougasolina.util.MaskMoney
+
 class MainViewModel(
     private val historyRepository: HistoryRepository,
     private val preferencesRepository: PreferencesRepository,
@@ -219,16 +221,7 @@ class MainViewModel(
         }
     }
 
-    private fun formatPrice(input: String): String {
-        val digits = input.filter { it.isDigit() }
-        if (digits.isEmpty()) return ""
-        val value = digits.toDouble() / 100.0
-        return NumberFormat.getCurrencyInstance(Locale.forLanguageTag("pt-BR")).format(value)
-    }
+    private fun formatPrice(input: String): String = MaskMoney.format(input)
 
-    private fun parsePrice(formatted: String): Double {
-        val digits = formatted.filter { it.isDigit() }
-        if (digits.isEmpty()) return 0.0
-        return digits.toDouble() / 100.0
-    }
+    private fun parsePrice(formatted: String): Double = MaskMoney.parse(formatted)
 }

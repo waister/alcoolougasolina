@@ -51,9 +51,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -68,6 +70,7 @@ import br.com.gazoza.alcoolougasolina.ui.theme.GreenPrimary
 import br.com.gazoza.alcoolougasolina.ui.theme.TextMuted
 import br.com.gazoza.alcoolougasolina.ui.theme.TextPrimary
 import br.com.gazoza.alcoolougasolina.ui.theme.TextSecondary
+import br.com.gazoza.alcoolougasolina.util.MaskMoney
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
@@ -80,6 +83,41 @@ fun MainScreen(
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     var updateUrlToOpen by remember { mutableStateOf<String?>(null) }
+
+    var ethanolTextFieldValue by remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = uiState.priceEthanol,
+                selection = TextRange(uiState.priceEthanol.length),
+            ),
+        )
+    }
+    var gasolineTextFieldValue by remember {
+        mutableStateOf(
+            TextFieldValue(
+                text = uiState.priceGasoline,
+                selection = TextRange(uiState.priceGasoline.length),
+            ),
+        )
+    }
+
+    LaunchedEffect(uiState.priceEthanol) {
+        if (uiState.priceEthanol != ethanolTextFieldValue.text) {
+            ethanolTextFieldValue = TextFieldValue(
+                text = uiState.priceEthanol,
+                selection = TextRange(uiState.priceEthanol.length),
+            )
+        }
+    }
+
+    LaunchedEffect(uiState.priceGasoline) {
+        if (uiState.priceGasoline != gasolineTextFieldValue.text) {
+            gasolineTextFieldValue = TextFieldValue(
+                text = uiState.priceGasoline,
+                selection = TextRange(uiState.priceGasoline.length),
+            )
+        }
+    }
 
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
@@ -204,8 +242,18 @@ fun MainScreen(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     OutlinedTextField(
-                        value = uiState.priceEthanol,
-                        onValueChange = { viewModel.onEthanolPriceChanged(it) },
+                        value = ethanolTextFieldValue,
+                        onValueChange = { newValue ->
+                            val formatted = MaskMoney.formatMoneyInput(
+                                previousText = ethanolTextFieldValue.text,
+                                newText = newValue.text,
+                            )
+                            ethanolTextFieldValue = TextFieldValue(
+                                text = formatted,
+                                selection = TextRange(formatted.length),
+                            )
+                            viewModel.onEthanolPriceChanged(formatted)
+                        },
                         placeholder = { Text("R$ 0,00", color = TextMuted) },
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(
@@ -246,8 +294,18 @@ fun MainScreen(
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     OutlinedTextField(
-                        value = uiState.priceGasoline,
-                        onValueChange = { viewModel.onGasolinePriceChanged(it) },
+                        value = gasolineTextFieldValue,
+                        onValueChange = { newValue ->
+                            val formatted = MaskMoney.formatMoneyInput(
+                                previousText = gasolineTextFieldValue.text,
+                                newText = newValue.text,
+                            )
+                            gasolineTextFieldValue = TextFieldValue(
+                                text = formatted,
+                                selection = TextRange(formatted.length),
+                            )
+                            viewModel.onGasolinePriceChanged(formatted)
+                        },
                         placeholder = { Text("R$ 0,00", color = TextMuted) },
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(

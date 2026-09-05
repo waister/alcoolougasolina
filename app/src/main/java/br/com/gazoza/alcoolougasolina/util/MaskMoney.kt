@@ -1,39 +1,51 @@
 package br.com.gazoza.alcoolougasolina.util
 
-import android.text.Editable
-import android.text.TextWatcher
-import android.widget.EditText
-
 import java.text.NumberFormat
+import java.util.Locale
 
-class MaskMoney(private val editText: EditText) : TextWatcher {
-    private var isUpdating = false
+object MaskMoney {
 
-    private val numberFormat = NumberFormat.getCurrencyInstance()
-
-    override fun onTextChanged(charSequence: CharSequence, start: Int, before: Int, after: Int) {
-        if (isUpdating) {
-            isUpdating = false
-            return
-        }
-
-        isUpdating = true
-
-        var value = charSequence.toString()
-
-        value = value.replace("\\D+".toRegex(), "")
-
-        try {
-            value = numberFormat.format(java.lang.Double.parseDouble(value) / 100)
-
-            editText.setText(value)
-            editText.setSelection(value.length)
-        } catch (e: NumberFormatException) {
-            e.printStackTrace()
-        }
+    fun format(input: String): String {
+        val digits = input.filter { it.isDigit() }.trimStart('0')
+        if (digits.isEmpty()) return ""
+        val limited = if (digits.length > 6) digits.take(6) else digits
+        val value = limited.toDouble() / 100.0
+        return NumberFormat.getCurrencyInstance(Locale.forLanguageTag("pt-BR")).format(value)
     }
 
-    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
+    fun formatMoneyInput(previousText: String, newText: String): String {
+        if (newText.isEmpty()) return ""
 
-    override fun afterTextChanged(editable: Editable) {}
+        val prevDigits = previousText.filter { it.isDigit() }
+        val newDigits = newText.filter { it.isDigit() }
+
+        val digitsToUse: String = when {
+            newText.length < previousText.length -> {
+                if (newDigits.length < prevDigits.length) {
+                    newDigits
+                } else if (prevDigits.isNotEmpty()) {
+                    prevDigits.dropLast(1)
+                } else {
+                    ""
+                }
+            }
+            else -> {
+                if (newDigits.length > 6) newDigits.take(6) else newDigits
+            }
+        }
+
+        val cleanDigits = digitsToUse.trimStart('0')
+        if (cleanDigits.isEmpty()) {
+            return ""
+        }
+
+        val parsed = cleanDigits.toDouble() / 100.0
+        return NumberFormat.getCurrencyInstance(Locale.forLanguageTag("pt-BR")).format(parsed)
+    }
+
+    fun parse(formatted: String): Double {
+        val digits = formatted.filter { it.isDigit() }
+        if (digits.isEmpty()) return 0.0
+        return digits.toDouble() / 100.0
+    }
 }
