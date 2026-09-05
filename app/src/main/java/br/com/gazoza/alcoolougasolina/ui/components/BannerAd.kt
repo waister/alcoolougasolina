@@ -32,10 +32,10 @@ fun BannerAd(
     if (LocalInspectionMode.current) {
         Box(
             modifier =
-            modifier
-                .fillMaxWidth()
-                .height(50.dp)
-                .background(DarkBackground),
+                modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .background(DarkBackground),
             contentAlignment = Alignment.Center,
         ) {
             Text("Banner Ad", color = TextMuted)
@@ -45,10 +45,10 @@ fun BannerAd(
 
     Box(
         modifier =
-        modifier
-            .fillMaxWidth()
-            .background(DarkBackground)
-            .navigationBarsPadding(),
+            modifier
+                .fillMaxWidth()
+                .background(DarkBackground)
+                .navigationBarsPadding(),
         contentAlignment = Alignment.Center,
     ) {
         AndroidView(

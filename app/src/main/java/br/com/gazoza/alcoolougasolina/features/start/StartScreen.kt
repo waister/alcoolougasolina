@@ -51,9 +51,9 @@ fun StartScreen(
 fun StartContent() {
     Box(
         modifier =
-        Modifier
-            .fillMaxSize()
-            .background(DarkBackground),
+            Modifier
+                .fillMaxSize()
+                .background(DarkBackground),
         contentAlignment = Alignment.Center,
     ) {
         Image(
@@ -65,10 +65,10 @@ fun StartContent() {
         CircularProgressIndicator(
             color = GreenPrimary,
             modifier =
-            Modifier
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 64.dp)
-                .size(36.dp),
+                Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(bottom = 64.dp)
+                    .size(36.dp),
         )
     }
 }

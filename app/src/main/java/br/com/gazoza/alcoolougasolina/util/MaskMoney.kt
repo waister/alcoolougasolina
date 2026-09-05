@@ -29,6 +29,7 @@ object MaskMoney {
                         ""
                     }
                 }
+
                 else -> {
                     if (newDigits.length > 6) newDigits.take(6) else newDigits
                 }

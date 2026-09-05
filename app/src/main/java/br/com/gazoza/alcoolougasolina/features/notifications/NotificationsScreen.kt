@@ -80,9 +80,9 @@ fun NotificationsContent(
     ) { paddingValues ->
         Box(
             modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
         ) {
             val error = uiState.errorMessage
             when {
@@ -99,9 +99,9 @@ fun NotificationsContent(
                         color = TextMuted,
                         fontSize = 16.sp,
                         modifier =
-                        Modifier
-                            .align(Alignment.Center)
-                            .padding(24.dp),
+                            Modifier
+                                .align(Alignment.Center)
+                                .padding(24.dp),
                     )
                 }
 
@@ -137,17 +137,17 @@ fun NotificationsContent(
 private fun NotificationRow(item: NotificationItem, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Card(
         modifier =
-        modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
+            modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick),
         colors = CardDefaults.cardColors(containerColor = DarkCard),
         shape = RoundedCornerShape(10.dp),
     ) {
         Column(
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
         ) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -194,24 +194,24 @@ private fun NotificationsScreenLoadedPreview() {
     AppTheme {
         NotificationsContent(
             uiState =
-            NotificationsUiState(
-                isLoading = false,
-                notifications =
-                listOf(
-                    NotificationItem(
-                        id = "1",
-                        title = "Preço dos combustíveis subiu!",
-                        body = "Confira a nova proporção calculada para abastecer com economia.",
-                        date = "2026-06-01 10:30:00",
-                    ),
-                    NotificationItem(
-                        id = "2",
-                        title = "Dica da semana",
-                        body = "Saiba como melhorar a autonomia do seu carro flex no trânsito urbano.",
-                        date = "2026-05-28 14:00:00",
-                    ),
+                NotificationsUiState(
+                    isLoading = false,
+                    notifications =
+                        listOf(
+                            NotificationItem(
+                                id = "1",
+                                title = "Preço dos combustíveis subiu!",
+                                body = "Confira a nova proporção calculada para abastecer com economia.",
+                                date = "2026-06-01 10:30:00",
+                            ),
+                            NotificationItem(
+                                id = "2",
+                                title = "Dica da semana",
+                                body = "Saiba como melhorar a autonomia do seu carro flex no trânsito urbano.",
+                                date = "2026-05-28 14:00:00",
+                            ),
+                        ),
                 ),
-            ),
             onBackClick = {},
             onNotificationClick = {},
         )

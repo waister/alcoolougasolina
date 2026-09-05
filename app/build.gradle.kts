@@ -18,10 +18,10 @@ android {
 
     defaultConfig {
         applicationId = "br.com.gazoza.alcoolougasolina"
-        minSdk = 23
+        minSdk = 24
         targetSdk = 37
-        versionCode = 21
-        versionName = "2.4.1"
+        versionCode = 22
+        versionName = "3.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "API_APP_NAME", "\"alcoolougasolina\"")
@@ -150,6 +150,7 @@ dependencies {
     testImplementation(libs.room.testing)
 
     // Instrumentation Testing
+    androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(libs.compose.ui.test.junit4)
 

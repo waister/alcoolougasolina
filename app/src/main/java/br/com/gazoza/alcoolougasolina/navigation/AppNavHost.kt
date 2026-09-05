@@ -86,9 +86,9 @@ fun AppNavHost(
         composable(
             route = Routes.NOTIFICATION_DETAILS,
             arguments =
-            listOf(
-                navArgument("itemId") { type = NavType.StringType },
-            ),
+                listOf(
+                    navArgument("itemId") { type = NavType.StringType },
+                ),
         ) { backStackEntry ->
             val itemId = backStackEntry.arguments?.getString("itemId") ?: ""
             NotificationDetailsScreen(

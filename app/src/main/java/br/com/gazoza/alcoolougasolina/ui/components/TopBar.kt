@@ -46,12 +46,12 @@ fun AppTopBar(
         },
         actions = actions,
         colors =
-        TopAppBarDefaults.topAppBarColors(
-            containerColor = DarkBackground,
-            titleContentColor = TextPrimary,
-            navigationIconContentColor = TextPrimary,
-            actionIconContentColor = TextPrimary,
-        ),
+            TopAppBarDefaults.topAppBarColors(
+                containerColor = DarkBackground,
+                titleContentColor = TextPrimary,
+                navigationIconContentColor = TextPrimary,
+                actionIconContentColor = TextPrimary,
+            ),
         modifier = modifier,
     )
 }

@@ -85,9 +85,9 @@ fun NotificationDetailsContent(uiState: NotificationsUiState, onBackClick: () ->
     ) { paddingValues ->
         Box(
             modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
         ) {
             val notif = uiState.selectedNotification
             when {
@@ -101,10 +101,10 @@ fun NotificationDetailsContent(uiState: NotificationsUiState, onBackClick: () ->
                 notif != null -> {
                     Column(
                         modifier =
-                        Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState())
-                            .padding(16.dp),
+                            Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState())
+                                .padding(16.dp),
                     ) {
                         if (notif.image.isNotEmpty()) {
                             AsyncImage(
@@ -112,10 +112,10 @@ fun NotificationDetailsContent(uiState: NotificationsUiState, onBackClick: () ->
                                 contentDescription = stringResource(R.string.notification_image),
                                 contentScale = ContentScale.Crop,
                                 modifier =
-                                Modifier
-                                    .fillMaxWidth()
-                                    .height(200.dp)
-                                    .clip(RoundedCornerShape(12.dp)),
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .height(200.dp)
+                                        .clip(RoundedCornerShape(12.dp)),
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                         }
@@ -131,10 +131,10 @@ fun NotificationDetailsContent(uiState: NotificationsUiState, onBackClick: () ->
                             Spacer(modifier = Modifier.height(6.dp))
                             Text(
                                 text =
-                                stringResource(
-                                    R.string.label_received,
-                                    notif.date.formatDatetime(),
-                                ),
+                                    stringResource(
+                                        R.string.label_received,
+                                        notif.date.formatDatetime(),
+                                    ),
                                 color = TextMuted,
                                 fontSize = 12.sp,
                             )
@@ -177,17 +177,19 @@ private fun NotificationDetailsLoadedPreview() {
     AppTheme {
         NotificationDetailsContent(
             uiState =
-            NotificationsUiState(
-                isLoading = false,
-                selectedNotification =
-                NotificationItem(
-                    id = "1",
-                    title = "Preço dos combustíveis subiu!",
-                    body = "Confira a nova proporção calculada para abastecer com economia nos postos da sua região.",
-                    date = "2026-06-01 10:30:00",
-                    link = "https://maggapps.com",
+                NotificationsUiState(
+                    isLoading = false,
+                    selectedNotification =
+                        NotificationItem(
+                            id = "1",
+                            title = "Preço dos combustíveis subiu!",
+                            body =
+                                "Confira a nova proporção calculada para abastecer com " +
+                                    "economia nos postos da sua região.",
+                            date = "2026-06-01 10:30:00",
+                            link = "https://maggapps.com",
+                        ),
                 ),
-            ),
             onBackClick = {},
             onOpenLink = {},
         )
@@ -200,10 +202,10 @@ private fun NotificationDetailsLoadingPreview() {
     AppTheme {
         NotificationDetailsContent(
             uiState =
-            NotificationsUiState(
-                isLoading = true,
-                selectedNotification = null,
-            ),
+                NotificationsUiState(
+                    isLoading = true,
+                    selectedNotification = null,
+                ),
             onBackClick = {},
             onOpenLink = {},
         )

@@ -250,20 +250,20 @@ fun MainContent(
     ) { paddingValues ->
         Column(
             modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(paddingValues)
-                .verticalScroll(rememberScrollState())
-                .padding(horizontal = 24.dp, vertical = 16.dp),
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues)
+                    .verticalScroll(rememberScrollState())
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
             Image(
                 painter = painterResource(id = R.drawable.logo_128dp),
                 contentDescription = stringResource(R.string.logo_description),
                 modifier =
-                Modifier
-                    .size(110.dp)
-                    .padding(vertical = 8.dp),
+                    Modifier
+                        .size(110.dp)
+                        .padding(vertical = 8.dp),
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -338,31 +338,31 @@ fun MainContent(
                     placeholder = { Text("R$ 0,00", color = TextMuted) },
                     singleLine = true,
                     keyboardOptions =
-                    KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Next,
-                    ),
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Next,
+                        ),
                     colors =
-                    OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = TextPrimary,
-                        unfocusedTextColor = TextPrimary,
-                        focusedBorderColor = GreenLight,
-                        unfocusedBorderColor = Color.Gray,
-                        focusedContainerColor = DarkCard,
-                        unfocusedContainerColor = DarkCard,
-                    ),
+                        OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = TextPrimary,
+                            unfocusedTextColor = TextPrimary,
+                            focusedBorderColor = GreenLight,
+                            unfocusedBorderColor = Color.Gray,
+                            focusedContainerColor = DarkCard,
+                            unfocusedContainerColor = DarkCard,
+                        ),
                     shape = RoundedCornerShape(8.dp),
                     modifier =
-                    Modifier
-                        .weight(1f)
-                        .onFocusChanged { focusState ->
-                            if (focusState.isFocused && ethanolTextFieldValue.text.isNotEmpty()) {
-                                ethanolTextFieldValue =
-                                    ethanolTextFieldValue.copy(
-                                        selection = TextRange(0, ethanolTextFieldValue.text.length),
-                                    )
-                            }
-                        },
+                        Modifier
+                            .weight(1f)
+                            .onFocusChanged { focusState ->
+                                if (focusState.isFocused && ethanolTextFieldValue.text.isNotEmpty()) {
+                                    ethanolTextFieldValue =
+                                        ethanolTextFieldValue.copy(
+                                            selection = TextRange(0, ethanolTextFieldValue.text.length),
+                                        )
+                                }
+                            },
                 )
 
                 Text(
@@ -407,38 +407,38 @@ fun MainContent(
                     placeholder = { Text("R$ 0,00", color = TextMuted) },
                     singleLine = true,
                     keyboardOptions =
-                    KeyboardOptions(
-                        keyboardType = KeyboardType.Number,
-                        imeAction = ImeAction.Done,
-                    ),
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Number,
+                            imeAction = ImeAction.Done,
+                        ),
                     keyboardActions =
-                    KeyboardActions(
-                        onDone = {
-                            focusManager.clearFocus()
-                            onCalculate()
-                        },
-                    ),
+                        KeyboardActions(
+                            onDone = {
+                                focusManager.clearFocus()
+                                onCalculate()
+                            },
+                        ),
                     colors =
-                    OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = TextPrimary,
-                        unfocusedTextColor = TextPrimary,
-                        focusedBorderColor = GreenLight,
-                        unfocusedBorderColor = Color.Gray,
-                        focusedContainerColor = DarkCard,
-                        unfocusedContainerColor = DarkCard,
-                    ),
+                        OutlinedTextFieldDefaults.colors(
+                            focusedTextColor = TextPrimary,
+                            unfocusedTextColor = TextPrimary,
+                            focusedBorderColor = GreenLight,
+                            unfocusedBorderColor = Color.Gray,
+                            focusedContainerColor = DarkCard,
+                            unfocusedContainerColor = DarkCard,
+                        ),
                     shape = RoundedCornerShape(8.dp),
                     modifier =
-                    Modifier
-                        .weight(1f)
-                        .onFocusChanged { focusState ->
-                            if (focusState.isFocused && gasolineTextFieldValue.text.isNotEmpty()) {
-                                gasolineTextFieldValue =
-                                    gasolineTextFieldValue.copy(
-                                        selection = TextRange(0, gasolineTextFieldValue.text.length),
-                                    )
-                            }
-                        },
+                        Modifier
+                            .weight(1f)
+                            .onFocusChanged { focusState ->
+                                if (focusState.isFocused && gasolineTextFieldValue.text.isNotEmpty()) {
+                                    gasolineTextFieldValue =
+                                        gasolineTextFieldValue.copy(
+                                            selection = TextRange(0, gasolineTextFieldValue.text.length),
+                                        )
+                                }
+                            },
                 )
             }
 
@@ -454,9 +454,9 @@ fun MainContent(
                 ) {
                     Row(
                         modifier =
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
+                            Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween,
                     ) {
@@ -471,10 +471,10 @@ fun MainContent(
                                 Spacer(modifier = Modifier.height(4.dp))
                                 Text(
                                     text =
-                                    stringResource(
-                                        R.string.msg_result,
-                                        uiState.percentageText,
-                                    ),
+                                        stringResource(
+                                            R.string.msg_result,
+                                            uiState.percentageText,
+                                        ),
                                     color = TextSecondary,
                                     fontSize = 14.sp,
                                 )
@@ -506,16 +506,16 @@ fun MainContent(
                 },
                 enabled = uiState.isCalculateEnabled,
                 colors =
-                ButtonDefaults.buttonColors(
-                    containerColor = GreenPrimary,
-                    disabledContainerColor = GreenPrimary.copy(alpha = 0.4f),
-                    contentColor = TextPrimary,
-                ),
+                    ButtonDefaults.buttonColors(
+                        containerColor = GreenPrimary,
+                        disabledContainerColor = GreenPrimary.copy(alpha = 0.4f),
+                        contentColor = TextPrimary,
+                    ),
                 shape = RoundedCornerShape(8.dp),
                 modifier =
-                Modifier
-                    .fillMaxWidth()
-                    .height(50.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
             ) {
                 Text(
                     text = stringResource(R.string.calculate).uppercase(),
@@ -567,16 +567,16 @@ private fun MainScreenEthanolResultPreview() {
     AppTheme {
         MainContent(
             uiState =
-            MainUiState(
-                priceEthanol = "R$ 3,28",
-                priceGasoline = "R$ 5,90",
-                isCalculateEnabled = true,
-                isClearEnabled = true,
-                isResultVisible = true,
-                recommendation = FuelRecommendation.ETHANOL,
-                messageRes = R.string.msg_use_ethanol,
-                percentageText = "55.59%",
-            ),
+                MainUiState(
+                    priceEthanol = "R$ 3,28",
+                    priceGasoline = "R$ 5,90",
+                    isCalculateEnabled = true,
+                    isClearEnabled = true,
+                    isResultVisible = true,
+                    recommendation = FuelRecommendation.ETHANOL,
+                    messageRes = R.string.msg_use_ethanol,
+                    percentageText = "55.59%",
+                ),
             onEthanolPriceChanged = {},
             onGasolinePriceChanged = {},
             onCalculate = {},
@@ -594,16 +594,16 @@ private fun MainScreenGasolineResultPreview() {
     AppTheme {
         MainContent(
             uiState =
-            MainUiState(
-                priceEthanol = "R$ 4,80",
-                priceGasoline = "R$ 5,50",
-                isCalculateEnabled = true,
-                isClearEnabled = true,
-                isResultVisible = true,
-                recommendation = FuelRecommendation.GASOLINE,
-                messageRes = R.string.msg_use_gasoline,
-                percentageText = "87.27%",
-            ),
+                MainUiState(
+                    priceEthanol = "R$ 4,80",
+                    priceGasoline = "R$ 5,50",
+                    isCalculateEnabled = true,
+                    isClearEnabled = true,
+                    isResultVisible = true,
+                    recommendation = FuelRecommendation.GASOLINE,
+                    messageRes = R.string.msg_use_gasoline,
+                    percentageText = "87.27%",
+                ),
             onEthanolPriceChanged = {},
             onGasolinePriceChanged = {},
             onCalculate = {},

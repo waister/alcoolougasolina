@@ -130,9 +130,9 @@ fun HistoryContent(uiState: HistoryUiState, onBackClick: () -> Unit, onClearHist
     ) { paddingValues ->
         Box(
             modifier =
-            Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
+                Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
         ) {
             when {
                 uiState.isLoading -> {
@@ -180,9 +180,9 @@ private fun HistoryItem(comparison: Comparison, modifier: Modifier = Modifier) {
     ) {
         Row(
             modifier =
-            Modifier
-                .fillMaxWidth()
-                .padding(16.dp),
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Image(
@@ -241,28 +241,28 @@ private fun HistoryScreenLoadedPreview() {
     AppTheme {
         HistoryContent(
             uiState =
-            HistoryUiState(
-                isLoading = false,
-                comparisons =
-                listOf(
-                    Comparison(
-                        id = 1,
-                        priceEthanol = "R$ 3,28",
-                        priceGasoline = "R$ 5,90",
-                        proportion = 0.5559,
-                        percentage = "55.59%",
-                        timestamp = 1718000000000L,
-                    ),
-                    Comparison(
-                        id = 2,
-                        priceEthanol = "R$ 4,80",
-                        priceGasoline = "R$ 5,50",
-                        proportion = 0.8727,
-                        percentage = "87.27%",
-                        timestamp = 1717900000000L,
-                    ),
+                HistoryUiState(
+                    isLoading = false,
+                    comparisons =
+                        listOf(
+                            Comparison(
+                                id = 1,
+                                priceEthanol = "R$ 3,28",
+                                priceGasoline = "R$ 5,90",
+                                proportion = 0.5559,
+                                percentage = "55.59%",
+                                timestamp = 1718000000000L,
+                            ),
+                            Comparison(
+                                id = 2,
+                                priceEthanol = "R$ 4,80",
+                                priceGasoline = "R$ 5,50",
+                                proportion = 0.8727,
+                                percentage = "87.27%",
+                                timestamp = 1717900000000L,
+                            ),
+                        ),
                 ),
-            ),
             onBackClick = {},
             onClearHistoryClick = {},
         )
