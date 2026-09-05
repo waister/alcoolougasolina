@@ -47,15 +47,17 @@ class CustomApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
-        startKoin {
-            androidLogger(Level.ERROR)
-            androidContext(this@CustomApplication)
-            modules(
-                appModule,
-                localModule,
-                repositoryModule,
-                viewModelModule,
-            )
+        if (org.koin.core.context.GlobalContext.getOrNull() == null) {
+            startKoin {
+                androidLogger(Level.ERROR)
+                androidContext(this@CustomApplication)
+                modules(
+                    appModule,
+                    localModule,
+                    repositoryModule,
+                    viewModelModule,
+                )
+            }
         }
 
         StorageHelper.init(this)
@@ -65,9 +67,17 @@ class CustomApplication : Application() {
         database = AppDatabase.getDatabase(this)
 
         CoroutineScope(Dispatchers.IO).launch {
-            FirebaseMessaging.getInstance().isAutoInitEnabled = true
+            try {
+                FirebaseMessaging.getInstance().isAutoInitEnabled = true
+            } catch (e: Exception) {
+                // Ignore in test environments
+            }
 
-            MobileAds.initialize(this@CustomApplication) {}
+            try {
+                MobileAds.initialize(this@CustomApplication) {}
+            } catch (e: Exception) {
+                // Ignore in test environments
+            }
 
             FuelManager.instance.basePath = "${APP_HOST}api/${BuildConfig.API_APP_NAME}"
 

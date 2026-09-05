@@ -27,17 +27,22 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONObject
 
+sealed class DataResult<out T> {
+    data class Success<out T>(val data: T) : DataResult<T>()
+    data class Error(val message: String, val throwable: Throwable? = null) : DataResult<Nothing>()
+}
+
 interface NotificationRepository {
-    suspend fun getNotifications(): Result<List<NotificationItem>>
-    suspend fun getNotificationDetail(id: String): Result<NotificationItem>
-    suspend fun identifyUser(token: String): Result<JSONObject>
+    suspend fun getNotifications(): DataResult<List<NotificationItem>>
+    suspend fun getNotificationDetail(id: String): DataResult<NotificationItem>
+    suspend fun identifyUser(token: String): DataResult<JSONObject>
 }
 
 class NotificationRepositoryImpl(
     private val preferencesRepository: PreferencesRepository,
 ) : NotificationRepository {
 
-    override suspend fun getNotifications(): Result<List<NotificationItem>> = withContext(Dispatchers.IO) {
+    override suspend fun getNotifications(): DataResult<List<NotificationItem>> = withContext(Dispatchers.IO) {
         try {
             val (_, _, result) = API_ROUTE_NOTIFICATIONS.httpGet().awaitStringResponseResult()
             result.fold(
@@ -62,27 +67,27 @@ class NotificationRepositoryImpl(
                                 )
                             }
                         }
-                        Result.success(items)
+                        DataResult.Success(items)
                     } else {
                         val msg = apiObj?.getStringVal(API_MESSAGE) ?: "Erro ao carregar notificações"
-                        Result.failure(Exception(msg))
+                        DataResult.Error(msg)
                     }
                 },
                 failure = { error ->
-                    Result.failure(error)
+                    DataResult.Error(error.message ?: "Erro de conexão", error)
                 },
             )
         } catch (e: Exception) {
-            Result.failure(e)
+            DataResult.Error(e.message ?: "Erro inesperado", e)
         }
     }
 
-    override suspend fun getNotificationDetail(id: String): Result<NotificationItem> = withContext(Dispatchers.IO) {
+    override suspend fun getNotificationDetail(id: String): DataResult<NotificationItem> = withContext(Dispatchers.IO) {
         try {
             val cachedJson = preferencesRepository.getNotificationJson()
             if (!cachedJson.isNullOrEmpty() && cachedJson.getValidJSONObject()?.getStringVal(API_ID) == id) {
                 val obj = cachedJson.getValidJSONObject()!!
-                return@withContext Result.success(
+                return@withContext DataResult.Success(
                     NotificationItem(
                         id = obj.getStringVal(API_ID),
                         title = obj.getStringVal(API_TITLE),
@@ -103,7 +108,7 @@ class NotificationRepositoryImpl(
                     val notifObj = apiObj?.getJSONObjectVal(API_NOTIFICATION)
                     if (notifObj != null) {
                         preferencesRepository.setNotificationJson(notifObj.toString())
-                        Result.success(
+                        DataResult.Success(
                             NotificationItem(
                                 id = notifObj.getStringVal(API_ID),
                                 title = notifObj.getStringVal(API_TITLE),
@@ -116,19 +121,19 @@ class NotificationRepositoryImpl(
                         )
                     } else {
                         val msg = apiObj?.getStringVal(API_MESSAGE) ?: "Notificação não encontrada"
-                        Result.failure(Exception(msg))
+                        DataResult.Error(msg)
                     }
                 },
                 failure = { error ->
-                    Result.failure(error)
+                    DataResult.Error(error.message ?: "Erro de conexão", error)
                 },
             )
         } catch (e: Exception) {
-            Result.failure(e)
+            DataResult.Error(e.message ?: "Erro inesperado", e)
         }
     }
 
-    override suspend fun identifyUser(token: String): Result<JSONObject> = withContext(Dispatchers.IO) {
+    override suspend fun identifyUser(token: String): DataResult<JSONObject> = withContext(Dispatchers.IO) {
         try {
             val params = listOf(API_TOKEN to token)
             val (_, _, result) = API_ROUTE_IDENTIFY.httpGet(params).awaitStringResponseResult()
@@ -136,17 +141,17 @@ class NotificationRepositoryImpl(
                 success = { jsonString ->
                     val apiObj = jsonString.getValidJSONObject()
                     if (apiObj != null) {
-                        Result.success(apiObj)
+                        DataResult.Success(apiObj)
                     } else {
-                        Result.failure(Exception("Resposta inválida"))
+                        DataResult.Error("Resposta inválida")
                     }
                 },
                 failure = { error ->
-                    Result.failure(error)
+                    DataResult.Error(error.message ?: "Erro de conexão", error)
                 },
             )
         } catch (e: Exception) {
-            Result.failure(e)
+            DataResult.Error(e.message ?: "Erro inesperado", e)
         }
     }
 }

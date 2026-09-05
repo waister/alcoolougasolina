@@ -29,55 +29,51 @@ class NotificationsViewModel(
     fun fetchNotifications() {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true, errorMessage = null) }
-            val result = notificationRepository.getNotifications()
-            result.fold(
-                onSuccess = { items ->
+            when (val result = notificationRepository.getNotifications()) {
+                is br.com.gazoza.alcoolougasolina.data.repository.DataResult.Success -> {
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            notifications = items,
+                            notifications = result.data,
                             errorMessage = null,
                         )
                     }
-                },
-                onFailure = { error ->
-                    val errorMsg = error.message ?: "Erro ao carregar notificações"
+                }
+                is br.com.gazoza.alcoolougasolina.data.repository.DataResult.Error -> {
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage = errorMsg,
+                            errorMessage = result.message,
                         )
                     }
-                },
-            )
+                }
+            }
         }
     }
 
     fun loadNotificationDetail(id: String) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
-            val result = notificationRepository.getNotificationDetail(id)
-            result.fold(
-                onSuccess = { item ->
+            when (val result = notificationRepository.getNotificationDetail(id)) {
+                is br.com.gazoza.alcoolougasolina.data.repository.DataResult.Success -> {
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            selectedNotification = item,
+                            selectedNotification = result.data,
                             errorMessage = null,
                         )
                     }
-                },
-                onFailure = { error ->
-                    val errorMsg = error.message ?: "Erro ao carregar notificação"
+                }
+                is br.com.gazoza.alcoolougasolina.data.repository.DataResult.Error -> {
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage = errorMsg,
+                            errorMessage = result.message,
                         )
                     }
-                    _events.emit(NotificationsEvent.ShowError(errorMsg))
-                },
-            )
+                    _events.emit(NotificationsEvent.ShowError(result.message))
+                }
+            }
         }
     }
 }

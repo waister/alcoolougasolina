@@ -187,31 +187,34 @@ class MainViewModel(
     private fun identifyUser() {
         viewModelScope.launch {
             val token = preferencesRepository.getFcmToken()
-            val result = notificationRepository.identifyUser(token)
-            result.onSuccess { apiObj ->
-                if (apiObj.getBooleanVal(API_SUCCESS)) {
-                    val shareLink = apiObj.getStringVal(API_SHARE_LINK)
-                    val appName = apiObj.getStringVal(API_APP_NAME)
-                    val versionMin = apiObj.getIntVal(API_VERSION_MIN)
+            when (val result = notificationRepository.identifyUser(token)) {
+                is br.com.gazoza.alcoolougasolina.data.repository.DataResult.Success -> {
+                    val apiObj = result.data
+                    if (apiObj.getBooleanVal(API_SUCCESS)) {
+                        val shareLink = apiObj.getStringVal(API_SHARE_LINK)
+                        val appName = apiObj.getStringVal(API_APP_NAME)
+                        val versionMin = apiObj.getIntVal(API_VERSION_MIN)
 
-                    if (shareLink.isNotEmpty()) {
-                        preferencesRepository.setShareLink(shareLink)
-                    }
-                    if (appName.isNotEmpty()) {
-                        preferencesRepository.setAppName(appName)
-                    }
+                        if (shareLink.isNotEmpty()) {
+                            preferencesRepository.setShareLink(shareLink)
+                        }
+                        if (appName.isNotEmpty()) {
+                            preferencesRepository.setAppName(appName)
+                        }
 
-                    _uiState.update {
-                        it.copy(
-                            shareLink = shareLink,
-                            appName = appName,
-                        )
-                    }
+                        _uiState.update {
+                            it.copy(
+                                shareLink = shareLink,
+                                appName = appName,
+                            )
+                        }
 
-                    if (versionMin > 0 && BuildConfig.VERSION_CODE < versionMin) {
-                        _events.emit(MainEvent.ShowUpdateDialog(shareLink))
+                        if (versionMin > 0 && BuildConfig.VERSION_CODE < versionMin) {
+                            _events.emit(MainEvent.ShowUpdateDialog(shareLink))
+                        }
                     }
                 }
+                is br.com.gazoza.alcoolougasolina.data.repository.DataResult.Error -> {}
             }
         }
     }
@@ -220,7 +223,7 @@ class MainViewModel(
         val digits = input.filter { it.isDigit() }
         if (digits.isEmpty()) return ""
         val value = digits.toDouble() / 100.0
-        return NumberFormat.getCurrencyInstance(Locale("pt", "BR")).format(value)
+        return NumberFormat.getCurrencyInstance(Locale.forLanguageTag("pt-BR")).format(value)
     }
 
     private fun parsePrice(formatted: String): Double {
