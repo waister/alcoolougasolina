@@ -15,8 +15,8 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import br.com.gazoza.alcoolougasolina.BuildConfig
-import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.MainActivity
+import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.util.API_ABOUT_APP
 import br.com.gazoza.alcoolougasolina.util.API_FEEDBACK
 import br.com.gazoza.alcoolougasolina.util.API_NOTIFICATIONS
@@ -31,9 +31,9 @@ import br.com.gazoza.alcoolougasolina.util.StorageHelper
 import br.com.gazoza.alcoolougasolina.util.appLog
 import br.com.gazoza.alcoolougasolina.util.getCircleCroppedBitmap
 import br.com.gazoza.alcoolougasolina.util.getThumbUrl
-import br.com.gazoza.alcoolougasolina.util.isDebug
 import br.com.gazoza.alcoolougasolina.util.isValidUrl
 import br.com.gazoza.alcoolougasolina.util.printFuelLog
+import br.com.gazoza.alcoolougasolina.util.printOrReport
 import br.com.gazoza.alcoolougasolina.util.sendNotificationReport
 import br.com.gazoza.alcoolougasolina.util.storeAppLink
 import br.com.gazoza.alcoolougasolina.util.stringToInt
@@ -187,7 +187,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     builder.setLargeIcon(icon.getCircleCroppedBitmap())
                 }
             } catch (e: Exception) {
-                if (isDebug()) e.printStackTrace()
+                e.printOrReport()
             }
         }
 

@@ -23,10 +23,10 @@ import br.com.gazoza.alcoolougasolina.util.PREF_DEVICE_ID
 import br.com.gazoza.alcoolougasolina.util.PREF_DEVICE_ID_OLD
 import br.com.gazoza.alcoolougasolina.util.StorageHelper
 import br.com.gazoza.alcoolougasolina.util.isDebug
+import br.com.gazoza.alcoolougasolina.util.printOrReport
 import com.github.kittinunf.fuel.core.FuelManager
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.messaging.FirebaseMessaging
-import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -34,6 +34,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
 import org.koin.core.logger.Level
+import java.util.Locale
 
 class CustomApplication : Application() {
 
@@ -70,13 +71,13 @@ class CustomApplication : Application() {
             try {
                 FirebaseMessaging.getInstance().isAutoInitEnabled = true
             } catch (e: Exception) {
-                // Ignore in test environments
+                e.printOrReport()
             }
 
             try {
                 MobileAds.initialize(this@CustomApplication) {}
             } catch (e: Exception) {
-                // Ignore in test environments
+                e.printOrReport()
             }
 
             FuelManager.instance.basePath = "${APP_HOST}api/${BuildConfig.API_APP_NAME}"

@@ -3,7 +3,6 @@ package br.com.gazoza.alcoolougasolina.util
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import org.json.JSONObject
 
 @Suppress("unused")
@@ -50,7 +49,7 @@ object StorageHelper {
             try {
                 JSONObject(jsonString)
             } catch (e: Exception) {
-                FirebaseCrashlytics.getInstance().recordException(e)
+                e.printOrReport()
                 null
             }
         } else {

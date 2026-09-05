@@ -5,3 +5,6 @@ const val PARAM_ITEM_ID = "ParamItemId"
 const val PARAM_TYPE = "ParamType"
 
 const val FORMAT_DATETIME_API = "yyyy-MM-dd HH:mm:ss"
+
+const val UNKNOWN_ERROR = "Erro inesperado"
+const val CONNECTION_ERROR = "Erro de conexão"
