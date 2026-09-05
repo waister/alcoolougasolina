@@ -7,6 +7,7 @@ import br.com.gazoza.alcoolougasolina.data.AppDatabase
 import br.com.gazoza.alcoolougasolina.di.appModule
 import br.com.gazoza.alcoolougasolina.di.localModule
 import br.com.gazoza.alcoolougasolina.di.repositoryModule
+import br.com.gazoza.alcoolougasolina.di.viewModelModule
 import br.com.gazoza.alcoolougasolina.util.API_ANDROID
 import br.com.gazoza.alcoolougasolina.util.API_DEBUG
 import br.com.gazoza.alcoolougasolina.util.API_IDENTIFIER
@@ -53,6 +54,7 @@ class CustomApplication : Application() {
                 appModule,
                 localModule,
                 repositoryModule,
+                viewModelModule,
             )
         }
 
