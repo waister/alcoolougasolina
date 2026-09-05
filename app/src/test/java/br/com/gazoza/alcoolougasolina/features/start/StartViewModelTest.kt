@@ -3,6 +3,7 @@ package br.com.gazoza.alcoolougasolina.features.start
 import app.cash.turbine.test
 import br.com.gazoza.alcoolougasolina.data.repository.PreferencesRepository
 import br.com.gazoza.alcoolougasolina.util.API_NOTIFICATIONS
+import br.com.gazoza.alcoolougasolina.utils.BaseRobolectricTest
 import br.com.gazoza.alcoolougasolina.utils.MainDispatcherRule
 import io.mockk.every
 import io.mockk.mockk
@@ -15,11 +16,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-import br.com.gazoza.alcoolougasolina.utils.BaseRobolectricTest
-
 @OptIn(ExperimentalCoroutinesApi::class)
 class StartViewModelTest : BaseRobolectricTest() {
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 

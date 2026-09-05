@@ -22,19 +22,21 @@ import com.google.android.gms.ads.AdView
 @Composable
 fun BannerAd(
     modifier: Modifier = Modifier,
-    adUnitId: String = if (isDebug()) {
-        "ca-app-pub-3940256099942544/6300978111"
-    } else {
-        "ca-app-pub-6521704558504566/6221190272"
-    },
+    adUnitId: String =
+        if (isDebug()) {
+            "ca-app-pub-3940256099942544/6300978111"
+        } else {
+            "ca-app-pub-6521704558504566/6221190272"
+        }
 ) {
     if (LocalInspectionMode.current) {
         Box(
-            modifier = modifier
+            modifier =
+            modifier
                 .fillMaxWidth()
                 .height(50.dp)
                 .background(DarkBackground),
-            contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center
         ) {
             Text("Banner Ad", color = TextMuted)
         }
@@ -42,11 +44,12 @@ fun BannerAd(
     }
 
     Box(
-        modifier = modifier
+        modifier =
+        modifier
             .fillMaxWidth()
             .background(DarkBackground)
             .navigationBarsPadding(),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         AndroidView(
             modifier = Modifier.fillMaxWidth(),
@@ -56,7 +59,7 @@ fun BannerAd(
                     this.adUnitId = adUnitId
                     loadAd(AdRequest.Builder().build())
                 }
-            },
+            }
         )
     }
 }

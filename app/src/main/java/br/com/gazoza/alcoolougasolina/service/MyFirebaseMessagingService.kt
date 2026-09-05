@@ -44,7 +44,6 @@ import java.net.URL
 
 @Suppress("MissingFirebaseInstanceTokenRefresh")
 class MyFirebaseMessagingService : FirebaseMessagingService() {
-
     companion object {
         const val ID = "id"
         const val TYPE = "type"
@@ -123,8 +122,9 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         sendNotificationReport(id, true)
 
-        if (title.isEmpty() || type == API_WAKEUP)
+        if (title.isEmpty() || type == API_WAKEUP) {
             return
+        }
 
         val channelId = "${type}_channel"
 
@@ -143,24 +143,21 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
 
         if (link.isValidUrl()) {
-
             notifyIntent = Intent(Intent.ACTION_VIEW, link.toUri())
-
         } else {
-
             notifyIntent.putExtra(PARAM_ID, id)
             notifyIntent.putExtra(PARAM_TYPE, type)
             notifyIntent.putExtra(PARAM_ITEM_ID, itemId)
-
         }
 
         val builder = NotificationCompat.Builder(applicationContext, channelId)
 
-        val pendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
-            addNextIntentWithParentStack(notifyIntent)
+        val pendingIntent: PendingIntent? =
+            TaskStackBuilder.create(this).run {
+                addNextIntentWithParentStack(notifyIntent)
 
-            getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
-        }
+                getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
+            }
 
         builder.setAutoCancel(true)
         builder.setContentIntent(pendingIntent)
@@ -194,12 +191,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = when (type) {
-                API_FEEDBACK -> R.string.feedback
-                API_NOTIFICATIONS -> R.string.notifications
-                API_ABOUT_APP -> R.string.about_app
-                else -> R.string.channel_updates
-            }
+            val name =
+                when (type) {
+                    API_FEEDBACK -> R.string.feedback
+                    API_NOTIFICATIONS -> R.string.notifications
+                    API_ABOUT_APP -> R.string.about_app
+                    else -> R.string.channel_updates
+                }
             val channel =
                 NotificationChannel(channelId, getString(name), NotificationManager.IMPORTANCE_HIGH)
             manager.createNotificationChannel(channel)
@@ -214,13 +212,14 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         if (vibrate.isNotEmpty()) {
             val pattern = longArrayOf(0, 100, 0, 100)
-            val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                val vm = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-                vm.defaultVibrator
-            } else {
-                @Suppress("DEPRECATION")
-                getSystemService(VIBRATOR_SERVICE) as Vibrator
-            }
+            val vibrator =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    val vm = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+                    vm.defaultVibrator
+                } else {
+                    @Suppress("DEPRECATION")
+                    getSystemService(VIBRATOR_SERVICE) as Vibrator
+                }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 vibrator.vibrate(
@@ -235,5 +234,4 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             }
         }
     }
-
 }

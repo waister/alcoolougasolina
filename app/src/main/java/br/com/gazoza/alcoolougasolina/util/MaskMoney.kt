@@ -4,7 +4,6 @@ import java.text.NumberFormat
 import java.util.Locale
 
 object MaskMoney {
-
     fun format(input: String): String {
         val digits = input.filter { it.isDigit() }.trimStart('0')
         if (digits.isEmpty()) return ""
@@ -19,20 +18,21 @@ object MaskMoney {
         val prevDigits = previousText.filter { it.isDigit() }
         val newDigits = newText.filter { it.isDigit() }
 
-        val digitsToUse: String = when {
-            newText.length < previousText.length -> {
-                if (newDigits.length < prevDigits.length) {
-                    newDigits
-                } else if (prevDigits.isNotEmpty()) {
-                    prevDigits.dropLast(1)
-                } else {
-                    ""
+        val digitsToUse: String =
+            when {
+                newText.length < previousText.length -> {
+                    if (newDigits.length < prevDigits.length) {
+                        newDigits
+                    } else if (prevDigits.isNotEmpty()) {
+                        prevDigits.dropLast(1)
+                    } else {
+                        ""
+                    }
+                }
+                else -> {
+                    if (newDigits.length > 6) newDigits.take(6) else newDigits
                 }
             }
-            else -> {
-                if (newDigits.length > 6) newDigits.take(6) else newDigits
-            }
-        }
 
         val cleanDigits = digitsToUse.trimStart('0')
         if (cleanDigits.isEmpty()) {

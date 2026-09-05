@@ -9,7 +9,6 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ComparisonDao {
-
     @Query("SELECT * FROM comparisons ORDER BY timestamp DESC")
     fun getAllComparisons(): Flow<List<Comparison>>
 
@@ -25,6 +24,8 @@ interface ComparisonDao {
     @Query("DELETE FROM comparisons")
     suspend fun deleteAll()
 
-    @Query("SELECT * FROM comparisons WHERE priceEthanol = :priceEthanol AND priceGasoline = :priceGasoline ORDER BY timestamp DESC LIMIT 1")
+    @Query(
+        "SELECT * FROM comparisons WHERE priceEthanol = :priceEthanol AND priceGasoline = :priceGasoline ORDER BY timestamp DESC LIMIT 1"
+    )
     suspend fun getComparisonByPrices(priceEthanol: String, priceGasoline: String): Comparison?
 }

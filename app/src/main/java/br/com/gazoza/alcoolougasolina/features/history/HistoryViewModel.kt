@@ -12,10 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class HistoryViewModel(
-    private val historyRepository: HistoryRepository,
-) : ViewModel() {
-
+class HistoryViewModel(private val historyRepository: HistoryRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(HistoryUiState())
     val uiState: StateFlow<HistoryUiState> = _uiState.asStateFlow()
 
@@ -32,7 +29,7 @@ class HistoryViewModel(
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        comparisons = comparisons,
+                        comparisons = comparisons
                     )
                 }
             }

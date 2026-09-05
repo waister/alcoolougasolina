@@ -8,8 +8,9 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.google.services)
     alias(libs.plugins.firebase.crashlytics)
-    alias(libs.plugins.ktlint)
 }
+
+val ktlint: Configuration = configurations.create("ktlint")
 
 android {
     namespace = "br.com.gazoza.alcoolougasolina"
@@ -52,7 +53,7 @@ android {
             isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
-                "proguard-rules.pro",
+                "proguard-rules.pro"
             )
         }
     }
@@ -74,7 +75,7 @@ android {
                 "-XX:+EnableDynamicAgentLoading",
                 "--add-opens=java.base/java.lang=ALL-UNNAMED",
                 "--add-opens=java.base/java.lang.reflect=ALL-UNNAMED",
-                "--add-opens=java.base/java.util=ALL-UNNAMED",
+                "--add-opens=java.base/java.util=ALL-UNNAMED"
             )
         }
     }
@@ -159,4 +160,44 @@ dependencies {
     androidTestImplementation(libs.androidx.test.espresso.core)
     androidTestImplementation(platform(libs.compose.bom))
     androidTestImplementation(libs.compose.ui.test.junit4)
+
+    // KtLint CLI
+    ktlint(libs.ktlint.cli) {
+        attributes {
+            attribute(Bundling.BUNDLING_ATTRIBUTE, objects.named(Bundling.EXTERNAL))
+        }
+    }
+}
+
+tasks.register<JavaExec>("ktlintCheck") {
+    group = "verification"
+    description = "Check Kotlin code style with KtLint."
+    classpath = ktlint
+    mainClass.set("com.pinterest.ktlint.Main")
+    jvmArgs(
+        "--add-opens=java.base/java.lang=ALL-UNNAMED",
+        "--add-opens=java.base/java.util=ALL-UNNAMED"
+    )
+    args(
+        "src/**/*.kt",
+        "*.kts",
+        "!**/build/**"
+    )
+}
+
+tasks.register<JavaExec>("ktlintFormat") {
+    group = "formatting"
+    description = "Fix Kotlin code style deviations with KtLint."
+    classpath = ktlint
+    mainClass.set("com.pinterest.ktlint.Main")
+    jvmArgs(
+        "--add-opens=java.base/java.lang=ALL-UNNAMED",
+        "--add-opens=java.base/java.util=ALL-UNNAMED"
+    )
+    args(
+        "-F",
+        "src/**/*.kt",
+        "*.kts",
+        "!**/build/**"
+    )
 }

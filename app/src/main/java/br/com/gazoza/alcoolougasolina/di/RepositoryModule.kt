@@ -9,8 +9,9 @@ import br.com.gazoza.alcoolougasolina.data.repository.PreferencesRepositoryImpl
 import org.koin.android.ext.koin.androidContext
 import org.koin.dsl.module
 
-val repositoryModule = module {
-    single<PreferencesRepository> { PreferencesRepositoryImpl(androidContext()) }
-    single<HistoryRepository> { HistoryRepositoryImpl(get()) }
-    single<NotificationRepository> { NotificationRepositoryImpl(get()) }
-}
+val repositoryModule =
+    module {
+        single<PreferencesRepository> { PreferencesRepositoryImpl(androidContext()) }
+        single<HistoryRepository> { HistoryRepositoryImpl(get()) }
+        single<NotificationRepository> { NotificationRepositoryImpl(get()) }
+    }

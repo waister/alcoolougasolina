@@ -12,10 +12,7 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class NotificationsViewModel(
-    private val notificationRepository: NotificationRepository,
-) : ViewModel() {
-
+class NotificationsViewModel(private val notificationRepository: NotificationRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(NotificationsUiState())
     val uiState: StateFlow<NotificationsUiState> = _uiState.asStateFlow()
 
@@ -35,15 +32,16 @@ class NotificationsViewModel(
                         it.copy(
                             isLoading = false,
                             notifications = result.data,
-                            errorMessage = null,
+                            errorMessage = null
                         )
                     }
                 }
+
                 is br.com.gazoza.alcoolougasolina.data.repository.DataResult.Error -> {
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage = result.message,
+                            errorMessage = result.message
                         )
                     }
                 }
@@ -60,15 +58,16 @@ class NotificationsViewModel(
                         it.copy(
                             isLoading = false,
                             selectedNotification = result.data,
-                            errorMessage = null,
+                            errorMessage = null
                         )
                     }
                 }
+
                 is br.com.gazoza.alcoolougasolina.data.repository.DataResult.Error -> {
                     _uiState.update {
                         it.copy(
                             isLoading = false,
-                            errorMessage = result.message,
+                            errorMessage = result.message
                         )
                     }
                     _events.emit(NotificationsEvent.ShowError(result.message))

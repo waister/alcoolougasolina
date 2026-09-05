@@ -4,7 +4,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 class MaskMoneyTest {
-
     @Test
     fun `given empty input, when formatted, then returns empty`() {
         assertEquals("", MaskMoney.format(""))

@@ -18,21 +18,21 @@ import org.junit.Test
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class NotificationsViewModelTest : BaseRobolectricTest() {
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
     private val notificationRepository: NotificationRepository = mockk()
     private lateinit var viewModel: NotificationsViewModel
 
-    private val mockNotificationList = listOf(
-        NotificationItem(
-            id = "1",
-            title = "Promoção",
-            body = "Corpo da notificação",
-            date = "2026-09-05 10:00:00",
-        ),
-    )
+    private val mockNotificationList =
+        listOf(
+            NotificationItem(
+                id = "1",
+                title = "Promoção",
+                body = "Corpo da notificação",
+                date = "2026-09-05 10:00:00"
+            )
+        )
 
     @Test
     fun `given success response, when initialized, then state contains notifications`() = runTest {

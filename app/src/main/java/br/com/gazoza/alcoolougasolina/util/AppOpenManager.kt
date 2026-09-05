@@ -12,7 +12,8 @@ import com.google.android.gms.ads.LoadAdError
 import com.google.android.gms.ads.appopen.AppOpenAd
 import java.util.Date
 
-class AppOpenManager(private var application: CustomApplication) : DefaultLifecycleObserver,
+class AppOpenManager(private var application: CustomApplication) :
+    DefaultLifecycleObserver,
     Application.ActivityLifecycleCallbacks {
     private var appOpenAd: AppOpenAd? = null
     private lateinit var loadCallback: AppOpenAd.AppOpenAdLoadCallback
@@ -54,30 +55,33 @@ class AppOpenManager(private var application: CustomApplication) : DefaultLifecy
             return
         }
 
-        loadCallback = object : AppOpenAd.AppOpenAdLoadCallback() {
-            override fun onAdLoaded(ad: AppOpenAd) {
-                appLog(LOG_TAG, "Ad was loaded")
+        loadCallback =
+            object : AppOpenAd.AppOpenAdLoadCallback() {
+                override fun onAdLoaded(ad: AppOpenAd) {
+                    appLog(LOG_TAG, "Ad was loaded")
 
-                appOpenAd = ad
-                loadTime = Date().time
+                    appOpenAd = ad
+                    loadTime = Date().time
 
-                super.onAdLoaded(ad)
+                    super.onAdLoaded(ad)
+                }
+
+                override fun onAdFailedToLoad(loadAdError: LoadAdError) {
+                    appLog(LOG_TAG, "Ad failed to load: ${loadAdError.message}")
+
+                    appOpenAd = null
+                    loadTime = 0
+
+                    super.onAdFailedToLoad(loadAdError)
+                }
             }
 
-            override fun onAdFailedToLoad(loadAdError: LoadAdError) {
-                appLog(LOG_TAG, "Ad failed to load: ${loadAdError.message}")
-
-                appOpenAd = null
-                loadTime = 0
-
-                super.onAdFailedToLoad(loadAdError)
+        val adUnitId =
+            if (isDebug()) {
+                "ca-app-pub-3940256099942544/3419835294"
+            } else {
+                "ca-app-pub-6521704558504566/5819935173"
             }
-        }
-
-        val adUnitId = if (isDebug())
-            "ca-app-pub-3940256099942544/3419835294"
-        else
-            "ca-app-pub-6521704558504566/5819935173"
 
         AppOpenAd.load(application, adUnitId, AdRequest.Builder().build(), loadCallback)
     }
@@ -112,6 +116,4 @@ class AppOpenManager(private var application: CustomApplication) : DefaultLifecy
     override fun onActivityResumed(activity: Activity) {
         currentActivity = activity
     }
-
-
 }

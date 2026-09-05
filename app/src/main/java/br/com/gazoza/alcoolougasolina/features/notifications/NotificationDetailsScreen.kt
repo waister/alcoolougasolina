@@ -2,7 +2,6 @@ package br.com.gazoza.alcoolougasolina.features.notifications
 
 import android.content.Intent
 import android.net.Uri
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -29,10 +28,10 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.ui.tooling.preview.Preview
 import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.domain.NotificationItem
 import br.com.gazoza.alcoolougasolina.ui.components.AppTopBar
@@ -48,11 +47,7 @@ import coil.compose.AsyncImage
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun NotificationDetailsScreen(
-    notificationId: String,
-    onBackClick: () -> Unit,
-    viewModel: NotificationsViewModel = koinViewModel(),
-) {
+fun NotificationDetailsScreen(notificationId: String, onBackClick: () -> Unit, viewModel: NotificationsViewModel = koinViewModel()) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val context = LocalContext.current
 
@@ -66,57 +61,57 @@ fun NotificationDetailsScreen(
         onOpenLink = { url ->
             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
             context.startActivity(intent)
-        },
+        }
     )
 }
 
 @Composable
-fun NotificationDetailsContent(
-    uiState: NotificationsUiState,
-    onBackClick: () -> Unit,
-    onOpenLink: (String) -> Unit,
-) {
+fun NotificationDetailsContent(uiState: NotificationsUiState, onBackClick: () -> Unit, onOpenLink: (String) -> Unit) {
     Scaffold(
         topBar = {
             AppTopBar(
                 title = stringResource(R.string.notification_details),
-                onBackClick = onBackClick,
+                onBackClick = onBackClick
             )
         },
         bottomBar = {
             BannerAd()
         },
-        containerColor = DarkBackground,
+        containerColor = DarkBackground
     ) { paddingValues ->
         Box(
-            modifier = Modifier
+            modifier =
+            Modifier
                 .fillMaxSize()
-                .padding(paddingValues),
+                .padding(paddingValues)
         ) {
-                val notif = uiState.selectedNotification
-                when {
-                    uiState.isLoading -> {
-                        CircularProgressIndicator(
-                            color = GreenPrimary,
-                            modifier = Modifier.align(Alignment.Center),
-                        )
-                    }
-                    notif != null -> {
-                        Column(
-                        modifier = Modifier
+            val notif = uiState.selectedNotification
+            when {
+                uiState.isLoading -> {
+                    CircularProgressIndicator(
+                        color = GreenPrimary,
+                        modifier = Modifier.align(Alignment.Center)
+                    )
+                }
+
+                notif != null -> {
+                    Column(
+                        modifier =
+                        Modifier
                             .fillMaxSize()
                             .verticalScroll(rememberScrollState())
-                            .padding(16.dp),
+                            .padding(16.dp)
                     ) {
                         if (notif.image.isNotEmpty()) {
                             AsyncImage(
                                 model = notif.image,
                                 contentDescription = stringResource(R.string.notification_image),
                                 contentScale = ContentScale.Crop,
-                                modifier = Modifier
+                                modifier =
+                                Modifier
                                     .fillMaxWidth()
                                     .height(200.dp)
-                                    .clip(RoundedCornerShape(12.dp)),
+                                    .clip(RoundedCornerShape(12.dp))
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                         }
@@ -125,15 +120,19 @@ fun NotificationDetailsContent(
                             text = notif.title,
                             style = MaterialTheme.typography.titleLarge,
                             fontWeight = FontWeight.Bold,
-                            color = TextPrimary,
+                            color = TextPrimary
                         )
 
                         if (notif.date.isNotEmpty()) {
                             Spacer(modifier = Modifier.height(6.dp))
                             Text(
-                                text = stringResource(R.string.label_received, notif.date.formatDatetime()),
+                                text =
+                                stringResource(
+                                    R.string.label_received,
+                                    notif.date.formatDatetime()
+                                ),
                                 color = TextMuted,
-                                fontSize = 12.sp,
+                                fontSize = 12.sp
                             )
                         }
 
@@ -143,7 +142,7 @@ fun NotificationDetailsContent(
                             text = notif.body,
                             color = TextSecondary,
                             fontSize = 15.sp,
-                            lineHeight = 22.sp,
+                            lineHeight = 22.sp
                         )
 
                         if (notif.link.isNotEmpty()) {
@@ -152,12 +151,12 @@ fun NotificationDetailsContent(
                                 onClick = { onOpenLink(notif.link) },
                                 colors = ButtonDefaults.buttonColors(containerColor = GreenPrimary),
                                 shape = RoundedCornerShape(8.dp),
-                                modifier = Modifier.fillMaxWidth(),
+                                modifier = Modifier.fillMaxWidth()
                             ) {
                                 Text(
                                     text = stringResource(R.string.label_link, ""),
                                     fontWeight = FontWeight.Bold,
-                                    color = TextPrimary,
+                                    color = TextPrimary
                                 )
                             }
                         }
@@ -173,18 +172,20 @@ fun NotificationDetailsContent(
 private fun NotificationDetailsLoadedPreview() {
     AppTheme {
         NotificationDetailsContent(
-            uiState = NotificationsUiState(
+            uiState =
+            NotificationsUiState(
                 isLoading = false,
-                selectedNotification = NotificationItem(
+                selectedNotification =
+                NotificationItem(
                     id = "1",
                     title = "Preço dos combustíveis subiu!",
                     body = "Confira a nova proporção calculada para abastecer com economia nos postos da sua região.",
                     date = "2026-06-01 10:30:00",
-                    link = "https://maggapps.com",
-                ),
+                    link = "https://maggapps.com"
+                )
             ),
             onBackClick = {},
-            onOpenLink = {},
+            onOpenLink = {}
         )
     }
 }
@@ -194,12 +195,13 @@ private fun NotificationDetailsLoadedPreview() {
 private fun NotificationDetailsLoadingPreview() {
     AppTheme {
         NotificationDetailsContent(
-            uiState = NotificationsUiState(
+            uiState =
+            NotificationsUiState(
                 isLoading = true,
-                selectedNotification = null,
+                selectedNotification = null
             ),
             onBackClick = {},
-            onOpenLink = {},
+            onOpenLink = {}
         )
     }
 }

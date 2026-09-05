@@ -12,8 +12,8 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.ui.theme.AppTheme
 import br.com.gazoza.alcoolougasolina.ui.theme.DarkBackground
@@ -28,7 +28,7 @@ fun StartScreen(
     onNavigateToMain: (String) -> Unit,
     onNavigateToNotifications: () -> Unit,
     onNavigateToNotificationDetails: (String) -> Unit,
-    viewModel: StartViewModel = koinViewModel(),
+    viewModel: StartViewModel = koinViewModel()
 ) {
     LaunchedEffect(Unit) {
         viewModel.events.collect { event ->
@@ -50,23 +50,25 @@ fun StartScreen(
 @Composable
 fun StartContent() {
     Box(
-        modifier = Modifier
+        modifier =
+        Modifier
             .fillMaxSize()
             .background(DarkBackground),
-        contentAlignment = Alignment.Center,
+        contentAlignment = Alignment.Center
     ) {
         Image(
             painter = painterResource(id = R.drawable.logo_128dp),
             contentDescription = "Logo",
-            modifier = Modifier.size(128.dp),
+            modifier = Modifier.size(128.dp)
         )
 
         CircularProgressIndicator(
             color = GreenPrimary,
-            modifier = Modifier
+            modifier =
+            Modifier
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 64.dp)
-                .size(36.dp),
+                .size(36.dp)
         )
     }
 }

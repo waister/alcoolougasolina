@@ -16,10 +16,7 @@ import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
-class StartViewModel(
-    private val preferencesRepository: PreferencesRepository,
-) : ViewModel() {
-
+class StartViewModel(private val preferencesRepository: PreferencesRepository) : ViewModel() {
     private val _uiState = MutableStateFlow(StartUiState())
     val uiState: StateFlow<StartUiState> = _uiState.asStateFlow()
 

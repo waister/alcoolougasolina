@@ -5,6 +5,7 @@ import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.data.repository.HistoryRepository
 import br.com.gazoza.alcoolougasolina.data.repository.NotificationRepository
 import br.com.gazoza.alcoolougasolina.data.repository.PreferencesRepository
+import br.com.gazoza.alcoolougasolina.utils.BaseRobolectricTest
 import br.com.gazoza.alcoolougasolina.utils.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -22,11 +23,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-import br.com.gazoza.alcoolougasolina.utils.BaseRobolectricTest
-
 @OptIn(ExperimentalCoroutinesApi::class)
 class MainViewModelTest : BaseRobolectricTest() {
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
@@ -43,13 +41,16 @@ class MainViewModelTest : BaseRobolectricTest() {
         every { preferencesRepository.getShareLink() } returns "https://maggapps.com"
         every { preferencesRepository.getAppName() } returns "Alcool ou Gasolina"
         every { preferencesRepository.getFcmToken() } returns "mock-token"
-        coEvery { notificationRepository.identifyUser(any()) } returns br.com.gazoza.alcoolougasolina.data.repository.DataResult.Success(JSONObject())
+        coEvery { notificationRepository.identifyUser(any()) } returns
+            br.com.gazoza.alcoolougasolina.data.repository.DataResult
+                .Success(JSONObject())
 
-        viewModel = MainViewModel(
-            historyRepository = historyRepository,
-            preferencesRepository = preferencesRepository,
-            notificationRepository = notificationRepository,
-        )
+        viewModel =
+            MainViewModel(
+                historyRepository = historyRepository,
+                preferencesRepository = preferencesRepository,
+                notificationRepository = notificationRepository
+            )
     }
 
     @Test

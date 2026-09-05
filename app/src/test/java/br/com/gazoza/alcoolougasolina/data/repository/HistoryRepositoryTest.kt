@@ -14,7 +14,6 @@ import org.junit.Before
 import org.junit.Test
 
 class HistoryRepositoryTest {
-
     private val comparisonDao: ComparisonDao = mockk()
     private lateinit var repository: HistoryRepository
 

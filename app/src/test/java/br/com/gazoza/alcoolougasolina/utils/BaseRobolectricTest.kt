@@ -7,7 +7,6 @@ import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 abstract class BaseRobolectricTest {
-
     @After
     fun tearDownKoin() {
         stopKoin()

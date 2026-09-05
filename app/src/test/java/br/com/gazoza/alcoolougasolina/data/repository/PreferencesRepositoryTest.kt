@@ -8,7 +8,6 @@ import org.junit.Before
 import org.junit.Test
 
 class PreferencesRepositoryTest : BaseRobolectricTest() {
-
     private lateinit var repository: PreferencesRepository
 
     @Before

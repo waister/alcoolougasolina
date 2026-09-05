@@ -3,6 +3,7 @@ package br.com.gazoza.alcoolougasolina.features.history
 import app.cash.turbine.test
 import br.com.gazoza.alcoolougasolina.data.repository.HistoryRepository
 import br.com.gazoza.alcoolougasolina.domain.Comparison
+import br.com.gazoza.alcoolougasolina.utils.BaseRobolectricTest
 import br.com.gazoza.alcoolougasolina.utils.MainDispatcherRule
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -18,27 +19,25 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-import br.com.gazoza.alcoolougasolina.utils.BaseRobolectricTest
-
 @OptIn(ExperimentalCoroutinesApi::class)
 class HistoryViewModelTest : BaseRobolectricTest() {
-
     @get:Rule
     val mainDispatcherRule = MainDispatcherRule()
 
     private val historyRepository: HistoryRepository = mockk(relaxed = true)
     private lateinit var viewModel: HistoryViewModel
 
-    private val mockComparisons = listOf(
-        Comparison(
-            id = 1,
-            priceEthanol = "R$ 3,50",
-            priceGasoline = "R$ 5,50",
-            proportion = 0.63,
-            percentage = "63.64%",
-            timestamp = 1000L,
-        ),
-    )
+    private val mockComparisons =
+        listOf(
+            Comparison(
+                id = 1,
+                priceEthanol = "R$ 3,50",
+                priceGasoline = "R$ 5,50",
+                proportion = 0.63,
+                percentage = "63.64%",
+                timestamp = 1000L
+            )
+        )
 
     @Before
     fun setup() {

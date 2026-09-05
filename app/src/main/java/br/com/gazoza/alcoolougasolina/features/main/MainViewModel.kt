@@ -12,12 +12,11 @@ import br.com.gazoza.alcoolougasolina.util.API_APP_NAME
 import br.com.gazoza.alcoolougasolina.util.API_SHARE_LINK
 import br.com.gazoza.alcoolougasolina.util.API_SUCCESS
 import br.com.gazoza.alcoolougasolina.util.API_VERSION_MIN
+import br.com.gazoza.alcoolougasolina.util.MaskMoney
 import br.com.gazoza.alcoolougasolina.util.getBooleanVal
 import br.com.gazoza.alcoolougasolina.util.getIntVal
 import br.com.gazoza.alcoolougasolina.util.getStringVal
 import java.text.DecimalFormat
-import java.text.NumberFormat
-import java.util.Locale
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -27,14 +26,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-import br.com.gazoza.alcoolougasolina.util.MaskMoney
-
 class MainViewModel(
     private val historyRepository: HistoryRepository,
     private val preferencesRepository: PreferencesRepository,
-    private val notificationRepository: NotificationRepository,
+    private val notificationRepository: NotificationRepository
 ) : ViewModel() {
-
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
@@ -59,7 +55,7 @@ class MainViewModel(
                 shareLink = shareLink,
                 appName = appName,
                 isCalculateEnabled = lastEthanol.isNotEmpty() && lastGasoline.isNotEmpty(),
-                isClearEnabled = lastEthanol.isNotEmpty() || lastGasoline.isNotEmpty(),
+                isClearEnabled = lastEthanol.isNotEmpty() || lastGasoline.isNotEmpty()
             )
         }
     }
@@ -73,7 +69,7 @@ class MainViewModel(
                 priceEthanol = formatted,
                 isCalculateEnabled = canCalculate,
                 isClearEnabled = canClear,
-                isResultVisible = false,
+                isResultVisible = false
             )
         }
     }
@@ -87,7 +83,7 @@ class MainViewModel(
                 priceGasoline = formatted,
                 isCalculateEnabled = canCalculate,
                 isClearEnabled = canClear,
-                isResultVisible = false,
+                isResultVisible = false
             )
         }
     }
@@ -109,17 +105,19 @@ class MainViewModel(
         val proportion = ethanolDouble / gasolineDouble
         val percentage = DecimalFormat("#.##").format(proportion * 100) + "%"
 
-        val recommendation = if (proportion < 0.7) {
-            FuelRecommendation.ETHANOL
-        } else {
-            FuelRecommendation.GASOLINE
-        }
+        val recommendation =
+            if (proportion < 0.7) {
+                FuelRecommendation.ETHANOL
+            } else {
+                FuelRecommendation.GASOLINE
+            }
 
-        val messageRes = if (proportion < 0.7) {
-            R.string.msg_use_ethanol
-        } else {
-            R.string.msg_use_gasoline
-        }
+        val messageRes =
+            if (proportion < 0.7) {
+                R.string.msg_use_ethanol
+            } else {
+                R.string.msg_use_gasoline
+            }
 
         _uiState.update {
             it.copy(
@@ -127,7 +125,7 @@ class MainViewModel(
                 proportion = proportion,
                 percentageText = percentage,
                 messageRes = messageRes,
-                isResultVisible = true,
+                isResultVisible = true
             )
         }
 
@@ -139,13 +137,14 @@ class MainViewModel(
             val textGasoline = _uiState.value.priceGasoline
             var existing = historyRepository.getComparisonByPrices(textEthanol, textGasoline)
             if (existing == null) {
-                existing = Comparison(
-                    priceEthanol = textEthanol,
-                    priceGasoline = textGasoline,
-                    proportion = proportion,
-                    percentage = percentage,
-                    timestamp = System.currentTimeMillis(),
-                )
+                existing =
+                    Comparison(
+                        priceEthanol = textEthanol,
+                        priceGasoline = textGasoline,
+                        proportion = proportion,
+                        percentage = percentage,
+                        timestamp = System.currentTimeMillis()
+                    )
             } else {
                 existing.proportion = proportion
                 existing.percentage = percentage
@@ -166,7 +165,7 @@ class MainViewModel(
                 messageRes = null,
                 isCalculateEnabled = false,
                 isClearEnabled = false,
-                isResultVisible = false,
+                isResultVisible = false
             )
         }
         preferencesRepository.setLastEthanolPrice("")
@@ -176,11 +175,12 @@ class MainViewModel(
     fun onShareClicked() {
         val shareLink = _uiState.value.shareLink
         val appName = _uiState.value.appName
-        val text = if (shareLink.isNotEmpty()) {
-            "$appName\n$shareLink"
-        } else {
-            appName
-        }
+        val text =
+            if (shareLink.isNotEmpty()) {
+                "$appName\n$shareLink"
+            } else {
+                appName
+            }
         viewModelScope.launch {
             _events.emit(MainEvent.ShareApp(text))
         }
@@ -207,7 +207,7 @@ class MainViewModel(
                         _uiState.update {
                             it.copy(
                                 shareLink = shareLink,
-                                appName = appName,
+                                appName = appName
                             )
                         }
 
@@ -216,6 +216,7 @@ class MainViewModel(
                         }
                     }
                 }
+
                 is br.com.gazoza.alcoolougasolina.data.repository.DataResult.Error -> {}
             }
         }
