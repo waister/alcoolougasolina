@@ -59,17 +59,17 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         const val TAG = "MyFCM"
     }
 
-    override fun onRegistered(installationId: String) {
-        super.onRegistered(installationId)
+    override fun onNewToken(token: String) {
+        super.onNewToken(token)
 
-        appLog(TAG, "New registered installationId: $installationId")
+        appLog(TAG, "New registered installationId: $token")
 
         val latToken = StorageHelper.get(PREF_FCM_TOKEN, "")
 
-        if (installationId != latToken) {
-            StorageHelper.put(PREF_FCM_TOKEN, installationId)
+        if (token != latToken) {
+            StorageHelper.put(PREF_FCM_TOKEN, token)
 
-            val params = listOf(API_TOKEN to installationId)
+            val params = listOf(API_TOKEN to token)
             API_ROUTE_IDENTIFY.httpGet(params).responseString { request, response, result ->
                 printFuelLog(request, response, result)
             }
