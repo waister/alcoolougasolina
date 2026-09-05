@@ -251,70 +251,89 @@ fun MainContent(
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Labels Row
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Text(
+                    text = stringResource(R.string.ethanol),
+                    color = TextPrimary,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 15.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f),
+                )
+                Text(
+                    text = stringResource(R.string.separator),
+                    color = Color.Transparent,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(horizontal = 12.dp),
+                )
+                Text(
+                    text = stringResource(R.string.gasoline),
+                    color = TextPrimary,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 15.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.weight(1f),
+                )
+            }
+
+            Spacer(modifier = Modifier.height(4.dp))
+
             // Price Inputs Row
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.SpaceBetween,
             ) {
-                // Ethanol Field
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = stringResource(R.string.ethanol),
-                        color = TextPrimary,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 15.sp,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    OutlinedTextField(
-                        value = ethanolTextFieldValue,
-                        onValueChange = { newValue ->
-                            if (newValue.text == ethanolTextFieldValue.text) {
-                                if (newValue.text.isNotEmpty() && newValue.selection != TextRange(0, newValue.text.length)) {
-                                    ethanolTextFieldValue = newValue.copy(
-                                        selection = TextRange(0, newValue.text.length),
-                                    )
-                                }
-                            } else {
-                                val formatted = MaskMoney.formatMoneyInput(
-                                    previousText = ethanolTextFieldValue.text,
-                                    newText = newValue.text,
+                OutlinedTextField(
+                    value = ethanolTextFieldValue,
+                    onValueChange = { newValue ->
+                        if (newValue.text == ethanolTextFieldValue.text) {
+                            if (newValue.text.isNotEmpty() && newValue.selection != TextRange(0, newValue.text.length)) {
+                                ethanolTextFieldValue = newValue.copy(
+                                    selection = TextRange(0, newValue.text.length),
                                 )
-                                ethanolTextFieldValue = TextFieldValue(
-                                    text = formatted,
-                                    selection = TextRange(formatted.length),
+                            }
+                        } else {
+                            val formatted = MaskMoney.formatMoneyInput(
+                                previousText = ethanolTextFieldValue.text,
+                                newText = newValue.text,
+                            )
+                            ethanolTextFieldValue = TextFieldValue(
+                                text = formatted,
+                                selection = TextRange(formatted.length),
+                            )
+                            onEthanolPriceChanged(formatted)
+                        }
+                    },
+                    placeholder = { Text("R$ 0,00", color = TextMuted) },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next,
+                    ),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = TextPrimary,
+                        unfocusedTextColor = TextPrimary,
+                        focusedBorderColor = GreenLight,
+                        unfocusedBorderColor = Color.Gray,
+                        focusedContainerColor = DarkCard,
+                        unfocusedContainerColor = DarkCard,
+                    ),
+                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .onFocusChanged { focusState ->
+                            if (focusState.isFocused && ethanolTextFieldValue.text.isNotEmpty()) {
+                                ethanolTextFieldValue = ethanolTextFieldValue.copy(
+                                    selection = TextRange(0, ethanolTextFieldValue.text.length),
                                 )
-                                onEthanolPriceChanged(formatted)
                             }
                         },
-                        placeholder = { Text("R$ 0,00", color = TextMuted) },
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Next,
-                        ),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = TextPrimary,
-                            unfocusedTextColor = TextPrimary,
-                            focusedBorderColor = GreenLight,
-                            unfocusedBorderColor = Color.Gray,
-                            focusedContainerColor = DarkCard,
-                            unfocusedContainerColor = DarkCard,
-                        ),
-                        shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .onFocusChanged { focusState ->
-                                if (focusState.isFocused && ethanolTextFieldValue.text.isNotEmpty()) {
-                                    ethanolTextFieldValue = ethanolTextFieldValue.copy(
-                                        selection = TextRange(0, ethanolTextFieldValue.text.length),
-                                    )
-                                }
-                            },
-                    )
-                }
+                )
 
                 Text(
                     text = stringResource(R.string.separator),
@@ -322,73 +341,61 @@ fun MainContent(
                     fontSize = 24.sp,
                     fontWeight = FontWeight.Bold,
                     textAlign = TextAlign.Center,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 8.dp),
+                    modifier = Modifier.padding(horizontal = 12.dp),
                 )
 
-                // Gasoline Field
-                Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = stringResource(R.string.gasoline),
-                        color = TextPrimary,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 15.sp,
-                        textAlign = TextAlign.Center,
-                        modifier = Modifier.fillMaxWidth(),
-                    )
-                    Spacer(modifier = Modifier.height(4.dp))
-                    OutlinedTextField(
-                        value = gasolineTextFieldValue,
-                        onValueChange = { newValue ->
-                            if (newValue.text == gasolineTextFieldValue.text) {
-                                if (newValue.text.isNotEmpty() && newValue.selection != TextRange(0, newValue.text.length)) {
-                                    gasolineTextFieldValue = newValue.copy(
-                                        selection = TextRange(0, newValue.text.length),
-                                    )
-                                }
-                            } else {
-                                val formatted = MaskMoney.formatMoneyInput(
-                                    previousText = gasolineTextFieldValue.text,
-                                    newText = newValue.text,
+                OutlinedTextField(
+                    value = gasolineTextFieldValue,
+                    onValueChange = { newValue ->
+                        if (newValue.text == gasolineTextFieldValue.text) {
+                            if (newValue.text.isNotEmpty() && newValue.selection != TextRange(0, newValue.text.length)) {
+                                gasolineTextFieldValue = newValue.copy(
+                                    selection = TextRange(0, newValue.text.length),
                                 )
-                                gasolineTextFieldValue = TextFieldValue(
-                                    text = formatted,
-                                    selection = TextRange(formatted.length),
+                            }
+                        } else {
+                            val formatted = MaskMoney.formatMoneyInput(
+                                previousText = gasolineTextFieldValue.text,
+                                newText = newValue.text,
+                            )
+                            gasolineTextFieldValue = TextFieldValue(
+                                text = formatted,
+                                selection = TextRange(formatted.length),
+                            )
+                            onGasolinePriceChanged(formatted)
+                        }
+                    },
+                    placeholder = { Text("R$ 0,00", color = TextMuted) },
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Done,
+                    ),
+                    keyboardActions = KeyboardActions(
+                        onDone = {
+                            focusManager.clearFocus()
+                            onCalculate()
+                        },
+                    ),
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedTextColor = TextPrimary,
+                        unfocusedTextColor = TextPrimary,
+                        focusedBorderColor = GreenLight,
+                        unfocusedBorderColor = Color.Gray,
+                        focusedContainerColor = DarkCard,
+                        unfocusedContainerColor = DarkCard,
+                    ),
+                    shape = RoundedCornerShape(8.dp),
+                    modifier = Modifier
+                        .weight(1f)
+                        .onFocusChanged { focusState ->
+                            if (focusState.isFocused && gasolineTextFieldValue.text.isNotEmpty()) {
+                                gasolineTextFieldValue = gasolineTextFieldValue.copy(
+                                    selection = TextRange(0, gasolineTextFieldValue.text.length),
                                 )
-                                onGasolinePriceChanged(formatted)
                             }
                         },
-                        placeholder = { Text("R$ 0,00", color = TextMuted) },
-                        singleLine = true,
-                        keyboardOptions = KeyboardOptions(
-                            keyboardType = KeyboardType.Number,
-                            imeAction = ImeAction.Done,
-                        ),
-                        keyboardActions = KeyboardActions(
-                            onDone = {
-                                focusManager.clearFocus()
-                                onCalculate()
-                            },
-                        ),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = TextPrimary,
-                            unfocusedTextColor = TextPrimary,
-                            focusedBorderColor = GreenLight,
-                            unfocusedBorderColor = Color.Gray,
-                            focusedContainerColor = DarkCard,
-                            unfocusedContainerColor = DarkCard,
-                        ),
-                        shape = RoundedCornerShape(8.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .onFocusChanged { focusState ->
-                                if (focusState.isFocused && gasolineTextFieldValue.text.isNotEmpty()) {
-                                    gasolineTextFieldValue = gasolineTextFieldValue.copy(
-                                        selection = TextRange(0, gasolineTextFieldValue.text.length),
-                                    )
-                                }
-                            },
-                    )
-                }
+                )
             }
 
             Spacer(modifier = Modifier.height(24.dp))
