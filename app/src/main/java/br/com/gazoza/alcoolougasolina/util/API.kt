@@ -41,6 +41,7 @@ const val API_APP_NAME = "app_name"
 const val API_NOTIFICATION_ID = "notification_id"
 const val API_RECEIVED_AT = "received_at"
 const val API_CLICKED_AT = "clicked_at"
+const val API_TYPE = "type"
 
 fun JSONObject?.getStringVal(tag: String, default: String = ""): String {
     if (this != null && has(tag)) {

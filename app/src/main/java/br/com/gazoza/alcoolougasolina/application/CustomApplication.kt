@@ -4,6 +4,10 @@ import android.app.Application
 import android.os.Build
 import br.com.gazoza.alcoolougasolina.BuildConfig
 import br.com.gazoza.alcoolougasolina.data.AppDatabase
+import br.com.gazoza.alcoolougasolina.di.appModule
+import br.com.gazoza.alcoolougasolina.di.localModule
+import br.com.gazoza.alcoolougasolina.di.repositoryModule
+import br.com.gazoza.alcoolougasolina.di.viewModelModule
 import br.com.gazoza.alcoolougasolina.util.API_ANDROID
 import br.com.gazoza.alcoolougasolina.util.API_DEBUG
 import br.com.gazoza.alcoolougasolina.util.API_IDENTIFIER
@@ -19,16 +23,20 @@ import br.com.gazoza.alcoolougasolina.util.PREF_DEVICE_ID
 import br.com.gazoza.alcoolougasolina.util.PREF_DEVICE_ID_OLD
 import br.com.gazoza.alcoolougasolina.util.StorageHelper
 import br.com.gazoza.alcoolougasolina.util.isDebug
+import br.com.gazoza.alcoolougasolina.util.printOrReport
 import com.github.kittinunf.fuel.core.FuelManager
 import com.google.android.gms.ads.MobileAds
 import com.google.firebase.messaging.FirebaseMessaging
+import java.util.Locale
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.Locale
+import org.koin.android.ext.koin.androidContext
+import org.koin.android.ext.koin.androidLogger
+import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
 
 class CustomApplication : Application() {
-
     private var isCheckUpdatesNeeded: Boolean = true
 
     companion object {
@@ -39,6 +47,21 @@ class CustomApplication : Application() {
     override fun onCreate() {
         super.onCreate()
 
+        if (org.koin.core.context.GlobalContext
+                .getOrNull() == null
+        ) {
+            startKoin {
+                androidLogger(Level.ERROR)
+                androidContext(this@CustomApplication)
+                modules(
+                    appModule,
+                    localModule,
+                    repositoryModule,
+                    viewModelModule,
+                )
+            }
+        }
+
         StorageHelper.init(this)
 
         AppOpenManager(this)
@@ -46,9 +69,17 @@ class CustomApplication : Application() {
         database = AppDatabase.getDatabase(this)
 
         CoroutineScope(Dispatchers.IO).launch {
-            FirebaseMessaging.getInstance().isAutoInitEnabled = true
+            try {
+                FirebaseMessaging.getInstance().isAutoInitEnabled = true
+            } catch (e: Exception) {
+                e.printOrReport()
+            }
 
-            MobileAds.initialize(this@CustomApplication) {}
+            try {
+                MobileAds.initialize(this@CustomApplication) {}
+            } catch (e: Exception) {
+                e.printOrReport()
+            }
 
             FuelManager.instance.basePath = "${APP_HOST}api/${BuildConfig.API_APP_NAME}"
 
@@ -57,24 +88,22 @@ class CustomApplication : Application() {
     }
 
     fun updateFuelParams() {
-        FuelManager.instance.baseParams = listOf(
-            API_IDENTIFIER to StorageHelper.get(PREF_DEVICE_ID, ""),
-            API_IDENTIFIER_OLD to StorageHelper.get(PREF_DEVICE_ID_OLD, ""),
-            API_LANG to Locale.getDefault().toString(),
-            API_VERSION to BuildConfig.VERSION_CODE,
-            API_PLATFORM to API_ANDROID,
-            API_PLATFORM_V to Build.VERSION.SDK_INT,
-            API_DEBUG to (if (isDebug()) "1" else "0"),
-            API_V to 8
-        )
+        FuelManager.instance.baseParams =
+            listOf(
+                API_IDENTIFIER to StorageHelper.get(PREF_DEVICE_ID, ""),
+                API_IDENTIFIER_OLD to StorageHelper.get(PREF_DEVICE_ID_OLD, ""),
+                API_LANG to Locale.getDefault().toString(),
+                API_VERSION to BuildConfig.VERSION_CODE,
+                API_PLATFORM to API_ANDROID,
+                API_PLATFORM_V to Build.VERSION.SDK_INT,
+                API_DEBUG to (if (isDebug()) "1" else "0"),
+                API_V to 8,
+            )
     }
 
     fun setCheckUpdatesIsNeeded(isNeeded: Boolean) {
         isCheckUpdatesNeeded = isNeeded
     }
 
-    fun getIsCheckUpdatesNeeded(): Boolean {
-        return isCheckUpdatesNeeded
-    }
-
+    fun getIsCheckUpdatesNeeded(): Boolean = isCheckUpdatesNeeded
 }

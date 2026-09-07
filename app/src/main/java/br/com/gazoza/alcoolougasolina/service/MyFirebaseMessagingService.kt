@@ -15,8 +15,8 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import androidx.core.net.toUri
 import br.com.gazoza.alcoolougasolina.BuildConfig
+import br.com.gazoza.alcoolougasolina.MainActivity
 import br.com.gazoza.alcoolougasolina.R
-import br.com.gazoza.alcoolougasolina.activity.StartActivity
 import br.com.gazoza.alcoolougasolina.util.API_ABOUT_APP
 import br.com.gazoza.alcoolougasolina.util.API_FEEDBACK
 import br.com.gazoza.alcoolougasolina.util.API_NOTIFICATIONS
@@ -31,9 +31,9 @@ import br.com.gazoza.alcoolougasolina.util.StorageHelper
 import br.com.gazoza.alcoolougasolina.util.appLog
 import br.com.gazoza.alcoolougasolina.util.getCircleCroppedBitmap
 import br.com.gazoza.alcoolougasolina.util.getThumbUrl
-import br.com.gazoza.alcoolougasolina.util.isDebug
 import br.com.gazoza.alcoolougasolina.util.isValidUrl
 import br.com.gazoza.alcoolougasolina.util.printFuelLog
+import br.com.gazoza.alcoolougasolina.util.printOrReport
 import br.com.gazoza.alcoolougasolina.util.sendNotificationReport
 import br.com.gazoza.alcoolougasolina.util.storeAppLink
 import br.com.gazoza.alcoolougasolina.util.stringToInt
@@ -44,7 +44,6 @@ import java.net.URL
 
 @Suppress("MissingFirebaseInstanceTokenRefresh")
 class MyFirebaseMessagingService : FirebaseMessagingService() {
-
     companion object {
         const val ID = "id"
         const val TYPE = "type"
@@ -59,17 +58,17 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         const val TAG = "MyFCM"
     }
 
-    override fun onRegistered(installationId: String) {
-        super.onRegistered(installationId)
+    override fun onNewToken(token: String) {
+        super.onNewToken(token)
 
-        appLog(TAG, "New registered installationId: $installationId")
+        appLog(TAG, "New registered installationId: $token")
 
         val latToken = StorageHelper.get(PREF_FCM_TOKEN, "")
 
-        if (installationId != latToken) {
-            StorageHelper.put(PREF_FCM_TOKEN, installationId)
+        if (token != latToken) {
+            StorageHelper.put(PREF_FCM_TOKEN, token)
 
-            val params = listOf(API_TOKEN to installationId)
+            val params = listOf(API_TOKEN to token)
             API_ROUTE_IDENTIFY.httpGet(params).responseString { request, response, result ->
                 printFuelLog(request, response, result)
             }
@@ -123,12 +122,13 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         sendNotificationReport(id, true)
 
-        if (title.isEmpty() || type == API_WAKEUP)
+        if (title.isEmpty() || type == API_WAKEUP) {
             return
+        }
 
         val channelId = "${type}_channel"
 
-        var notifyIntent = Intent(applicationContext, StartActivity::class.java)
+        var notifyIntent = Intent(applicationContext, MainActivity::class.java)
 
         if (version.isNotEmpty()) {
             val versionCode = version.stringToInt()
@@ -143,24 +143,21 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
         }
 
         if (link.isValidUrl()) {
-
             notifyIntent = Intent(Intent.ACTION_VIEW, link.toUri())
-
         } else {
-
             notifyIntent.putExtra(PARAM_ID, id)
             notifyIntent.putExtra(PARAM_TYPE, type)
             notifyIntent.putExtra(PARAM_ITEM_ID, itemId)
-
         }
 
         val builder = NotificationCompat.Builder(applicationContext, channelId)
 
-        val pendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
-            addNextIntentWithParentStack(notifyIntent)
+        val pendingIntent: PendingIntent? =
+            TaskStackBuilder.create(this).run {
+                addNextIntentWithParentStack(notifyIntent)
 
-            getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
-        }
+                getPendingIntent(0, PendingIntent.FLAG_IMMUTABLE)
+            }
 
         builder.setAutoCancel(true)
         builder.setContentIntent(pendingIntent)
@@ -187,19 +184,20 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     builder.setLargeIcon(icon.getCircleCroppedBitmap())
                 }
             } catch (e: Exception) {
-                if (isDebug()) e.printStackTrace()
+                e.printOrReport()
             }
         }
 
         val manager = getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val name = when (type) {
-                API_FEEDBACK -> R.string.feedback
-                API_NOTIFICATIONS -> R.string.notifications
-                API_ABOUT_APP -> R.string.about_app
-                else -> R.string.channel_updates
-            }
+            val name =
+                when (type) {
+                    API_FEEDBACK -> R.string.feedback
+                    API_NOTIFICATIONS -> R.string.notifications
+                    API_ABOUT_APP -> R.string.about_app
+                    else -> R.string.channel_updates
+                }
             val channel =
                 NotificationChannel(channelId, getString(name), NotificationManager.IMPORTANCE_HIGH)
             manager.createNotificationChannel(channel)
@@ -214,20 +212,21 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
 
         if (vibrate.isNotEmpty()) {
             val pattern = longArrayOf(0, 100, 0, 100)
-            val vibrator = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                val vm = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-                vm.defaultVibrator
-            } else {
-                @Suppress("DEPRECATION")
-                getSystemService(VIBRATOR_SERVICE) as Vibrator
-            }
+            val vibrator =
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    val vm = getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
+                    vm.defaultVibrator
+                } else {
+                    @Suppress("DEPRECATION")
+                    getSystemService(VIBRATOR_SERVICE) as Vibrator
+                }
 
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                 vibrator.vibrate(
                     VibrationEffect.createWaveform(
                         pattern,
-                        VibrationEffect.DEFAULT_AMPLITUDE
-                    )
+                        VibrationEffect.DEFAULT_AMPLITUDE,
+                    ),
                 )
             } else {
                 @Suppress("DEPRECATION")
@@ -235,5 +234,4 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
             }
         }
     }
-
 }

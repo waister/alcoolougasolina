@@ -3,12 +3,10 @@ package br.com.gazoza.alcoolougasolina.util
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.core.content.edit
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 import org.json.JSONObject
 
 @Suppress("unused")
 object StorageHelper {
-
     private const val PREF_FILE_NAME = "app_prefs"
     private lateinit var sharedPreferences: SharedPreferences
 
@@ -32,17 +30,11 @@ object StorageHelper {
         sharedPreferences.edit { putString(key, value.toString()) }
     }
 
-    fun get(key: String, defaultValue: String): String {
-        return sharedPreferences.getString(key, defaultValue) ?: defaultValue
-    }
+    fun get(key: String, defaultValue: String): String = sharedPreferences.getString(key, defaultValue) ?: defaultValue
 
-    fun get(key: String, defaultValue: Boolean): Boolean {
-        return sharedPreferences.getBoolean(key, defaultValue)
-    }
+    fun get(key: String, defaultValue: Boolean): Boolean = sharedPreferences.getBoolean(key, defaultValue)
 
-    fun get(key: String, defaultValue: Int): Int {
-        return sharedPreferences.getInt(key, defaultValue)
-    }
+    fun get(key: String, defaultValue: Int): Int = sharedPreferences.getInt(key, defaultValue)
 
     fun getJSONObject(key: String): JSONObject? {
         val jsonString = sharedPreferences.getString(key, null)
@@ -50,7 +42,7 @@ object StorageHelper {
             try {
                 JSONObject(jsonString)
             } catch (e: Exception) {
-                FirebaseCrashlytics.getInstance().recordException(e)
+                e.printOrReport()
                 null
             }
         } else {
