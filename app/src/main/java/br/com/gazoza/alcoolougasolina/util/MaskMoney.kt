@@ -4,15 +4,19 @@ import java.text.NumberFormat
 import java.util.Locale
 
 object MaskMoney {
-    fun format(input: String): String {
+    fun format(input: String, locale: Locale = Locale.getDefault()): String {
         val digits = input.filter { it.isDigit() }.trimStart('0')
         if (digits.isEmpty()) return ""
         val limited = if (digits.length > 6) digits.take(6) else digits
         val value = limited.toDouble() / 100.0
-        return NumberFormat.getCurrencyInstance(Locale.forLanguageTag("pt-BR")).format(value)
+        return NumberFormat.getCurrencyInstance(locale).format(value)
     }
 
-    fun formatMoneyInput(previousText: String, newText: String): String {
+    fun formatMoneyInput(
+        previousText: String,
+        newText: String,
+        locale: Locale = Locale.getDefault(),
+    ): String {
         if (newText.isEmpty()) return ""
 
         val prevDigits = previousText.filter { it.isDigit() }
@@ -41,7 +45,7 @@ object MaskMoney {
         }
 
         val parsed = cleanDigits.toDouble() / 100.0
-        return NumberFormat.getCurrencyInstance(Locale.forLanguageTag("pt-BR")).format(parsed)
+        return NumberFormat.getCurrencyInstance(locale).format(parsed)
     }
 
     fun parse(formatted: String): Double {
@@ -49,4 +53,7 @@ object MaskMoney {
         if (digits.isEmpty()) return 0.0
         return digits.toDouble() / 100.0
     }
+
+    fun getZeroCurrency(locale: Locale = Locale.getDefault()): String =
+        NumberFormat.getCurrencyInstance(locale).format(0.0)
 }

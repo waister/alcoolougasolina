@@ -5,6 +5,7 @@ import br.com.gazoza.alcoolougasolina.R
 import br.com.gazoza.alcoolougasolina.data.repository.HistoryRepository
 import br.com.gazoza.alcoolougasolina.data.repository.NotificationRepository
 import br.com.gazoza.alcoolougasolina.data.repository.PreferencesRepository
+import br.com.gazoza.alcoolougasolina.util.MaskMoney
 import br.com.gazoza.alcoolougasolina.utils.BaseRobolectricTest
 import br.com.gazoza.alcoolougasolina.utils.MainDispatcherRule
 import io.mockk.coEvery
@@ -61,6 +62,25 @@ class MainViewModelTest : BaseRobolectricTest() {
         assertFalse(state.isCalculateEnabled)
         assertFalse(state.isClearEnabled)
         assertFalse(state.isResultVisible)
+    }
+
+    @Test
+    fun `given saved raw prices in preferences, when initialized, then formats prices to current locale`() = runTest {
+        every { preferencesRepository.getLastEthanolPrice() } returns "R$ 3,28"
+        every { preferencesRepository.getLastGasolinePrice() } returns "R$ 5,90"
+
+        val vm =
+            MainViewModel(
+                historyRepository = historyRepository,
+                preferencesRepository = preferencesRepository,
+                notificationRepository = notificationRepository,
+            )
+
+        val state = vm.uiState.value
+        assertEquals(3.28, MaskMoney.parse(state.priceEthanol), 0.001)
+        assertEquals(5.90, MaskMoney.parse(state.priceGasoline), 0.001)
+        assertTrue(state.isCalculateEnabled)
+        assertTrue(state.isClearEnabled)
     }
 
     @Test

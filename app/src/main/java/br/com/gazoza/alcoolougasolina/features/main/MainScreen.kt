@@ -176,6 +176,7 @@ fun MainContent(
     onShareClick: () -> Unit,
 ) {
     val focusManager = LocalFocusManager.current
+    val zeroCurrencyPlaceholder = remember { MaskMoney.getZeroCurrency() }
 
     var ethanolTextFieldValue by remember {
         mutableStateOf(
@@ -335,7 +336,7 @@ fun MainContent(
                             onEthanolPriceChanged(formatted)
                         }
                     },
-                    placeholder = { Text("R$ 0,00", color = TextMuted) },
+                    placeholder = { Text(zeroCurrencyPlaceholder, color = TextMuted) },
                     singleLine = true,
                     keyboardOptions =
                         KeyboardOptions(
@@ -404,7 +405,7 @@ fun MainContent(
                             onGasolinePriceChanged(formatted)
                         }
                     },
-                    placeholder = { Text("R$ 0,00", color = TextMuted) },
+                    placeholder = { Text(zeroCurrencyPlaceholder, color = TextMuted) },
                     singleLine = true,
                     keyboardOptions =
                         KeyboardOptions(

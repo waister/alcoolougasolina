@@ -43,8 +43,8 @@ class MainViewModel(
     }
 
     private fun loadInitialData() {
-        val lastEthanol = preferencesRepository.getLastEthanolPrice()
-        val lastGasoline = preferencesRepository.getLastGasolinePrice()
+        val lastEthanol = formatPrice(preferencesRepository.getLastEthanolPrice())
+        val lastGasoline = formatPrice(preferencesRepository.getLastGasolinePrice())
         val shareLink = preferencesRepository.getShareLink()
         val appName = preferencesRepository.getAppName()
 

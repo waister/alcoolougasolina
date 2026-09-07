@@ -20,8 +20,8 @@ android {
         applicationId = "br.com.gazoza.alcoolougasolina"
         minSdk = 24
         targetSdk = 37
-        versionCode = 22
-        versionName = "3.0.0"
+        versionCode = 23
+        versionName = "3.0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "API_APP_NAME", "\"alcoolougasolina\"")

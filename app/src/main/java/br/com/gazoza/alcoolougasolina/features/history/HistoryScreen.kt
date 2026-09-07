@@ -53,6 +53,7 @@ import br.com.gazoza.alcoolougasolina.ui.theme.GreenLight
 import br.com.gazoza.alcoolougasolina.ui.theme.GreenPrimary
 import br.com.gazoza.alcoolougasolina.ui.theme.TextMuted
 import br.com.gazoza.alcoolougasolina.ui.theme.TextPrimary
+import br.com.gazoza.alcoolougasolina.util.MaskMoney
 import br.com.gazoza.alcoolougasolina.util.formatDatetime
 import org.koin.androidx.compose.koinViewModel
 
@@ -204,7 +205,7 @@ private fun HistoryItem(comparison: Comparison, modifier: Modifier = Modifier) {
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = stringResource(R.string.label_ethanol, comparison.priceEthanol),
+                        text = stringResource(R.string.label_ethanol, MaskMoney.format(comparison.priceEthanol)),
                         color = TextPrimary,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
@@ -215,7 +216,7 @@ private fun HistoryItem(comparison: Comparison, modifier: Modifier = Modifier) {
                         fontSize = 14.sp,
                     )
                     Text(
-                        text = stringResource(R.string.label_gasoline, comparison.priceGasoline),
+                        text = stringResource(R.string.label_gasoline, MaskMoney.format(comparison.priceGasoline)),
                         color = TextPrimary,
                         fontWeight = FontWeight.SemiBold,
                         fontSize = 14.sp,
